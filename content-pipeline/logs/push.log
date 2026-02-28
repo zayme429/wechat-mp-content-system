@@ -1,0 +1,154 @@
+2026-02-28 20:01:55,812 - INFO - [PUSH_START] article_id=test_article, title=测试文章标题
+2026-02-28 20:01:55,812 - INFO - [PUSH_STEP] TEST_STEP: 测试日志步骤
+2026-02-28 20:01:55,812 - INFO -   Data: {'test': 'data'}
+2026-02-28 20:04:10,569 - INFO - [PUSH_START] article_id=20260228_保险客户经营_961708, title=从"群发助手"到"知心朋友"：缘故客户经营的温度心法
+2026-02-28 20:04:10,572 - INFO - [PUSH_STEP] 1_GET_TOKEN: 开始获取access_token
+2026-02-28 20:04:11,035 - INFO - [PUSH_STEP] 1_GET_TOKEN: 获取token成功
+2026-02-28 20:04:11,036 - INFO -   Data: {'token_prefix': '101_uHbLP4nrJ4PlqBfg'}
+2026-02-28 20:04:11,036 - INFO - [PUSH_STEP] 2_UPLOAD_COVER: 开始上传封面图片
+2026-02-28 20:04:12,710 - INFO - 79.124.40.174 - - [28/Feb/2026 20:04:12] "[31m[1mPOST / HTTP/1.1[0m" 405 -
+2026-02-28 20:04:13,345 - INFO - [PUSH_STEP] 2_UPLOAD_COVER: 封面图片下载成功
+2026-02-28 20:04:13,927 - INFO - [PUSH_STEP] 2_UPLOAD_COVER: 封面上传结果
+2026-02-28 20:04:13,927 - INFO -   Data: {'url': 'http://mmbiz.qpic.cn/mmbiz_jpg/j4oA91WU4nRezUoC5ibKy3TJorkn2Dxq84TSKX5ibicKvKxs8ialuhp9878EbibpGLsLRgFvXL5YRU7GHt5K3bXG2CuoiaLdYbeLKVibknAS7cBfkI/0?from=appmsg'}
+2026-02-28 20:04:13,927 - INFO - [PUSH_STEP] 2_UPLOAD_COVER: 封面上传成功
+2026-02-28 20:04:13,928 - INFO -   Data: {'cover_url': 'http://mmbiz.qpic.cn/mmbiz_jpg/j4oA91WU4nRezUoC5ib'}
+2026-02-28 20:04:13,928 - INFO - [PUSH_STEP] 3_PREPARE_CONTENT: 准备文章内容
+2026-02-28 20:04:13,928 - INFO - [PUSH_STEP] 4_PUSH_DRAFT: 开始推送到草稿箱
+2026-02-28 20:04:13,928 - INFO - [PUSH_STEP] 4_PUSH_DRAFT: 请求参数
+2026-02-28 20:04:13,928 - INFO -   Data: {'title': '从"群发助手"到"知心朋友"：缘故客户经营的温度心法', 'content_length': 2650}
+2026-02-28 20:04:14,210 - INFO - [PUSH_STEP] 4_PUSH_DRAFT: API响应
+2026-02-28 20:04:14,210 - INFO -   Data: {'errcode': 40007, 'errmsg': 'invalid media_id hint: [xKoJ5028073-1] rid: 69a2d9d8-5eb6bbf6-5c7c436d'}
+2026-02-28 20:04:14,210 - ERROR - [PUSH_ERROR] 推送失败: invalid media_id hint: [xKoJ5028073-1] rid: 69a2d9d8-5eb6bbf6-5c7c436d
+2026-02-28 20:04:14,210 - ERROR -   Traceback: {'errcode': 40007, 'errmsg': 'invalid media_id hint: [xKoJ5028073-1] rid: 69a2d9d8-5eb6bbf6-5c7c436d'}
+2026-02-28 20:04:14,212 - ERROR - [PUSH_ERROR] 推送失败: invalid media_id hint: [xKoJ5028073-1] rid: 69a2d9d8-5eb6bbf6-5c7c436d
+2026-02-28 20:04:14,212 - ERROR -   Traceback: Traceback (most recent call last):
+  File "/root/.openclaw/workspace/content-pipeline/article_library/web_server.py", line 1277, in push_to_wechat_draft
+    raise Exception(error_msg)
+Exception: 推送失败: invalid media_id hint: [xKoJ5028073-1] rid: 69a2d9d8-5eb6bbf6-5c7c436d
+
+2026-02-28 20:04:14,216 - INFO - 103.149.244.196 - - [28/Feb/2026 20:04:14] "[32mPOST /admin/review/20260228_保险客户经营_961708 HTTP/1.1[0m" 302 -
+2026-02-28 20:04:15,574 - INFO - 103.149.244.196 - - [28/Feb/2026 20:04:15] "GET /library HTTP/1.1" 200 -
+2026-02-28 20:05:52,813 - INFO -  * Detected change in '/root/.openclaw/workspace/content-pipeline/article_library/web_server.py', reloading
+2026-02-28 20:10:19,124 - INFO - [PUSH_START] article_id=20260228_保险客户经营_961708, title=从"群发助手"到"知心朋友"：缘故客户经营的温度心法
+2026-02-28 20:10:19,126 - INFO - [PUSH_STEP] 1_GET_TOKEN: 开始获取access_token
+2026-02-28 20:10:19,494 - INFO - [PUSH_STEP] 1_GET_TOKEN: 获取token成功
+2026-02-28 20:10:19,494 - INFO -   Data: {'token_prefix': '101_ie9vq91sUT3nu5_2'}
+2026-02-28 20:10:19,494 - INFO - [PUSH_STEP] 2_UPLOAD_COVER: 开始上传封面为永久素材
+2026-02-28 20:10:20,961 - INFO - [PUSH_STEP] 2_UPLOAD_COVER: 封面上传结果
+2026-02-28 20:10:20,961 - INFO -   Data: {'media_id': 'qgcPUbwEc2J16mibATvCB95DO35O1m6OWIyE0g1N75zLJpibjM97bJ7X03jzbe7n', 'url': 'http://mmbiz.qpic.cn/sz_mmbiz_jpg/j4oA91WU4nTQw7uQ3M5pibBG3Hy0WcUKyqicFwAShrUBRc9rlujb1RbXIMGdvyLicDoNsT6eDIVDszKbATO354VUl9vuEEvf2EwqyF1E8ZqHJc/0?wx_fmt=jpeg', 'item': []}
+2026-02-28 20:10:20,961 - INFO - [PUSH_STEP] 2_UPLOAD_COVER: 封面上传成功
+2026-02-28 20:10:20,961 - INFO -   Data: {'thumb_media_id': 'qgcPUbwEc2J16mibATvCB95DO35O1m'}
+2026-02-28 20:10:20,961 - INFO - [PUSH_STEP] 3_PREPARE_CONTENT: 准备文章内容
+2026-02-28 20:10:20,962 - INFO - [PUSH_STEP] 4_PUSH_DRAFT: 开始推送到草稿箱
+2026-02-28 20:10:20,962 - INFO - [PUSH_STEP] 4_PUSH_DRAFT: 请求参数
+2026-02-28 20:10:20,962 - INFO -   Data: {'title': '从"群发助手"到"知心朋友"：缘故客户经营的温度心法', 'content_length': 2681}
+2026-02-28 20:10:21,463 - INFO - [PUSH_STEP] 4_PUSH_DRAFT: API响应
+2026-02-28 20:10:21,463 - INFO -   Data: {'errcode': 45003, 'errmsg': 'title size out of limit hint: [4L5064856-1] rid: 69a2db48-052656be-0de5ea62'}
+2026-02-28 20:10:21,463 - ERROR - [PUSH_ERROR] 推送失败: title size out of limit hint: [4L5064856-1] rid: 69a2db48-052656be-0de5ea62
+2026-02-28 20:10:21,463 - ERROR -   Traceback: {'errcode': 45003, 'errmsg': 'title size out of limit hint: [4L5064856-1] rid: 69a2db48-052656be-0de5ea62'}
+2026-02-28 20:10:21,465 - ERROR - [PUSH_ERROR] 推送失败: title size out of limit hint: [4L5064856-1] rid: 69a2db48-052656be-0de5ea62
+2026-02-28 20:10:21,465 - ERROR -   Traceback: Traceback (most recent call last):
+  File "/root/.openclaw/workspace/content-pipeline/article_library/web_server.py", line 1282, in push_to_wechat_draft
+    raise Exception(error_msg)
+Exception: 推送失败: title size out of limit hint: [4L5064856-1] rid: 69a2db48-052656be-0de5ea62
+
+2026-02-28 20:10:21,470 - INFO - 103.149.244.196 - - [28/Feb/2026 20:10:21] "[32mPOST /admin/review/20260228_保险客户经营_961708 HTTP/1.1[0m" 302 -
+2026-02-28 20:10:30,704 - INFO - [PUSH_START] article_id=20260228_保险客户经营_961708, title=从"群发助手"到"知心朋友"：缘故客户经营的温度心法
+2026-02-28 20:10:30,706 - INFO - [PUSH_STEP] 1_GET_TOKEN: 开始获取access_token
+2026-02-28 20:10:31,351 - INFO - [PUSH_STEP] 1_GET_TOKEN: 获取token成功
+2026-02-28 20:10:31,351 - INFO -   Data: {'token_prefix': '101_ie9vq91sUT3nu5_2'}
+2026-02-28 20:10:31,351 - INFO - [PUSH_STEP] 2_UPLOAD_COVER: 开始上传封面为永久素材
+2026-02-28 20:10:32,625 - INFO - [PUSH_STEP] 2_UPLOAD_COVER: 封面上传结果
+2026-02-28 20:10:32,625 - INFO -   Data: {'media_id': 'qgcPUbwEc2J16mibATvCB36NDqn8MMgUQihL9QrCIreGxSoX1oc1YBn15-WINiim', 'url': 'http://mmbiz.qpic.cn/mmbiz_jpg/j4oA91WU4nSvt67nd3uw9Do19E7gszzQEZ39Lwqo2z7icibTNnv0QSurfA7rYpSGnMKnceMZaJ0icXlt3icfiatF3n09e7f5mJiayfDaugymcCfMw/0?wx_fmt=jpeg', 'item': []}
+2026-02-28 20:10:32,625 - INFO - [PUSH_STEP] 2_UPLOAD_COVER: 封面上传成功
+2026-02-28 20:10:32,625 - INFO -   Data: {'thumb_media_id': 'qgcPUbwEc2J16mibATvCB36NDqn8MM'}
+2026-02-28 20:10:32,625 - INFO - [PUSH_STEP] 3_PREPARE_CONTENT: 准备文章内容
+2026-02-28 20:10:32,626 - INFO - [PUSH_STEP] 4_PUSH_DRAFT: 开始推送到草稿箱
+2026-02-28 20:10:32,626 - INFO - [PUSH_STEP] 4_PUSH_DRAFT: 请求参数
+2026-02-28 20:10:32,626 - INFO -   Data: {'title': '从"群发助手"到"知心朋友"：缘故客户经营的温度心法', 'content_length': 2681}
+2026-02-28 20:10:32,945 - INFO - [PUSH_STEP] 4_PUSH_DRAFT: API响应
+2026-02-28 20:10:32,946 - INFO -   Data: {'errcode': 45003, 'errmsg': 'title size out of limit hint: [3065948-1] rid: 69a2db53-08c25fbf-0680ba2d'}
+2026-02-28 20:10:32,946 - ERROR - [PUSH_ERROR] 推送失败: title size out of limit hint: [3065948-1] rid: 69a2db53-08c25fbf-0680ba2d
+2026-02-28 20:10:32,946 - ERROR -   Traceback: {'errcode': 45003, 'errmsg': 'title size out of limit hint: [3065948-1] rid: 69a2db53-08c25fbf-0680ba2d'}
+2026-02-28 20:10:32,946 - ERROR - [PUSH_ERROR] 推送失败: title size out of limit hint: [3065948-1] rid: 69a2db53-08c25fbf-0680ba2d
+2026-02-28 20:10:32,946 - ERROR -   Traceback: Traceback (most recent call last):
+  File "/root/.openclaw/workspace/content-pipeline/article_library/web_server.py", line 1282, in push_to_wechat_draft
+    raise Exception(error_msg)
+Exception: 推送失败: title size out of limit hint: [3065948-1] rid: 69a2db53-08c25fbf-0680ba2d
+
+2026-02-28 20:10:32,950 - INFO - 103.149.244.196 - - [28/Feb/2026 20:10:32] "[32mPOST /admin/review/20260228_保险客户经营_961708 HTTP/1.1[0m" 302 -
+2026-02-28 20:10:44,604 - INFO - [PUSH_START] article_id=20260228_保险客户经营_961708, title=从"群发助手"到"知心朋友"：缘故客户经营的温度心法
+2026-02-28 20:10:44,606 - INFO - [PUSH_STEP] 1_GET_TOKEN: 开始获取access_token
+2026-02-28 20:10:44,982 - INFO - [PUSH_STEP] 1_GET_TOKEN: 获取token成功
+2026-02-28 20:10:44,982 - INFO -   Data: {'token_prefix': '101_zdQeXm5aIk5C1nH4'}
+2026-02-28 20:10:44,982 - INFO - [PUSH_STEP] 2_UPLOAD_COVER: 开始上传封面为永久素材
+2026-02-28 20:10:46,424 - INFO - [PUSH_STEP] 2_UPLOAD_COVER: 封面上传结果
+2026-02-28 20:10:46,424 - INFO -   Data: {'media_id': 'qgcPUbwEc2J16mibATvCB4ZMky0_Zs3yb-p951tlQBsib4N20i-b-8xSIqiIA5ET', 'url': 'http://mmbiz.qpic.cn/mmbiz_jpg/j4oA91WU4nRicxPnBsha01g8VFicbicSe9kKaHibR4PudibBmG4EKmQiaibpn5ibIbEVET2Tcl7wic9b7R2RzAricNWfw1vnOggcrBicxeZYApXWgPKFrQ/0?wx_fmt=jpeg', 'item': []}
+2026-02-28 20:10:46,424 - INFO - [PUSH_STEP] 2_UPLOAD_COVER: 封面上传成功
+2026-02-28 20:10:46,424 - INFO -   Data: {'thumb_media_id': 'qgcPUbwEc2J16mibATvCB4ZMky0_Zs'}
+2026-02-28 20:10:46,424 - INFO - [PUSH_STEP] 3_PREPARE_CONTENT: 准备文章内容
+2026-02-28 20:10:46,424 - INFO - [PUSH_STEP] 4_PUSH_DRAFT: 开始推送到草稿箱
+2026-02-28 20:10:46,424 - INFO - [PUSH_STEP] 4_PUSH_DRAFT: 请求参数
+2026-02-28 20:10:46,425 - INFO -   Data: {'title': '从"群发助手"到"知心朋友"：缘故客户经营的温度心法', 'content_length': 2681}
+2026-02-28 20:10:46,751 - INFO - [PUSH_STEP] 4_PUSH_DRAFT: API响应
+2026-02-28 20:10:46,751 - INFO -   Data: {'errcode': 45003, 'errmsg': 'title size out of limit hint: [SJ.8067345-4] rid: 69a2db61-13411404-701ae093'}
+2026-02-28 20:10:46,751 - ERROR - [PUSH_ERROR] 推送失败: title size out of limit hint: [SJ.8067345-4] rid: 69a2db61-13411404-701ae093
+2026-02-28 20:10:46,751 - ERROR -   Traceback: {'errcode': 45003, 'errmsg': 'title size out of limit hint: [SJ.8067345-4] rid: 69a2db61-13411404-701ae093'}
+2026-02-28 20:10:46,751 - ERROR - [PUSH_ERROR] 推送失败: title size out of limit hint: [SJ.8067345-4] rid: 69a2db61-13411404-701ae093
+2026-02-28 20:10:46,752 - ERROR -   Traceback: Traceback (most recent call last):
+  File "/root/.openclaw/workspace/content-pipeline/article_library/web_server.py", line 1282, in push_to_wechat_draft
+    raise Exception(error_msg)
+Exception: 推送失败: title size out of limit hint: [SJ.8067345-4] rid: 69a2db61-13411404-701ae093
+
+2026-02-28 20:10:46,755 - INFO - 103.149.244.196 - - [28/Feb/2026 20:10:46] "[32mPOST /admin/review/20260228_保险客户经营_961708 HTTP/1.1[0m" 302 -
+2026-02-28 20:10:48,185 - INFO - 103.149.244.196 - - [28/Feb/2026 20:10:48] "GET /library HTTP/1.1" 200 -
+2026-02-28 20:12:20,578 - INFO -  * Detected change in '/root/.openclaw/workspace/content-pipeline/article_library/web_server.py', reloading
+2026-02-28 20:14:08,370 - INFO - [PUSH_START] article_id=20260228_保险客户经营_961708, title=从"群发助手"到"知心朋友"：缘故客户经营的温度心法
+2026-02-28 20:14:08,373 - INFO - [PUSH_STEP] 1_GET_TOKEN: 开始获取access_token
+2026-02-28 20:14:08,709 - INFO - [PUSH_STEP] 1_GET_TOKEN: 获取token成功
+2026-02-28 20:14:08,710 - INFO -   Data: {'token_prefix': '101_mkgV-NYdlRKcNYm5'}
+2026-02-28 20:14:08,710 - INFO - [PUSH_STEP] 2_UPLOAD_COVER: 开始上传封面为永久素材
+2026-02-28 20:14:10,144 - INFO - [PUSH_STEP] 2_UPLOAD_COVER: 封面上传结果
+2026-02-28 20:14:10,144 - INFO -   Data: {'media_id': 'qgcPUbwEc2J16mibATvCBxZiusHQN441Q7q2CQTrf9Jw9qRyv5myxNBANTKRtRww', 'url': 'http://mmbiz.qpic.cn/sz_mmbiz_jpg/j4oA91WU4nRJaEb4e67xcHiaIbwT3VVWMx3r92ECo7xhgbk7voQsRmdAOd23P0DptrynkoTAjDrrORvzTWKkA3Xj8WQrAB9ciaasC0Eoy3KyU/0?wx_fmt=jpeg', 'item': []}
+2026-02-28 20:14:10,144 - INFO - [PUSH_STEP] 2_UPLOAD_COVER: 封面上传成功
+2026-02-28 20:14:10,145 - INFO -   Data: {'thumb_media_id': 'qgcPUbwEc2J16mibATvCBxZiusHQN4'}
+2026-02-28 20:14:10,145 - INFO - [PUSH_STEP] 3_PREPARE_CONTENT: 准备文章内容
+2026-02-28 20:14:10,145 - INFO - [PUSH_STEP] 3_PREPARE_CONTENT: 清理后的标题
+2026-02-28 20:14:10,145 - INFO -   Data: {'title': '从"群发助手"到"知心朋友"：缘故客户经营的温度心法', 'length': 26}
+2026-02-28 20:14:10,146 - INFO - [PUSH_STEP] 4_PUSH_DRAFT: 开始推送到草稿箱
+2026-02-28 20:14:10,146 - INFO - [PUSH_STEP] 4_PUSH_DRAFT: 请求参数
+2026-02-28 20:14:10,146 - INFO -   Data: {'title': '从"群发助手"到"知心朋友"：缘故客户经营的温度心法', 'content_length': 2681}
+2026-02-28 20:14:10,426 - INFO - [PUSH_STEP] 4_PUSH_DRAFT: API响应
+2026-02-28 20:14:10,426 - INFO -   Data: {'errcode': 45003, 'errmsg': 'title size out of limit hint: [PQxIta087721-3] rid: 69a2dc2d-64f12e4b-2e84c9ba'}
+2026-02-28 20:14:10,426 - ERROR - [PUSH_ERROR] 推送失败: title size out of limit hint: [PQxIta087721-3] rid: 69a2dc2d-64f12e4b-2e84c9ba
+2026-02-28 20:14:10,426 - ERROR -   Traceback: {'errcode': 45003, 'errmsg': 'title size out of limit hint: [PQxIta087721-3] rid: 69a2dc2d-64f12e4b-2e84c9ba'}
+2026-02-28 20:14:10,428 - ERROR - [PUSH_ERROR] 推送失败: title size out of limit hint: [PQxIta087721-3] rid: 69a2dc2d-64f12e4b-2e84c9ba
+2026-02-28 20:14:10,428 - ERROR -   Traceback: Traceback (most recent call last):
+  File "/root/.openclaw/workspace/content-pipeline/article_library/web_server.py", line 1288, in push_to_wechat_draft
+    raise Exception(error_msg)
+Exception: 推送失败: title size out of limit hint: [PQxIta087721-3] rid: 69a2dc2d-64f12e4b-2e84c9ba
+
+2026-02-28 20:14:10,433 - INFO - 103.149.244.196 - - [28/Feb/2026 20:14:10] "[32mPOST /admin/review/20260228_保险客户经营_961708 HTTP/1.1[0m" 302 -
+2026-02-28 20:14:10,855 - INFO - 103.149.244.196 - - [28/Feb/2026 20:14:10] "GET /library HTTP/1.1" 200 -
+2026-02-28 20:35:13,394 - INFO -  * Detected change in '/root/.openclaw/workspace/content-pipeline/article_library/web_server.py', reloading
+2026-02-28 20:42:48,240 - INFO - [PUSH_START] article_id=20260228_保险客户经营_961708, title=缘故客户经营心法
+2026-02-28 20:42:48,243 - INFO - [PUSH_STEP] 1_GET_TOKEN: 开始获取access_token
+2026-02-28 20:42:48,607 - INFO - [PUSH_STEP] 1_GET_TOKEN: 获取token成功
+2026-02-28 20:42:48,607 - INFO -   Data: {'token_prefix': '101_RmI3pPNsHLrJ9NcW'}
+2026-02-28 20:42:48,607 - INFO - [PUSH_STEP] 2_UPLOAD_COVER: 开始上传封面为永久素材
+2026-02-28 20:42:50,081 - INFO - [PUSH_STEP] 2_UPLOAD_COVER: 封面上传结果
+2026-02-28 20:42:50,081 - INFO -   Data: {'media_id': 'qgcPUbwEc2J16mibATvCB0WqVyMULzEE-sYGRvRWWRoQi7vA2AGwUURzm9IWY7tb', 'url': 'http://mmbiz.qpic.cn/sz_mmbiz_jpg/j4oA91WU4nQmI4zuFicLvzT9xLUibbKbx5WedXSqkNPZ7kxPMf0QcvLQssjU5qY0dziasZDWpupCegXtb4JIvFteuJBE8CTDP9QJHJ2qHSoeN4/0?wx_fmt=jpeg', 'item': []}
+2026-02-28 20:42:50,081 - INFO - [PUSH_STEP] 2_UPLOAD_COVER: 封面上传成功
+2026-02-28 20:42:50,081 - INFO -   Data: {'thumb_media_id': 'qgcPUbwEc2J16mibATvCB0WqVyMULz'}
+2026-02-28 20:42:50,081 - INFO - [PUSH_STEP] 3_PREPARE_CONTENT: 准备文章内容
+2026-02-28 20:42:50,081 - INFO - [PUSH_STEP] 3_PREPARE_CONTENT: 清理后的标题
+2026-02-28 20:42:50,081 - INFO -   Data: {'title': '缘故客户经营心法', 'char_count': 8, 'byte_count': 24}
+2026-02-28 20:42:50,082 - INFO - [PUSH_STEP] 4_PUSH_DRAFT: 开始推送到草稿箱
+2026-02-28 20:42:50,082 - INFO - [PUSH_STEP] 4_PUSH_DRAFT: 请求参数
+2026-02-28 20:42:50,082 - INFO -   Data: {'title': '缘故客户经营心法', 'content_length': 2681}
+2026-02-28 20:42:52,713 - INFO - [PUSH_STEP] 4_PUSH_DRAFT: API响应
+2026-02-28 20:42:52,713 - INFO -   Data: {'media_id': 'qgcPUbwEc2J16mibATvCB4d9mH7qNyp5e0VlCRyyj9TViIDe9SkJ8I7FIcEtr6Y6', 'item': []}
+2026-02-28 20:42:52,713 - INFO - [PUSH_SUCCESS] media_id=qgcPUbwEc2J16mibATvCB4d9mH7qNyp5e0VlCRyyj9TViIDe9SkJ8I7FIcEtr6Y6
+2026-02-28 20:42:52,718 - INFO - 103.149.244.196 - - [28/Feb/2026 20:42:52] "[32mPOST /admin/review/20260228_保险客户经营_961708 HTTP/1.1[0m" 302 -
+2026-02-28 20:42:53,629 - INFO - 103.149.244.196 - - [28/Feb/2026 20:42:53] "GET /library HTTP/1.1" 200 -
+2026-02-28 20:45:13,976 - INFO -  * Detected change in '/root/.openclaw/workspace/content-pipeline/article_library/web_server.py', reloading

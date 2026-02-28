@@ -1,0 +1,762 @@
+2026-02-26 15:44:47,130 - INFO - 🚀 启动内容自动化Pipeline
+2026-02-26 15:44:47,130 - INFO - === 步骤1: 采集热点资讯 ===
+2026-02-26 15:44:47,130 - INFO - === RSS采集开始 ===
+2026-02-26 15:44:47,130 - INFO - 
+[ai_tech] 类别:
+2026-02-26 15:44:47,130 - INFO - Fetching: 机器之心 (https://www.jiqizhixin.com/rss)
+2026-02-26 15:44:59,694 - INFO -   ✓ Got 10 items from 机器之心
+2026-02-26 15:44:59,694 - INFO - Fetching: AI前线 (https://www.aiqianxian.com/rss)
+2026-02-26 15:44:59,759 - ERROR -   ✗ Failed to fetch AI前线: HTTPSConnectionPool(host='www.aiqianxian.com', port=443): Max retries exceeded with url: /rss (Caused by NewConnectionError('<urllib3.connection.HTTPSConnection object at 0x7f4f26439a00>: Failed to establish a new connection: [Errno -2] Name or service not known'))
+2026-02-26 15:44:59,760 - INFO - Fetching: PaperWeekly (https://paperweekly.feeds.zone/rss)
+2026-02-26 15:44:59,814 - ERROR -   ✗ Failed to fetch PaperWeekly: HTTPSConnectionPool(host='paperweekly.feeds.zone', port=443): Max retries exceeded with url: /rss (Caused by NewConnectionError('<urllib3.connection.HTTPSConnection object at 0x7f4f264397f0>: Failed to establish a new connection: [Errno -2] Name or service not known'))
+2026-02-26 15:44:59,814 - INFO - Fetching: InfoQ AI (https://www.infoq.cn/feed/ai)
+2026-02-26 15:45:00,635 - INFO -   ✓ Got 10 items from InfoQ AI
+2026-02-26 15:45:00,636 - INFO - 
+[thinking] 类别:
+2026-02-26 15:45:00,636 - INFO - Fetching: 36氪 (https://36kr.com/feed)
+2026-02-26 15:45:01,838 - INFO -   ✓ Got 10 items from 36氪
+2026-02-26 15:45:01,839 - INFO - Fetching: 虎嗅 (https://www.huxiu.com/rss)
+2026-02-26 15:45:02,595 - INFO -   ✓ Got 0 items from 虎嗅
+2026-02-26 15:45:02,595 - INFO - Fetching: 极客公园 (https://www.geekpark.net/rss)
+2026-02-26 15:45:03,431 - ERROR -   ✗ Failed to fetch 极客公园: ('Connection aborted.', RemoteDisconnected('Remote end closed connection without response'))
+2026-02-26 15:45:03,431 - INFO - 
+[personal_growth] 类别:
+2026-02-26 15:45:03,432 - INFO - Fetching: L先生说 (https://mp.weixin.qq.com/mp/profile?action=home&__biz=MzA5NjEyMDUyMA==)
+2026-02-26 15:45:03,519 - INFO -   ✓ Got 0 items from L先生说
+2026-02-26 15:45:03,519 - INFO - Fetching: 万维钢 (https://mp.weixin.qq.com/mp/profile?action=home&__biz=MjM5NTgzMjg0MQ==)
+2026-02-26 15:45:03,922 - INFO -   ✓ Got 0 items from 万维钢
+2026-02-26 15:45:03,923 - INFO - 
+✅ RSS采集完成，共 30 条
+2026-02-26 15:45:03,923 - INFO - === 热点评分 ===
+2026-02-26 15:45:03,923 - INFO - ✅ 评分完成，最高分: 15
+2026-02-26 15:45:03,923 - INFO - ✅ 采集完成，精选 10 条
+2026-02-26 15:45:03,923 - INFO - === 步骤2: AI分析选题角度 ===
+2026-02-26 15:45:03,924 - INFO - === AI分析选题 ===
+2026-02-26 15:45:03,924 - ERROR - ❌ Pipeline执行失败: '\n  "analysis_summary"'
+Traceback (most recent call last):
+  File "/root/.openclaw/workspace/content-pipeline/pipeline.py", line 188, in run
+    angle = self.step2_analyze(collected)
+  File "/root/.openclaw/workspace/content-pipeline/pipeline.py", line 89, in step2_analyze
+    analysis = self.generator.analyze_topic(collected_items, recent_topics)
+  File "/root/.openclaw/workspace/content-pipeline/src/generator/content_generator.py", line 77, in analyze_topic
+    prompt = prompt_template.format(
+KeyError: '\n  "analysis_summary"'
+2026-02-26 15:46:02,279 - INFO - 🚀 启动内容自动化Pipeline
+2026-02-26 15:46:02,279 - INFO - === 步骤1: 采集热点资讯 ===
+2026-02-26 15:46:02,279 - INFO - === RSS采集开始 ===
+2026-02-26 15:46:02,279 - INFO - 
+[ai_tech] 类别:
+2026-02-26 15:46:02,279 - INFO - Fetching: 机器之心 (https://www.jiqizhixin.com/rss)
+2026-02-26 15:46:14,740 - INFO -   ✓ Got 10 items from 机器之心
+2026-02-26 15:46:14,741 - INFO - Fetching: InfoQ AI (https://www.infoq.cn/feed/ai)
+2026-02-26 15:46:15,478 - INFO -   ✓ Got 10 items from InfoQ AI
+2026-02-26 15:46:15,479 - INFO - Fetching: MIT科技评论 (https://www.mittrchina.com/rss)
+2026-02-26 15:46:16,494 - INFO -   ✓ Got 0 items from MIT科技评论
+2026-02-26 15:46:16,494 - INFO - 
+[thinking] 类别:
+2026-02-26 15:46:16,495 - INFO - Fetching: 36氪 (https://36kr.com/feed)
+2026-02-26 15:46:17,252 - INFO -   ✓ Got 10 items from 36氪
+2026-02-26 15:46:17,252 - INFO - Fetching: 虎嗅 (https://www.huxiu.com/rss)
+2026-02-26 15:46:17,650 - INFO -   ✓ Got 0 items from 虎嗅
+2026-02-26 15:46:17,650 - INFO - Fetching: 极客公园 (https://www.geekpark.net/rss)
+2026-02-26 15:46:33,054 - ERROR -   ✗ Failed to fetch 极客公园: HTTPSConnectionPool(host='www.geekpark.net', port=443): Max retries exceeded with url: /rss (Caused by ConnectTimeoutError(<urllib3.connection.HTTPSConnection object at 0x7f398c6ae9d0>, 'Connection to www.geekpark.net timed out. (connect timeout=15)'))
+2026-02-26 15:46:33,056 - INFO - 
+[personal_growth] 类别:
+2026-02-26 15:46:33,056 - INFO - Fetching: L先生说 (https://mp.weixin.qq.com/mp/profile?action=home&__biz=MzA5NjEyMDUyMA==)
+2026-02-26 15:46:33,150 - INFO -   ✓ Got 0 items from L先生说
+2026-02-26 15:46:33,150 - INFO - Fetching: 万维钢 (https://mp.weixin.qq.com/mp/profile?action=home&__biz=MjM5NTgzMjg0MQ==)
+2026-02-26 15:46:33,433 - INFO -   ✓ Got 0 items from 万维钢
+2026-02-26 15:46:33,434 - INFO - 
+✅ RSS采集完成，共 30 条
+2026-02-26 15:46:33,434 - INFO - === 热点评分 ===
+2026-02-26 15:46:33,434 - INFO - ✅ 评分完成，最高分: 15
+2026-02-26 15:46:33,434 - INFO - ✅ 采集完成，精选 10 条
+2026-02-26 15:46:33,434 - INFO - === 步骤2: AI分析选题角度 ===
+2026-02-26 15:46:33,435 - INFO - === AI分析选题 ===
+2026-02-26 15:46:33,435 - INFO - 🤖 调用LLM生成内容...
+2026-02-26 15:46:33,869 - ERROR - ❌ LLM调用失败: 'choices'
+2026-02-26 15:46:33,870 - ERROR - ❌ Pipeline执行失败: 'choices'
+Traceback (most recent call last):
+  File "/root/.openclaw/workspace/content-pipeline/pipeline.py", line 188, in run
+    angle = self.step2_analyze(collected)
+  File "/root/.openclaw/workspace/content-pipeline/pipeline.py", line 89, in step2_analyze
+    analysis = self.generator.analyze_topic(collected_items, recent_topics)
+  File "/root/.openclaw/workspace/content-pipeline/src/generator/content_generator.py", line 88, in analyze_topic
+    response = self._call_llm(prompt, temperature=0.8)
+  File "/root/.openclaw/workspace/content-pipeline/src/generator/content_generator.py", line 59, in _call_llm
+    content = result['choices'][0]['message']['content']
+KeyError: 'choices'
+2026-02-26 15:48:26,186 - INFO - 🚀 启动内容自动化Pipeline
+2026-02-26 15:48:26,186 - INFO - === 步骤1: 采集热点资讯 ===
+2026-02-26 15:48:26,186 - INFO - === RSS采集开始 ===
+2026-02-26 15:48:26,186 - INFO - 
+[ai_tech] 类别:
+2026-02-26 15:48:26,186 - INFO - Fetching: 机器之心 (https://www.jiqizhixin.com/rss)
+2026-02-26 15:48:36,411 - INFO -   ✓ Got 10 items from 机器之心
+2026-02-26 15:48:36,411 - INFO - Fetching: InfoQ AI (https://www.infoq.cn/feed/ai)
+2026-02-26 15:48:37,181 - INFO -   ✓ Got 10 items from InfoQ AI
+2026-02-26 15:48:37,183 - INFO - Fetching: MIT科技评论 (https://www.mittrchina.com/rss)
+2026-02-26 15:48:38,202 - INFO -   ✓ Got 0 items from MIT科技评论
+2026-02-26 15:48:38,202 - INFO - 
+[thinking] 类别:
+2026-02-26 15:48:38,202 - INFO - Fetching: 36氪 (https://36kr.com/feed)
+2026-02-26 15:48:39,385 - INFO -   ✓ Got 10 items from 36氪
+2026-02-26 15:48:39,385 - INFO - Fetching: 虎嗅 (https://www.huxiu.com/rss)
+2026-02-26 15:48:39,771 - INFO -   ✓ Got 0 items from 虎嗅
+2026-02-26 15:48:39,772 - INFO - Fetching: 极客公园 (https://www.geekpark.net/rss)
+2026-02-26 15:48:55,109 - ERROR -   ✗ Failed to fetch 极客公园: HTTPSConnectionPool(host='www.geekpark.net', port=443): Max retries exceeded with url: /rss (Caused by ConnectTimeoutError(<urllib3.connection.HTTPSConnection object at 0x7fc85110c640>, 'Connection to www.geekpark.net timed out. (connect timeout=15)'))
+2026-02-26 15:48:55,110 - INFO - 
+[personal_growth] 类别:
+2026-02-26 15:48:55,110 - INFO - Fetching: L先生说 (https://mp.weixin.qq.com/mp/profile?action=home&__biz=MzA5NjEyMDUyMA==)
+2026-02-26 15:48:55,197 - INFO -   ✓ Got 0 items from L先生说
+2026-02-26 15:48:55,197 - INFO - Fetching: 万维钢 (https://mp.weixin.qq.com/mp/profile?action=home&__biz=MjM5NTgzMjg0MQ==)
+2026-02-26 15:48:55,292 - INFO -   ✓ Got 0 items from 万维钢
+2026-02-26 15:48:55,292 - INFO - 
+✅ RSS采集完成，共 30 条
+2026-02-26 15:48:55,292 - INFO - === 热点评分 ===
+2026-02-26 15:48:55,293 - INFO - ✅ 评分完成，最高分: 15
+2026-02-26 15:48:55,293 - INFO - ✅ 采集完成，精选 10 条
+2026-02-26 15:48:55,293 - INFO - === 步骤2: AI分析选题角度 ===
+2026-02-26 15:48:55,293 - INFO - === AI分析选题 ===
+2026-02-26 15:48:55,294 - INFO - 🤖 调用LLM生成内容...
+2026-02-26 15:48:56,246 - ERROR - ❌ LLM调用失败: 'choices'
+2026-02-26 15:48:56,246 - ERROR - ❌ Pipeline执行失败: 'choices'
+Traceback (most recent call last):
+  File "/root/.openclaw/workspace/content-pipeline/pipeline.py", line 181, in run
+    angle = self.step2_analyze(collected)
+  File "/root/.openclaw/workspace/content-pipeline/pipeline.py", line 89, in step2_analyze
+    analysis = self.generator.analyze_topic(collected_items, recent_topics)
+  File "/root/.openclaw/workspace/content-pipeline/src/generator/content_generator.py", line 88, in analyze_topic
+    response = self._call_llm(prompt, temperature=0.8)
+  File "/root/.openclaw/workspace/content-pipeline/src/generator/content_generator.py", line 59, in _call_llm
+    content = result['choices'][0]['message']['content']
+KeyError: 'choices'
+2026-02-26 15:49:46,963 - INFO - 🚀 启动内容自动化Pipeline
+2026-02-26 15:49:46,963 - INFO - === 步骤1: 采集热点资讯 ===
+2026-02-26 15:49:46,963 - INFO - === RSS采集开始 ===
+2026-02-26 15:49:46,963 - INFO - 
+[ai_tech] 类别:
+2026-02-26 15:49:46,963 - INFO - Fetching: 机器之心 (https://www.jiqizhixin.com/rss)
+2026-02-26 15:50:02,209 - ERROR -   ✗ Failed to fetch 机器之心: HTTPSConnectionPool(host='www.jiqizhixin.com', port=443): Read timed out. (read timeout=15)
+2026-02-26 15:50:02,210 - INFO - Fetching: InfoQ AI (https://www.infoq.cn/feed/ai)
+2026-02-26 15:50:03,213 - INFO -   ✓ Got 10 items from InfoQ AI
+2026-02-26 15:50:03,213 - INFO - Fetching: MIT科技评论 (https://www.mittrchina.com/rss)
+2026-02-26 15:50:03,944 - INFO -   ✓ Got 0 items from MIT科技评论
+2026-02-26 15:50:03,944 - INFO - 
+[thinking] 类别:
+2026-02-26 15:50:03,944 - INFO - Fetching: 36氪 (https://36kr.com/feed)
+2026-02-26 15:50:05,100 - INFO -   ✓ Got 10 items from 36氪
+2026-02-26 15:50:05,100 - INFO - Fetching: 虎嗅 (https://www.huxiu.com/rss)
+2026-02-26 15:50:06,135 - INFO -   ✓ Got 0 items from 虎嗅
+2026-02-26 15:50:06,135 - INFO - Fetching: 极客公园 (https://www.geekpark.net/rss)
+2026-02-26 15:50:21,476 - ERROR -   ✗ Failed to fetch 极客公园: HTTPSConnectionPool(host='www.geekpark.net', port=443): Max retries exceeded with url: /rss (Caused by ConnectTimeoutError(<urllib3.connection.HTTPSConnection object at 0x7f4790297d30>, 'Connection to www.geekpark.net timed out. (connect timeout=15)'))
+2026-02-26 15:50:21,476 - INFO - 
+[personal_growth] 类别:
+2026-02-26 15:50:21,477 - INFO - Fetching: L先生说 (https://mp.weixin.qq.com/mp/profile?action=home&__biz=MzA5NjEyMDUyMA==)
+2026-02-26 15:50:21,573 - INFO -   ✓ Got 0 items from L先生说
+2026-02-26 15:50:21,574 - INFO - Fetching: 万维钢 (https://mp.weixin.qq.com/mp/profile?action=home&__biz=MjM5NTgzMjg0MQ==)
+2026-02-26 15:50:21,700 - INFO -   ✓ Got 0 items from 万维钢
+2026-02-26 15:50:21,701 - INFO - 
+✅ RSS采集完成，共 20 条
+2026-02-26 15:50:21,701 - INFO - === 热点评分 ===
+2026-02-26 15:50:21,701 - INFO - ✅ 评分完成，最高分: 14
+2026-02-26 15:50:21,701 - INFO - ✅ 采集完成，精选 10 条
+2026-02-26 15:50:21,701 - INFO - === 步骤2: AI分析选题角度 ===
+2026-02-26 15:50:21,702 - INFO - === AI分析选题 ===
+2026-02-26 15:50:21,702 - INFO - 🤖 调用LLM生成内容...
+2026-02-26 15:50:22,232 - ERROR - ❌ API返回错误: {'message': 'invalid temperature: only 1 is allowed for this model', 'type': 'invalid_request_error'}
+2026-02-26 15:50:22,232 - ERROR - ❌ LLM调用失败: API Error: {'message': 'invalid temperature: only 1 is allowed for this model', 'type': 'invalid_request_error'}
+2026-02-26 15:50:22,232 - ERROR - ❌ Pipeline执行失败: API Error: {'message': 'invalid temperature: only 1 is allowed for this model', 'type': 'invalid_request_error'}
+Traceback (most recent call last):
+  File "/root/.openclaw/workspace/content-pipeline/pipeline.py", line 181, in run
+    angle = self.step2_analyze(collected)
+  File "/root/.openclaw/workspace/content-pipeline/pipeline.py", line 89, in step2_analyze
+    analysis = self.generator.analyze_topic(collected_items, recent_topics)
+  File "/root/.openclaw/workspace/content-pipeline/src/generator/content_generator.py", line 98, in analyze_topic
+    response = self._call_llm(prompt, temperature=0.8)
+  File "/root/.openclaw/workspace/content-pipeline/src/generator/content_generator.py", line 63, in _call_llm
+    raise Exception(f"API Error: {result['error']}")
+Exception: API Error: {'message': 'invalid temperature: only 1 is allowed for this model', 'type': 'invalid_request_error'}
+2026-02-26 15:50:39,432 - INFO - 🚀 启动内容自动化Pipeline
+2026-02-26 15:50:39,433 - INFO - === 步骤1: 采集热点资讯 ===
+2026-02-26 15:50:39,433 - INFO - === RSS采集开始 ===
+2026-02-26 15:50:39,433 - INFO - 
+[ai_tech] 类别:
+2026-02-26 15:50:39,433 - INFO - Fetching: 机器之心 (https://www.jiqizhixin.com/rss)
+2026-02-26 15:50:59,530 - INFO -   ✓ Got 0 items from 机器之心
+2026-02-26 15:50:59,531 - INFO - Fetching: InfoQ AI (https://www.infoq.cn/feed/ai)
+2026-02-26 15:51:00,162 - INFO -   ✓ Got 10 items from InfoQ AI
+2026-02-26 15:51:00,162 - INFO - Fetching: MIT科技评论 (https://www.mittrchina.com/rss)
+2026-02-26 15:51:01,793 - INFO -   ✓ Got 0 items from MIT科技评论
+2026-02-26 15:51:01,794 - INFO - 
+[thinking] 类别:
+2026-02-26 15:51:01,794 - INFO - Fetching: 36氪 (https://36kr.com/feed)
+2026-02-26 15:51:02,565 - INFO -   ✓ Got 10 items from 36氪
+2026-02-26 15:51:02,565 - INFO - Fetching: 虎嗅 (https://www.huxiu.com/rss)
+2026-02-26 15:51:03,011 - INFO -   ✓ Got 0 items from 虎嗅
+2026-02-26 15:51:03,011 - INFO - Fetching: 极客公园 (https://www.geekpark.net/rss)
+2026-02-26 15:51:18,032 - ERROR -   ✗ Failed to fetch 极客公园: HTTPSConnectionPool(host='www.geekpark.net', port=443): Max retries exceeded with url: /rss (Caused by ConnectTimeoutError(<urllib3.connection.HTTPSConnection object at 0x7f45f9b97d90>, 'Connection to www.geekpark.net timed out. (connect timeout=15)'))
+2026-02-26 15:51:18,032 - INFO - 
+[personal_growth] 类别:
+2026-02-26 15:51:18,032 - INFO - Fetching: L先生说 (https://mp.weixin.qq.com/mp/profile?action=home&__biz=MzA5NjEyMDUyMA==)
+2026-02-26 15:51:18,119 - INFO -   ✓ Got 0 items from L先生说
+2026-02-26 15:51:18,119 - INFO - Fetching: 万维钢 (https://mp.weixin.qq.com/mp/profile?action=home&__biz=MjM5NTgzMjg0MQ==)
+2026-02-26 15:51:18,208 - INFO -   ✓ Got 0 items from 万维钢
+2026-02-26 15:51:18,208 - INFO - 
+✅ RSS采集完成，共 20 条
+2026-02-26 15:51:18,208 - INFO - === 热点评分 ===
+2026-02-26 15:51:18,209 - INFO - ✅ 评分完成，最高分: 14
+2026-02-26 15:51:18,209 - INFO - ✅ 采集完成，精选 10 条
+2026-02-26 15:51:18,209 - INFO - === 步骤2: AI分析选题角度 ===
+2026-02-26 15:51:18,209 - INFO - === AI分析选题 ===
+2026-02-26 15:51:18,209 - INFO - 🤖 调用LLM生成内容...
+2026-02-26 15:52:02,784 - INFO - ✅ LLM生成完成
+2026-02-26 15:52:02,798 - INFO - ✅ 选题分析完成: GitHub Agentic时代，程序员正在成为"AI约束设计师"...
+2026-02-26 15:52:02,799 - INFO - ✅ 选定选题: GitHub Agentic时代，程序员正在成为"AI约束设计师"
+2026-02-26 15:52:02,800 - INFO - === 步骤3: AI撰写文章 ===
+2026-02-26 15:52:02,800 - INFO - === AI撰写文章 ===
+2026-02-26 15:52:02,801 - INFO - 🤖 调用LLM生成内容...
+2026-02-26 15:54:03,425 - ERROR - ❌ LLM调用失败: HTTPSConnectionPool(host='api.moonshot.cn', port=443): Read timed out. (read timeout=120)
+2026-02-26 15:54:03,426 - ERROR - ❌ Pipeline执行失败: HTTPSConnectionPool(host='api.moonshot.cn', port=443): Read timed out. (read timeout=120)
+Traceback (most recent call last):
+  File "/usr/lib/python3/dist-packages/urllib3/connectionpool.py", line 446, in _make_request
+    six.raise_from(e, None)
+  File "<string>", line 3, in raise_from
+  File "/usr/lib/python3/dist-packages/urllib3/connectionpool.py", line 441, in _make_request
+    httplib_response = conn.getresponse()
+  File "/usr/lib/python3.9/http/client.py", line 1371, in getresponse
+    response.begin()
+  File "/usr/lib/python3.9/http/client.py", line 321, in begin
+    version, status, reason = self._read_status()
+  File "/usr/lib/python3.9/http/client.py", line 282, in _read_status
+    line = str(self.fp.readline(_MAXLINE + 1), "iso-8859-1")
+  File "/usr/lib/python3.9/socket.py", line 704, in readinto
+    return self._sock.recv_into(b)
+  File "/usr/lib/python3.9/ssl.py", line 1274, in recv_into
+    return self.read(nbytes, buffer)
+  File "/usr/lib/python3.9/ssl.py", line 1132, in read
+    return self._sslobj.read(len, buffer)
+socket.timeout: The read operation timed out
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/usr/lib/python3/dist-packages/requests/adapters.py", line 439, in send
+    resp = conn.urlopen(
+  File "/usr/lib/python3/dist-packages/urllib3/connectionpool.py", line 756, in urlopen
+    retries = retries.increment(
+  File "/usr/lib/python3/dist-packages/urllib3/util/retry.py", line 534, in increment
+    raise six.reraise(type(error), error, _stacktrace)
+  File "/usr/lib/python3/dist-packages/six.py", line 719, in reraise
+    raise value
+  File "/usr/lib/python3/dist-packages/urllib3/connectionpool.py", line 700, in urlopen
+    httplib_response = self._make_request(
+  File "/usr/lib/python3/dist-packages/urllib3/connectionpool.py", line 448, in _make_request
+    self._raise_timeout(err=e, url=url, timeout_value=read_timeout)
+  File "/usr/lib/python3/dist-packages/urllib3/connectionpool.py", line 337, in _raise_timeout
+    raise ReadTimeoutError(
+urllib3.exceptions.ReadTimeoutError: HTTPSConnectionPool(host='api.moonshot.cn', port=443): Read timed out. (read timeout=120)
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/root/.openclaw/workspace/content-pipeline/pipeline.py", line 184, in run
+    article = self.step3_write(angle)
+  File "/root/.openclaw/workspace/content-pipeline/pipeline.py", line 99, in step3_write
+    article = self.generator.write_article(angle_info)
+  File "/root/.openclaw/workspace/content-pipeline/src/generator/content_generator.py", line 143, in write_article
+    article = self._call_llm(prompt, temperature=0.7)
+  File "/root/.openclaw/workspace/content-pipeline/src/generator/content_generator.py", line 51, in _call_llm
+    response = requests.post(
+  File "/usr/lib/python3/dist-packages/requests/api.py", line 119, in post
+    return request('post', url, data=data, json=json, **kwargs)
+  File "/usr/lib/python3/dist-packages/requests/api.py", line 61, in request
+    return session.request(method=method, url=url, **kwargs)
+  File "/usr/lib/python3/dist-packages/requests/sessions.py", line 542, in request
+    resp = self.send(prep, **send_kwargs)
+  File "/usr/lib/python3/dist-packages/requests/sessions.py", line 655, in send
+    r = adapter.send(request, **kwargs)
+  File "/usr/lib/python3/dist-packages/requests/adapters.py", line 529, in send
+    raise ReadTimeout(e, request=request)
+requests.exceptions.ReadTimeout: HTTPSConnectionPool(host='api.moonshot.cn', port=443): Read timed out. (read timeout=120)
+2026-02-26 15:54:17,988 - INFO - 🚀 启动内容自动化Pipeline
+2026-02-26 15:54:17,988 - INFO - === 步骤1: 采集热点资讯 ===
+2026-02-26 15:54:17,988 - INFO - === RSS采集开始 ===
+2026-02-26 15:54:17,988 - INFO - 
+[ai_tech] 类别:
+2026-02-26 15:54:17,988 - INFO - Fetching: 机器之心 (https://www.jiqizhixin.com/rss)
+2026-02-26 15:54:33,216 - ERROR -   ✗ Failed to fetch 机器之心: HTTPSConnectionPool(host='www.jiqizhixin.com', port=443): Read timed out. (read timeout=15)
+2026-02-26 15:54:33,216 - INFO - Fetching: InfoQ AI (https://www.infoq.cn/feed/ai)
+2026-02-26 15:54:35,333 - INFO -   ✓ Got 10 items from InfoQ AI
+2026-02-26 15:54:35,333 - INFO - Fetching: MIT科技评论 (https://www.mittrchina.com/rss)
+2026-02-26 15:54:36,040 - INFO -   ✓ Got 0 items from MIT科技评论
+2026-02-26 15:54:36,040 - INFO - 
+[thinking] 类别:
+2026-02-26 15:54:36,040 - INFO - Fetching: 36氪 (https://36kr.com/feed)
+2026-02-26 15:54:38,218 - INFO -   ✓ Got 10 items from 36氪
+2026-02-26 15:54:38,218 - INFO - Fetching: 虎嗅 (https://www.huxiu.com/rss)
+2026-02-26 15:54:38,683 - INFO -   ✓ Got 0 items from 虎嗅
+2026-02-26 15:54:38,683 - INFO - Fetching: 极客公园 (https://www.geekpark.net/rss)
+2026-02-26 15:54:54,020 - ERROR -   ✗ Failed to fetch 极客公园: HTTPSConnectionPool(host='www.geekpark.net', port=443): Max retries exceeded with url: /rss (Caused by ConnectTimeoutError(<urllib3.connection.HTTPSConnection object at 0x7f5b7584fd30>, 'Connection to www.geekpark.net timed out. (connect timeout=15)'))
+2026-02-26 15:54:54,020 - INFO - 
+[personal_growth] 类别:
+2026-02-26 15:54:54,020 - INFO - Fetching: L先生说 (https://mp.weixin.qq.com/mp/profile?action=home&__biz=MzA5NjEyMDUyMA==)
+2026-02-26 15:54:54,302 - INFO -   ✓ Got 0 items from L先生说
+2026-02-26 15:54:54,302 - INFO - Fetching: 万维钢 (https://mp.weixin.qq.com/mp/profile?action=home&__biz=MjM5NTgzMjg0MQ==)
+2026-02-26 15:54:54,483 - INFO -   ✓ Got 0 items from 万维钢
+2026-02-26 15:54:54,484 - INFO - 
+✅ RSS采集完成，共 20 条
+2026-02-26 15:54:54,484 - INFO - === 热点评分 ===
+2026-02-26 15:54:54,484 - INFO - ✅ 评分完成，最高分: 14
+2026-02-26 15:54:54,484 - INFO - ✅ 采集完成，精选 10 条
+2026-02-26 15:54:54,484 - INFO - === 步骤2: AI分析选题角度 ===
+2026-02-26 15:54:54,485 - INFO - === AI分析选题 ===
+2026-02-26 15:54:54,485 - INFO - 🤖 调用LLM生成内容...
+2026-02-26 15:55:35,344 - INFO - ✅ LLM生成完成
+2026-02-26 15:55:35,345 - INFO - ✅ 选题分析完成: 《Agentic Workflows时代：程序员的核心竞争力正从"写代码"转向"...
+2026-02-26 15:55:35,345 - INFO - ✅ 选定选题: 《Agentic Workflows时代：程序员的核心竞争力正从"写代码"转向"造规则"》
+2026-02-26 15:55:35,345 - INFO - === 步骤3: AI撰写文章 ===
+2026-02-26 15:55:35,345 - INFO - === AI撰写文章 ===
+2026-02-26 15:55:35,346 - INFO - 🤖 调用LLM生成内容...
+2026-02-26 15:56:49,909 - INFO - ✅ LLM生成完成
+2026-02-26 15:56:49,910 - INFO - ✅ 文章撰写完成，长度: 2829 字符
+2026-02-26 15:56:49,910 - INFO - === 步骤4: 发布到草稿箱 ===
+2026-02-26 15:56:49,911 - INFO - ✅ 文章已保存: /root/.openclaw/workspace/content-pipeline/output/article_20260226.md
+2026-02-26 15:56:49,916 - INFO - 📤 发布到微信公众号...
+2026-02-26 15:56:49,937 - WARNING - ⚠️ 发布返回: 
+2026-02-26 15:56:49,938 - INFO - === 步骤5: 发送通知 ===
+2026-02-26 15:56:49,938 - INFO - 
+==================================================
+2026-02-26 15:56:49,939 - INFO - 📢 文章生成完成
+2026-02-26 15:56:49,939 - INFO - ==================================================
+2026-02-26 15:56:49,939 - INFO - 标题: "Agentic Workflows时代：程序员的核心竞争力正从\"写代码\"转向\"造规则\""
+2026-02-26 15:56:49,939 - INFO - 文件: /root/.openclaw/workspace/content-pipeline/output/article_20260226.md
+2026-02-26 15:56:49,939 - INFO - 长度: 2829 字符
+2026-02-26 15:56:49,939 - INFO - ==================================================
+
+2026-02-26 15:56:49,939 - INFO - ✅ Pipeline执行完成！
+2026-02-27 10:21:36,014 - INFO - 🚀 启动内容生产管线 v3.0
+2026-02-27 10:21:36,014 - INFO - === Step 1: 确定主题 ===
+2026-02-27 10:21:36,014 - INFO - 模式A: 手动指定主题 → AI Agent在职场中的实际应用
+2026-02-27 10:21:36,014 - INFO - === Step 2: 文献采集 ===
+2026-02-27 10:21:36,014 - INFO - 搜索关键词: AI Agent在职场中的实际应用
+2026-02-27 10:21:36,083 - INFO - 共收集 0 篇文献，开始抓取全文...
+2026-02-27 10:21:36,083 - INFO - ✅ 文献采集完成，共 0 篇
+2026-02-27 10:21:36,083 - ERROR - 文献采集失败，终止
+2026-02-27 10:24:01,834 - INFO - 🚀 启动内容生产管线 v3.0
+2026-02-27 10:24:01,835 - INFO - === Step 1: 确定主题 ===
+2026-02-27 10:24:01,835 - INFO - 模式A: 手动指定主题 → AI Agent在职场中的实际应用
+2026-02-27 10:24:01,835 - INFO - === Step 2: 文献采集 ===
+2026-02-27 10:24:01,835 - INFO - === RSS采集开始 ===
+2026-02-27 10:24:01,835 - INFO - 
+[ai_tech] 类别:
+2026-02-27 10:24:01,835 - INFO - Fetching: 机器之心 (https://www.jiqizhixin.com/rss)
+2026-02-27 10:24:01,920 - INFO -   ✓ Got 0 items from 机器之心
+2026-02-27 10:24:01,920 - INFO - Fetching: InfoQ AI (https://www.infoq.cn/feed/ai)
+2026-02-27 10:24:02,738 - INFO -   ✓ Got 10 items from InfoQ AI
+2026-02-27 10:24:02,739 - INFO - Fetching: MIT科技评论 (https://www.mittrchina.com/rss)
+2026-02-27 10:24:03,572 - INFO -   ✓ Got 0 items from MIT科技评论
+2026-02-27 10:24:03,573 - INFO - 
+[thinking] 类别:
+2026-02-27 10:24:03,573 - INFO - Fetching: 36氪 (https://36kr.com/feed)
+2026-02-27 10:24:04,310 - INFO -   ✓ Got 10 items from 36氪
+2026-02-27 10:24:04,311 - INFO - Fetching: 虎嗅 (https://www.huxiu.com/rss)
+2026-02-27 10:24:04,709 - INFO -   ✓ Got 0 items from 虎嗅
+2026-02-27 10:24:04,709 - INFO - Fetching: 极客公园 (https://www.geekpark.net/rss)
+2026-02-27 10:24:20,059 - ERROR -   ✗ Failed to fetch 极客公园: HTTPSConnectionPool(host='www.geekpark.net', port=443): Max retries exceeded with url: /rss (Caused by ConnectTimeoutError(<urllib3.connection.HTTPSConnection object at 0x7fc4757a0dc0>, 'Connection to www.geekpark.net timed out. (connect timeout=15)'))
+2026-02-27 10:24:20,060 - INFO - 
+[personal_growth] 类别:
+2026-02-27 10:24:20,060 - INFO - Fetching: L先生说 (https://mp.weixin.qq.com/mp/profile?action=home&__biz=MzA5NjEyMDUyMA==)
+2026-02-27 10:24:20,143 - INFO -   ✓ Got 0 items from L先生说
+2026-02-27 10:24:20,144 - INFO - Fetching: 万维钢 (https://mp.weixin.qq.com/mp/profile?action=home&__biz=MjM5NTgzMjg0MQ==)
+2026-02-27 10:24:20,313 - INFO -   ✓ Got 0 items from 万维钢
+2026-02-27 10:24:20,314 - INFO - 
+✅ RSS采集完成，共 20 条
+2026-02-27 10:24:20,314 - INFO -   RSS 相关文章: 0 篇
+2026-02-27 10:24:20,314 - INFO -   使用 LLM 联网搜索补充文献...
+2026-02-27 10:24:20,314 - INFO - 🤖 调用LLM生成内容...
+2026-02-27 10:25:40,767 - INFO - ✅ LLM生成完成
+2026-02-27 10:25:40,768 - INFO -   LLM 搜索补充: 6 篇（含RSS）
+2026-02-27 10:25:40,768 - INFO - 去重后共 6 篇，尝试抓取全文...
+2026-02-27 10:25:40,768 - INFO - ✅ 文献采集完成，共 6 篇
+2026-02-27 10:25:40,769 - INFO - === Step 3: 选题设计 ===
+2026-02-27 10:25:40,769 - INFO - 🤖 调用LLM生成内容...
+2026-02-27 10:27:26,180 - INFO - ✅ LLM生成完成
+2026-02-27 10:27:26,181 - INFO - ✅ 选题设计完成，共 3 个候选
+2026-02-27 10:27:26,181 - INFO - === Step 4: 文章生成 ===
+2026-02-27 10:27:26,181 - INFO - 生成候选 1: 《企业AI Agent落地避坑指南：从"玩具"到"生产力"的7个关键步骤》
+2026-02-27 10:27:26,181 - INFO - 🤖 调用LLM生成内容...
+2026-02-27 10:28:37,739 - INFO - ✅ LLM生成完成
+2026-02-27 10:28:37,740 - INFO -   ✅ 候选 1 生成完成，质量分: 9.5
+2026-02-27 10:28:37,740 - INFO - 生成候选 2: 《Agentic Workflow：当AI从工具变为"组织公民"，管理范式如何迭代？》
+2026-02-27 10:28:37,741 - INFO - 🤖 调用LLM生成内容...
+2026-02-27 10:29:34,352 - INFO - ✅ LLM生成完成
+2026-02-27 10:29:34,352 - INFO -   ✅ 候选 2 生成完成，质量分: 9.5
+2026-02-27 10:29:34,353 - INFO - 生成候选 3: 《三张工位上的AI同事：一个制造业流程专员、一位刑辩律师与某厂产品经理的Agent观察周记》
+2026-02-27 10:29:34,353 - INFO - 🤖 调用LLM生成内容...
+2026-02-27 10:30:42,508 - INFO - ✅ LLM生成完成
+2026-02-27 10:30:42,509 - INFO -   ✅ 候选 3 生成完成，质量分: 9.5
+2026-02-27 10:30:42,509 - INFO - === Step 5: 审核邮件 + 草稿箱 ===
+2026-02-27 10:30:42,515 - INFO - ✅ 保存数据库 ID: 7
+2026-02-27 10:30:44,150 - INFO - ✅ HTML审核邮件已发送到: ZaymeShaw199742@outlook.com
+2026-02-27 10:30:49,481 - INFO - ✅ 候选 1「《企业AI Agent落地避坑指南：从"玩具"到"生产力"的7个关键步骤》」已推送到草稿箱
+2026-02-27 10:30:49,482 - INFO - ✅ 管线完成
+2026-02-27 10:46:37,436 - INFO - 🚀 启动内容生产管线 v3.0
+2026-02-27 10:46:37,436 - INFO - === Step 1: 确定主题 ===
+2026-02-27 10:46:37,436 - INFO - 模式A: 手动指定主题 → AI Agent在职场中的实际应用
+2026-02-27 10:46:37,436 - INFO - === Step 2: 文献采集 ===
+2026-02-27 10:46:37,436 - INFO - 搜索关键词: AI Agent在职场中的实际应用
+2026-02-27 10:46:39,723 - INFO -   微信搜索: 5 篇
+2026-02-27 10:46:41,599 - INFO -   通用搜索: 5 篇
+2026-02-27 10:46:41,600 - INFO - ✅ 文献采集完成，共 10 篇
+2026-02-27 10:46:41,600 - INFO - === Step 3: 选题设计 ===
+2026-02-27 10:46:41,600 - INFO - 🤖 调用LLM生成内容...
+2026-02-27 10:48:07,494 - INFO - ✅ LLM生成完成
+2026-02-27 10:48:07,496 - INFO - ✅ 选题设计完成，共 3 个候选
+2026-02-27 10:48:07,496 - INFO - === Step 4: 文章生成 ===
+2026-02-27 10:48:07,496 - INFO - 生成候选 1: 《职场Agent落地实战：从安全攻防到智能客服的搭建指南》
+2026-02-27 10:48:07,496 - INFO - 🤖 调用LLM生成内容...
+2026-02-27 10:49:20,139 - INFO - ✅ LLM生成完成
+2026-02-27 10:49:20,140 - INFO -   ✅ 候选 1 生成完成，质量分: 9.5
+2026-02-27 10:49:20,140 - INFO - 生成候选 2: 《当Agent成为员工：企业级AI Agent的评估体系与生产力悖论》
+2026-02-27 10:49:20,141 - INFO - 🤖 调用LLM生成内容...
+2026-02-27 10:50:18,458 - INFO - ✅ LLM生成完成
+2026-02-27 10:50:18,458 - INFO -   ✅ 候选 2 生成完成，质量分: 8.5
+2026-02-27 10:50:18,458 - INFO - 生成候选 3: 《周健的"数字员工"梦：一个AI创业者如何重新定义人机协作》
+2026-02-27 10:50:18,458 - INFO - 🤖 调用LLM生成内容...
+2026-02-27 10:51:38,728 - INFO - ✅ LLM生成完成
+2026-02-27 10:51:38,729 - INFO -   ✅ 候选 3 生成完成，质量分: 7.5
+2026-02-27 10:51:38,730 - INFO - === Step 5: 审核邮件 + 草稿箱 ===
+2026-02-27 10:51:38,735 - INFO - ✅ 保存数据库 ID: 8
+2026-02-27 10:51:40,600 - INFO - ✅ HTML审核邮件已发送到: ZaymeShaw199742@outlook.com
+2026-02-27 10:51:45,706 - INFO - ✅ 候选 1「《职场Agent落地实战：从安全攻防到智能客服的搭建指南》」已推送到草稿箱
+2026-02-27 10:51:45,706 - INFO - ✅ 管线完成
+2026-02-27 11:15:44,300 - INFO - 🚀 启动内容生产管线 v3.0
+2026-02-27 11:15:44,300 - INFO - === Step 1: 确定主题 ===
+2026-02-27 11:15:44,300 - INFO - 模式A: 手动指定主题 → AI工具提效实战
+2026-02-27 11:15:44,301 - INFO - === Step 2: 文献采集 ===
+2026-02-27 11:15:44,301 - INFO - 搜索关键词: AI工具提效实战
+2026-02-27 11:15:45,787 - INFO -   微信搜索: 2 篇
+2026-02-27 11:15:47,233 - INFO -   通用搜索: 5 篇
+2026-02-27 11:15:47,234 - INFO - ✅ 文献采集完成，共 7 篇
+2026-02-27 11:15:47,234 - INFO - === Step 3: 选题设计 ===
+2026-02-27 11:15:47,234 - INFO - 🤖 调用LLM生成内容...
+2026-02-27 11:17:14,970 - INFO - ✅ LLM生成完成
+2026-02-27 11:17:14,971 - INFO - ✅ 选题设计完成，共 3 个候选
+2026-02-27 11:17:14,971 - INFO - === Step 4: 文章生成 ===
+2026-02-27 11:17:14,971 - INFO - 生成候选 1: AI工作流落地实战手册：从选型到部署的7天速成路径
+2026-02-27 11:17:14,971 - INFO - 🤖 调用LLM生成内容...
+2026-02-27 11:18:19,231 - INFO - ✅ LLM生成完成
+2026-02-27 11:18:19,232 - INFO -   ✅ 候选 1 生成完成，质量分: 9.5
+2026-02-27 11:18:19,232 - INFO - 生成候选 2: AI提效工具的范式革命：从单点替代到系统重构的技术演进
+2026-02-27 11:18:19,232 - INFO - 🤖 调用LLM生成内容...
+2026-02-27 11:19:22,863 - INFO - ✅ LLM生成完成
+2026-02-27 11:19:22,864 - INFO -   ✅ 候选 2 生成完成，质量分: 7.5
+2026-02-27 11:19:22,864 - INFO - 生成候选 3: 一个开发团队的AI觉醒：从效率恐慌到精准提效的90天转型记
+2026-02-27 11:19:22,864 - INFO - 🤖 调用LLM生成内容...
+2026-02-27 11:20:19,101 - INFO - ✅ LLM生成完成
+2026-02-27 11:20:19,101 - INFO -   ✅ 候选 3 生成完成，质量分: 8.5
+2026-02-27 11:20:19,102 - INFO - === Step 5: 审核邮件 + 草稿箱 ===
+2026-02-27 11:20:19,107 - INFO - ✅ 保存数据库 ID: 9
+2026-02-27 11:20:21,406 - INFO - ✅ HTML审核邮件已发送到: ZaymeShaw199742@outlook.com
+2026-02-27 11:20:28,277 - INFO - ✅ 候选 1「AI工作流落地实战手册：从选型到部署的7天速成路径」已推送到草稿箱
+2026-02-27 11:20:28,278 - INFO - ✅ 管线完成
+2026-02-27 13:34:24,415 - INFO - 🚀 启动内容生产管线 v3.0
+2026-02-27 13:34:24,415 - INFO - === Step 1: 确定主题 ===
+2026-02-27 13:34:24,415 - INFO - 模式A: 手动指定主题 → 大模型应用开发实战
+2026-02-27 13:34:24,415 - INFO - === Step 2: 文献采集 ===
+2026-02-27 13:34:24,415 - INFO - 搜索关键词: 大模型应用开发实战
+2026-02-27 13:34:26,027 - INFO -   微信搜索: 1 篇
+2026-02-27 13:34:27,503 - INFO -   通用搜索: 5 篇
+2026-02-27 13:34:27,504 - INFO - ✅ 文献采集完成，共 6 篇
+2026-02-27 13:34:27,504 - INFO - === Step 3: 选题设计 ===
+2026-02-27 13:34:27,504 - INFO - 🤖 调用LLM生成内容...
+2026-02-27 13:35:47,494 - INFO - ✅ LLM生成完成
+2026-02-27 13:35:47,495 - INFO - ✅ 选题设计完成，共 3 个候选
+2026-02-27 13:35:47,495 - INFO - === Step 4: 文章生成 ===
+2026-02-27 13:35:47,495 - INFO - 生成候选 1: 《从零到一：企业级RAG智能体开发实战手册》
+2026-02-27 13:35:47,495 - INFO - 🤖 调用LLM生成内容...
+2026-02-27 13:36:36,137 - INFO - ✅ LLM生成完成
+2026-02-27 13:36:36,137 - INFO -   ✅ 候选 1 生成完成，质量分: 8.5
+2026-02-27 13:36:36,138 - INFO - 生成候选 2: 《大模型应用开发的底层逻辑：架构设计、技术边界与人才博弈》
+2026-02-27 13:36:36,138 - INFO - 🤖 调用LLM生成内容...
+2026-02-27 13:37:41,072 - INFO - ✅ LLM生成完成
+2026-02-27 13:37:41,073 - INFO -   ✅ 候选 2 生成完成，质量分: 9.5
+2026-02-27 13:37:41,073 - INFO - 生成候选 3: 《转型者日记：一个传统开发者在AI实战营的三个月突围战》
+2026-02-27 13:37:41,073 - INFO - 🤖 调用LLM生成内容...
+2026-02-27 13:38:24,927 - INFO - ✅ LLM生成完成
+2026-02-27 13:38:24,927 - INFO -   ✅ 候选 3 生成完成，质量分: 8.5
+2026-02-27 13:38:24,927 - INFO - === Step 5: 审核邮件 + 草稿箱 ===
+2026-02-27 13:38:24,933 - INFO - ✅ 保存数据库 ID: 10
+2026-02-27 13:38:28,066 - INFO - ✅ HTML审核邮件已发送到: ZaymeShaw199742@outlook.com
+2026-02-27 13:38:34,223 - INFO - ✅ 候选 2「《大模型应用开发的底层逻辑：架构设计、技术边界与人才博弈》」已推送到草稿箱
+2026-02-27 13:38:34,224 - INFO - ✅ 管线完成
+2026-02-27 13:52:31,887 - INFO - 🚀 启动内容生产管线 v3.0
+2026-02-27 13:52:31,887 - INFO - === Step 1: 确定主题 ===
+2026-02-27 13:52:31,887 - INFO - 模式A: 手动指定主题 → 职场人如何用AI提升工作效率
+2026-02-27 13:52:31,887 - INFO - === Step 2: 文献采集 ===
+2026-02-27 13:52:31,887 - INFO - 搜索关键词: 职场人如何用AI提升工作效率
+2026-02-27 13:52:34,577 - INFO -   微信搜索: 0 篇
+2026-02-27 13:52:36,275 - INFO -   通用搜索: 5 篇
+2026-02-27 13:52:36,275 - INFO - ✅ 文献采集完成，共 5 篇
+2026-02-27 13:52:36,276 - INFO - === Step 3: 选题设计 ===
+2026-02-27 13:52:36,276 - INFO - 🤖 调用LLM生成内容...
+2026-02-27 13:53:31,511 - INFO - ✅ LLM生成完成
+2026-02-27 13:53:31,512 - INFO - ✅ 选题设计完成，共 3 个候选
+2026-02-27 13:53:31,513 - INFO - === Step 4: 文章生成 ===
+2026-02-27 13:53:31,513 - INFO - 生成候选 1: 《零门槛上手：职场人AI提效的8个实战场景与工具清单》
+2026-02-27 13:53:31,513 - INFO - 🤖 调用LLM生成内容...
+2026-02-27 13:54:35,618 - INFO - ✅ LLM生成完成
+2026-02-27 13:54:35,619 - INFO -   ✅ 候选 1 生成完成，质量分: 9.5
+2026-02-27 13:54:35,619 - INFO - 生成候选 2: 《超越提示词工程：AI时代职场能力的底层重构》
+2026-02-27 13:54:35,619 - INFO - 🤖 调用LLM生成内容...
+2026-02-27 13:55:38,693 - INFO - ✅ LLM生成完成
+2026-02-27 13:55:38,694 - INFO -   ✅ 候选 2 生成完成，质量分: 7.5
+2026-02-27 13:55:38,694 - INFO - 生成候选 3: 《当AI成为新同事：三位职场人的效率革命突围记》
+2026-02-27 13:55:38,694 - INFO - 🤖 调用LLM生成内容...
+2026-02-27 13:56:39,534 - INFO - ✅ LLM生成完成
+2026-02-27 13:56:39,535 - INFO -   ✅ 候选 3 生成完成，质量分: 8.5
+2026-02-27 13:56:39,535 - INFO - === Step 5: 审核邮件 + 草稿箱 ===
+2026-02-27 13:56:39,542 - INFO - ✅ 保存数据库 ID: 11
+2026-02-27 13:56:41,259 - INFO - ✅ HTML审核邮件已发送到: ZaymeShaw199742@outlook.com
+2026-02-27 13:56:46,283 - INFO - ✅ 候选 1「《零门槛上手：职场人AI提效的8个实战场景与工具清单》」已推送到草稿箱
+2026-02-27 13:56:46,284 - INFO - ✅ 管线完成
+2026-02-27 14:03:47,878 - INFO - 🚀 启动内容生产管线 v3.0
+2026-02-27 14:03:47,878 - INFO - === Step 1: 确定主题 ===
+2026-02-27 14:03:47,878 - INFO - 模式A: 手动指定主题 → AI写作工具实战指南
+2026-02-27 14:03:47,878 - INFO - === Step 2: 文献采集 ===
+2026-02-27 14:03:47,878 - INFO - 搜索关键词: AI写作工具实战指南
+2026-02-27 14:03:49,097 - INFO -   微信搜索: 0 篇
+2026-02-27 14:03:50,420 - INFO -   通用搜索: 5 篇
+2026-02-27 14:03:50,420 - INFO - ✅ 文献采集完成，共 5 篇
+2026-02-27 14:03:50,420 - INFO - === Step 3: 选题设计 ===
+2026-02-27 14:03:50,420 - INFO - 🤖 调用LLM生成内容...
+2026-02-27 14:05:15,680 - INFO - ✅ LLM生成完成
+2026-02-27 14:05:15,682 - INFO - ✅ 选题设计完成，共 3 个候选
+2026-02-27 14:05:15,682 - INFO - === Step 4: 文章生成 ===
+2026-02-27 14:05:15,682 - INFO - 生成候选 1: 《场景化AI写作实战手册：外贸开发、网文创作与学术研究的工具链重构》
+2026-02-27 14:05:15,682 - INFO - 🤖 调用LLM生成内容...
+2026-02-27 14:06:29,132 - INFO - ✅ LLM生成完成
+2026-02-27 14:06:29,133 - INFO -   ✅ 候选 1 生成完成，质量分: 9.5
+2026-02-27 14:06:29,133 - INFO - 生成候选 2: 《AI写作的"黑箱"与"红线"：技术原理解构与伦理合规深度报告》
+2026-02-27 14:06:29,133 - INFO - 🤖 调用LLM生成内容...
+2026-02-27 14:07:31,747 - INFO - ✅ LLM生成完成
+2026-02-27 14:07:31,748 - INFO -   ✅ 候选 2 生成完成，质量分: 8.5
+2026-02-27 14:07:31,748 - INFO - 生成候选 3: 《从笔墨到算法：一位外贸SOHO、网文作者与图书馆员的AI驯化记》
+2026-02-27 14:07:31,748 - INFO - 🤖 调用LLM生成内容...
+2026-02-27 14:08:34,359 - INFO - ✅ LLM生成完成
+2026-02-27 14:08:34,360 - INFO -   ✅ 候选 3 生成完成，质量分: 7.5
+2026-02-27 14:08:34,360 - INFO - === Step 5: 审核邮件 + 草稿箱 ===
+2026-02-27 14:08:34,367 - INFO - ✅ 保存数据库 ID: 12
+2026-02-27 14:08:36,662 - INFO - ✅ HTML审核邮件已发送到: ZaymeShaw199742@outlook.com
+2026-02-27 14:08:41,616 - INFO - ✅ 候选 1「《场景化AI写作实战手册：外贸开发、网文创作与学术研究的工具链重构》」已推送到草稿箱
+2026-02-27 14:08:41,617 - INFO - ✅ 管线完成
+2026-02-27 14:16:43,908 - INFO - 🚀 启动内容生产管线 v3.0
+2026-02-27 14:16:43,908 - INFO - === Step 1: 确定主题 ===
+2026-02-27 14:16:43,908 - INFO - 模式A: 手动指定主题 → AI写作工具实战指南
+2026-02-27 14:16:43,908 - INFO - === Step 2: 文献采集 ===
+2026-02-27 14:16:43,908 - INFO - 搜索关键词: AI写作工具实战指南
+2026-02-27 14:16:45,311 - INFO -   微信搜索: 0 篇
+2026-02-27 14:16:46,442 - INFO -   通用搜索: 5 篇
+2026-02-27 14:16:46,442 - INFO - ✅ 文献采集完成，共 5 篇
+2026-02-27 14:16:46,442 - INFO - === Step 3: 选题设计 ===
+2026-02-27 14:16:46,443 - INFO - 🤖 调用LLM生成内容...
+2026-02-27 14:17:55,021 - INFO - ✅ LLM生成完成
+2026-02-27 14:17:55,023 - INFO - ✅ 选题设计完成，共 3 个候选
+2026-02-27 14:17:55,023 - INFO - === Step 4: 文章生成 ===
+2026-02-27 14:17:55,023 - INFO - 生成候选 1: AI写作工具链搭建：从选题到发布的全流程实战手册
+2026-02-27 14:17:55,023 - INFO - 🤖 调用LLM生成内容...
+2026-02-27 14:19:09,890 - INFO - ✅ LLM生成完成
+2026-02-27 14:19:09,891 - INFO -   ✅ 候选 1 生成完成，质量分: 8.5
+2026-02-27 14:19:09,891 - INFO - 生成候选 2: 生成式内容的边界战争：RAG架构、伦理风险与检测博弈的技术解构
+2026-02-27 14:19:09,891 - INFO - 🤖 调用LLM生成内容...
+2026-02-27 14:20:23,291 - INFO - ✅ LLM生成完成
+2026-02-27 14:20:23,292 - INFO -   ✅ 候选 2 生成完成，质量分: 8.5
+2026-02-27 14:20:23,292 - INFO - 生成候选 3: 从创作焦虑到内容复利：一位自媒体人的AI工具进化史
+2026-02-27 14:20:23,292 - INFO - 🤖 调用LLM生成内容...
+2026-02-27 14:21:15,117 - INFO - ✅ LLM生成完成
+2026-02-27 14:21:15,118 - INFO -   ✅ 候选 3 生成完成，质量分: 8.5
+2026-02-27 14:21:15,118 - INFO - === Step 5: 审核邮件 + 草稿箱 ===
+2026-02-27 14:21:15,125 - INFO - ✅ 保存数据库 ID: 13
+2026-02-27 14:21:17,702 - INFO - ✅ HTML审核邮件已发送到: ZaymeShaw199742@outlook.com
+2026-02-27 14:21:23,143 - INFO - ✅ 候选 1「AI写作工具链搭建：从选题到发布的全流程实战手册」已推送到草稿箱
+2026-02-27 14:21:23,144 - INFO - ✅ 管线完成
+2026-02-27 14:23:56,154 - INFO - 🚀 启动内容生产管线 v3.0
+2026-02-27 14:23:56,154 - INFO - === Step 1: 确定主题 ===
+2026-02-27 14:23:56,154 - INFO - 模式A: 手动指定主题 → AI时代的个人品牌打造
+2026-02-27 14:23:56,154 - INFO - === Step 2: 文献采集 ===
+2026-02-27 14:23:56,154 - INFO - 搜索关键词: AI时代的个人品牌打造
+2026-02-27 14:23:58,092 - INFO -   微信搜索: 5 篇
+2026-02-27 14:23:59,539 - INFO -   通用搜索: 5 篇
+2026-02-27 14:23:59,539 - INFO - ✅ 文献采集完成，共 10 篇
+2026-02-27 14:23:59,539 - INFO - === Step 3: 选题设计 ===
+2026-02-27 14:23:59,539 - INFO - 🤖 调用LLM生成内容...
+2026-02-27 14:24:45,769 - INFO - ✅ LLM生成完成
+2026-02-27 14:24:45,772 - INFO - ✅ 选题设计完成，共 3 个候选
+2026-02-27 14:24:45,772 - INFO - === Step 4: 文章生成 ===
+2026-02-27 14:24:45,773 - INFO - 生成候选 1: 《AI个人品牌实战手册：用"操作系统思维"搭建你的数字资产》
+2026-02-27 14:24:45,773 - INFO - 🤖 调用LLM生成内容...
+2026-02-27 14:25:49,936 - INFO - ✅ LLM生成完成
+2026-02-27 14:25:49,938 - INFO -   ✅ 候选 1 生成完成，质量分: 9.5
+2026-02-27 14:25:49,938 - INFO - 生成候选 2: 《从工具调用到价值共鸣：Agent时代个人品牌的范式转移》
+2026-02-27 14:25:49,938 - INFO - 🤖 调用LLM生成内容...
+2026-02-27 14:27:01,043 - INFO - ✅ LLM生成完成
+2026-02-27 14:27:01,044 - INFO -   ✅ 候选 2 生成完成，质量分: 8.5
+2026-02-27 14:27:01,044 - INFO - 生成候选 3: 《在"氛围编程"时代，一个程序员如何靠"不可替代性"突围》
+2026-02-27 14:27:01,044 - INFO - 🤖 调用LLM生成内容...
+2026-02-27 14:27:49,371 - INFO - ✅ LLM生成完成
+2026-02-27 14:27:49,372 - INFO -   ✅ 候选 3 生成完成，质量分: 8.5
+2026-02-27 14:27:49,372 - INFO - === Step 5: 审核邮件 + 草稿箱 ===
+2026-02-27 14:27:49,378 - INFO - ✅ 保存数据库 ID: 14
+2026-02-27 14:27:50,741 - INFO - ✅ HTML审核邮件已发送到: ZaymeShaw199742@outlook.com
+2026-02-27 14:27:56,340 - INFO - ✅ 候选 1「《AI个人品牌实战手册：用"操作系统思维"搭建你的数字资产》」已推送到草稿箱
+2026-02-27 14:27:56,340 - INFO - ✅ 管线完成
+2026-02-27 16:05:55,700 - INFO - 🚀 启动内容生产管线 v3.0
+2026-02-27 16:05:55,700 - INFO - === Step 1: 确定主题 ===
+2026-02-27 16:05:55,700 - INFO - 模式A: 手动指定主题 → 保险代理人如何做好销售
+2026-02-27 16:05:55,700 - INFO - === Step 2: 文献采集 ===
+2026-02-27 16:05:55,700 - INFO - 搜索关键词: 保险代理人如何做好销售
+2026-02-27 16:05:57,259 - INFO -   微信搜索: 0 篇
+2026-02-27 16:05:59,163 - INFO -   通用搜索: 5 篇
+2026-02-27 16:05:59,163 - INFO - ✅ 文献采集完成，共 5 篇
+2026-02-27 16:05:59,163 - INFO - === Step 3: 选题设计 ===
+2026-02-27 16:05:59,164 - INFO - 🤖 调用LLM生成内容...
+2026-02-27 16:07:37,794 - INFO - ✅ LLM生成完成
+2026-02-27 16:07:37,796 - INFO - ✅ 选题设计完成，共 3 个候选
+2026-02-27 16:07:37,796 - INFO - === Step 4: 文章生成 ===
+2026-02-27 16:07:37,796 - INFO - 生成候选 1: 保险代理人的"问诊式"销售四步法：从诊断到成交的实战手册
+2026-02-27 16:07:37,796 - INFO - 🤖 调用LLM生成内容...
+2026-02-27 16:08:39,373 - INFO - ✅ LLM生成完成
+2026-02-27 16:08:39,374 - INFO -   ✅ 候选 1 生成完成，质量分: 8.5
+2026-02-27 16:08:39,374 - INFO - 生成候选 2: 信任经济时代：保险代理人从"推销员"到"财富顾问"的阶层跃迁
+2026-02-27 16:08:39,375 - INFO - 🤖 调用LLM生成内容...
+2026-02-27 16:09:32,463 - INFO - ✅ LLM生成完成
+2026-02-27 16:09:32,464 - INFO -   ✅ 候选 2 生成完成，质量分: 9.5
+2026-02-27 16:09:32,464 - INFO - 生成候选 3: 百万圆桌第一年的背后：一位港大毕业生的"反话术"销售哲学
+2026-02-27 16:09:32,464 - INFO - 🤖 调用LLM生成内容...
+2026-02-27 16:10:45,460 - INFO - ✅ LLM生成完成
+2026-02-27 16:10:45,461 - INFO -   ✅ 候选 3 生成完成，质量分: 8.5
+2026-02-27 16:10:45,461 - INFO - === Step 5: 审核邮件 + 草稿箱 ===
+2026-02-27 16:10:45,469 - INFO - ✅ 保存数据库 ID: 15
+2026-02-27 16:10:47,874 - INFO - ✅ HTML审核邮件已发送到: ZaymeShaw199742@outlook.com
+2026-02-27 16:10:53,610 - INFO - ✅ 候选 2「信任经济时代：保险代理人从"推销员"到"财富顾问"的阶层跃迁」已推送到草稿箱
+2026-02-27 16:10:53,612 - INFO - ✅ 管线完成
+2026-02-27 16:38:50,629 - INFO - 🚀 启动内容生产管线 v3.0
+2026-02-27 16:38:50,629 - INFO - === Step 1: 确定主题 ===
+2026-02-27 16:38:50,629 - INFO - 模式A: 手动指定主题 → 销售话术设计
+2026-02-27 16:38:50,629 - INFO - === Step 2: 文献采集 ===
+2026-02-27 16:38:50,629 - INFO - 搜索关键词: 销售话术设计
+2026-02-27 16:38:52,679 - INFO -   微信搜索: 0 篇
+2026-02-27 16:38:54,904 - INFO -   通用搜索: 5 篇
+2026-02-27 16:38:54,905 - INFO - ✅ 文献采集完成，共 5 篇
+2026-02-27 16:38:54,905 - INFO - === Step 3: 选题设计 ===
+2026-02-27 16:38:54,905 - INFO - 🤖 调用LLM生成内容...
+2026-02-27 16:40:01,843 - INFO - ✅ LLM生成完成
+2026-02-27 16:40:01,844 - INFO - ✅ 选题设计完成，共 3 个候选
+2026-02-27 16:40:01,844 - INFO - === Step 4: 文章生成 ===
+2026-02-27 16:40:01,844 - INFO - 生成候选 1: 《从"破冰"到"逼单"：5套即拿即用的销售话术模板与场景应对清单》
+2026-02-27 16:40:01,844 - INFO - 🤖 调用LLM生成内容...
+2026-02-27 16:41:22,938 - INFO - ✅ LLM生成完成
+2026-02-27 16:41:22,939 - INFO -   ✅ 候选 1 生成完成，质量分: 9.5
+2026-02-27 16:41:22,939 - INFO - 生成候选 2: 《AI重构销售逻辑：从固定话术到动态策略系统的范式转移》
+2026-02-27 16:41:22,939 - INFO - 🤖 调用LLM生成内容...
+2026-02-27 16:42:29,163 - INFO - ✅ LLM生成完成
+2026-02-27 16:42:29,164 - INFO -   ✅ 候选 2 生成完成，质量分: 9.5
+2026-02-27 16:42:29,164 - INFO - 生成候选 3: 《开发信沉入大海之后：一个外贸业务员的三次话术生死局》
+2026-02-27 16:42:29,164 - INFO - 🤖 调用LLM生成内容...
+2026-02-27 16:43:22,224 - INFO - ✅ LLM生成完成
+2026-02-27 16:43:22,224 - INFO -   ✅ 候选 3 生成完成，质量分: 9.5
+2026-02-27 16:43:22,225 - INFO - === Step 5: 审核邮件 + 草稿箱 ===
+2026-02-27 16:43:22,231 - INFO - ✅ 保存数据库 ID: 16
+2026-02-27 16:43:25,368 - INFO - ✅ HTML审核邮件已发送到: ZaymeShaw199742@outlook.com
+2026-02-27 16:43:31,227 - INFO - ✅ 候选 1「《从"破冰"到"逼单"：5套即拿即用的销售话术模板与场景应对清单》」已推送到草稿箱
+2026-02-27 16:43:31,228 - INFO - ✅ 管线完成
+2026-02-27 16:46:10,541 - INFO - 🚀 启动内容生产管线 v3.0
+2026-02-27 16:46:10,541 - INFO - === Step 1: 确定主题 ===
+2026-02-27 16:46:10,541 - INFO - 模式A: 手动指定主题 → 代理人获客
+2026-02-27 16:46:10,541 - INFO - === Step 2: 文献采集 ===
+2026-02-27 16:46:10,541 - INFO - 搜索关键词: 代理人获客
+2026-02-27 16:46:12,118 - INFO -   微信搜索: 1 篇
+2026-02-27 16:46:14,053 - INFO -   通用搜索: 5 篇
+2026-02-27 16:46:14,053 - INFO - ✅ 文献采集完成，共 6 篇
+2026-02-27 16:46:14,053 - INFO - === Step 3: 选题设计 ===
+2026-02-27 16:46:14,054 - INFO - 🤖 调用LLM生成内容...
+2026-02-27 16:47:39,112 - INFO - ✅ LLM生成完成
+2026-02-27 16:47:39,113 - INFO - ✅ 选题设计完成，共 3 个候选
+2026-02-27 16:47:39,113 - INFO - === Step 4: 文章生成 ===
+2026-02-27 16:47:39,114 - INFO - 生成候选 1: 《AI Agent驱动的获客革命：销售代理人必须掌握的5个自动化工作流》
+2026-02-27 16:47:39,114 - INFO - 🤖 调用LLM生成内容...
+2026-02-27 16:49:03,075 - INFO - ✅ LLM生成完成
+2026-02-27 16:49:03,076 - INFO -   ✅ 候选 1 生成完成，质量分: 8.5
+2026-02-27 16:49:03,076 - INFO - 生成候选 2: 《从"人海战术"到"数字合伙人"：AI Agent重构代理人经济的底层逻辑》
+2026-02-27 16:49:03,076 - INFO - 🤖 调用LLM生成内容...
+2026-02-27 16:50:05,220 - INFO - ✅ LLM生成完成
+2026-02-27 16:50:05,221 - INFO -   ✅ 候选 2 生成完成，质量分: 7.5
+2026-02-27 16:50:05,221 - INFO - 生成候选 3: 《三个代理人，一场静默革命：从手稿到智能体的获客突围记》
+2026-02-27 16:50:05,221 - INFO - 🤖 调用LLM生成内容...
+2026-02-27 16:51:09,739 - INFO - ✅ LLM生成完成
+2026-02-27 16:51:09,740 - INFO -   ✅ 候选 3 生成完成，质量分: 7.5
+2026-02-27 16:51:09,740 - INFO - === Step 5: 审核邮件 + 草稿箱 ===
+2026-02-27 16:51:09,747 - INFO - ✅ 保存数据库 ID: 17
+2026-02-27 16:51:11,663 - INFO - ✅ HTML审核邮件已发送到: ZaymeShaw199742@outlook.com
+2026-02-27 16:51:17,627 - INFO - ✅ 候选 1「《AI Agent驱动的获客革命：销售代理人必须掌握的5个自动化工作流》」已推送到草稿箱
+2026-02-27 16:51:17,628 - INFO - ✅ 管线完成
+2026-02-27 17:27:14,988 - INFO - 🚀 启动内容生产管线 v3.0
+2026-02-27 17:27:14,989 - INFO - === Step 1: 确定主题 ===
+2026-02-27 17:27:14,989 - INFO - 模式A: 手动指定主题 → 网络代理人招募
+2026-02-27 17:27:14,989 - INFO - === Step 2: 文献采集 ===
+2026-02-27 17:27:14,989 - INFO - 搜索关键词: 网络代理人招募
+2026-02-27 17:27:17,319 - INFO -   微信搜索: 5 篇
+2026-02-27 17:27:19,175 - INFO -   通用搜索: 5 篇
+2026-02-27 17:27:19,175 - INFO - ✅ 文献采集完成，共 10 篇
+2026-02-27 17:27:19,175 - INFO - === Step 3: 选题设计 ===
+2026-02-27 17:27:19,175 - INFO - 🤖 调用LLM生成内容...
+2026-02-27 17:29:08,932 - INFO - ✅ LLM生成完成
+2026-02-27 17:29:08,933 - INFO - ✅ 选题设计完成，共 3 个候选
+2026-02-27 17:29:08,933 - INFO - === Step 4: 文章生成 ===
+2026-02-27 17:29:08,933 - INFO - 生成候选 1: 浏览器即代理：分布式AI节点部署与配置实战指南
+2026-02-27 17:29:08,933 - INFO - 🤖 调用LLM生成内容...
+2026-02-27 17:30:18,119 - INFO - ✅ LLM生成完成
+2026-02-27 17:30:18,119 - INFO -   ✅ 候选 1 生成完成，质量分: 9.5
+2026-02-27 17:30:18,119 - INFO - 生成候选 2: 《网络犯罪防治法》框架下：代理招募行为的合规边界与风险治理
+2026-02-27 17:30:18,120 - INFO - 🤖 调用LLM生成内容...
+2026-02-27 17:31:24,585 - INFO - ✅ LLM生成完成
+2026-02-27 17:31:24,586 - INFO -   ✅ 候选 2 生成完成，质量分: 7.5
+2026-02-27 17:31:24,586 - INFO - 生成候选 3: 线人、渠道与算法：三代"代理人"的身份叙事与命运转折
+2026-02-27 17:31:24,586 - INFO - 🤖 调用LLM生成内容...
+2026-02-27 17:32:39,165 - INFO - ✅ LLM生成完成
+2026-02-27 17:32:39,166 - INFO -   ✅ 候选 3 生成完成，质量分: 9.5
+2026-02-27 17:32:39,166 - INFO - === Step 5: 审核邮件 + 草稿箱 ===
+2026-02-27 17:32:39,172 - INFO - ✅ 保存数据库 ID: 18
+2026-02-27 17:32:41,503 - INFO - ✅ HTML审核邮件已发送到: ZaymeShaw199742@outlook.com
+2026-02-27 17:32:47,441 - INFO - ✅ 候选 1「浏览器即代理：分布式AI节点部署与配置实战指南」已推送到草稿箱
+2026-02-27 17:32:47,442 - INFO - ✅ 管线完成
+2026-02-28 15:15:57,956 - INFO - 🚀 启动内容生产管线 v3.1（文章库版）
+2026-02-28 15:15:57,957 - INFO - === Step 1: 确定主题 ===
+2026-02-28 15:15:57,957 - INFO - 模式A: 手动指定主题 → 客户经营
+2026-02-28 15:15:57,957 - INFO - === Step 2: 文献采集 ===
+2026-02-28 15:15:57,957 - INFO - 搜索关键词: 客户经营
+2026-02-28 15:15:59,426 - INFO -   微信搜索: 1 篇
+2026-02-28 15:16:00,750 - INFO -   通用搜索: 5 篇
+2026-02-28 15:16:00,750 - INFO - ✅ 文献采集完成，共 6 篇
+2026-02-28 15:16:00,751 - INFO - === Step 3: 选题设计 ===
+2026-02-28 15:16:00,751 - INFO - 🤖 调用LLM生成内容...
+2026-02-28 15:16:52,146 - INFO - ✅ LLM生成完成
+2026-02-28 15:16:52,147 - INFO - ✅ 选题设计完成，共 3 个候选
+2026-02-28 15:16:52,147 - INFO - === Step 4: 文章生成 ===
+2026-02-28 15:16:52,148 - INFO - 生成候选 1: 《客户分层运营的"作战地图"：从RFM到"一客一策"的落地指南》
+2026-02-28 15:16:52,148 - INFO - 🤖 调用LLM生成内容...
+2026-02-28 15:17:50,503 - INFO - ✅ LLM生成完成
+2026-02-28 15:17:50,503 - INFO -   ✅ 候选 1 生成完成，质量分: 9.5
+2026-02-28 15:17:50,503 - INFO - 生成候选 2: 《需求洞察的暗线：如何识别客户未说出口的"潜台词"》
+2026-02-28 15:17:50,503 - INFO - 🤖 调用LLM生成内容...
+2026-02-28 15:19:21,593 - INFO - ✅ LLM生成完成
+2026-02-28 15:19:21,594 - INFO -   ✅ 候选 2 生成完成，质量分: 9.5
+2026-02-28 15:19:21,594 - INFO - 生成候选 3: 《续费保卫战：一位客户成功经理的周期管理实战录》
+2026-02-28 15:19:21,594 - INFO - 🤖 调用LLM生成内容...
+2026-02-28 15:20:33,878 - INFO - ✅ LLM生成完成
+2026-02-28 15:20:33,878 - INFO -   ✅ 候选 3 生成完成，质量分: 9.5
+2026-02-28 15:20:33,879 - INFO - === Step 5: 保存到文章库 + 发送审核邮件 ===
+2026-02-28 15:20:33,889 - INFO - ✅ 已保存 3 篇候选到文章库
+2026-02-28 15:20:33,889 - INFO - ✅ 审核通知已发送至 ZaymeShaw199742@outlook.com
+2026-02-28 15:20:33,893 - INFO - ✅ 管线完成

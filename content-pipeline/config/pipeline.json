@@ -1,0 +1,65 @@
+{
+  "project": {
+    "name": "AI时代个人成长内容自动化",
+    "description": "每日自动生成AI/科技领域深度文章，聚焦个人学习成长与时代适应",
+    "version": "1.0.0"
+  },
+  "content_strategy": {
+    "pillar_topics": [
+      "AI时代的学习方法论",
+      "认知升级与思维模型",
+      "AI工具提效实战",
+      "职业转型与机会挖掘",
+      "AI时代的创造力培养",
+      "信息筛选与知识管理"
+    ],
+    "content_angle": "深度洞察+实用建议+案例支撑",
+    "tone": "专业、有温度、启发性",
+    "target_audience": "关注AI发展的职场人士、学习者、创业者",
+    "writing_rules": [
+      "禁止用虚构人物或故事开头，不要写小说式叙事",
+      "直接切入主题，开门见山",
+      "以观点、数据、实操步骤为主要内容结构",
+      "可以用真实案例，但不要虚构场景和人物",
+      "避免过度煽情和文学化表达",
+      "每篇文章必须有可落地的实操建议"
+    ]
+  },
+  "rss_sources": {
+    "ai_tech": [
+      {"name": "机器之心", "url": "https://www.jiqizhixin.com/rss", "weight": 5, "tags": ["AI技术", "行业动态"]},
+      {"name": "InfoQ AI", "url": "https://www.infoq.cn/feed/ai", "weight": 4, "tags": ["工程实践", "企业应用"]},
+      {"name": "MIT科技评论", "url": "https://www.mittrchina.com/rss", "weight": 4, "tags": ["前沿科技", "深度报道"]}
+    ],
+    "thinking": [
+      {"name": "36氪", "url": "https://36kr.com/feed", "weight": 4, "tags": ["商业洞察", "创业"]},
+      {"name": "虎嗅", "url": "https://www.huxiu.com/rss", "weight": 4, "tags": ["商业分析", "趋势"]},
+      {"name": "极客公园", "url": "https://www.geekpark.net/rss", "weight": 3, "tags": ["产品创新", "科技文化"]}
+    ],
+    "personal_growth": [
+      {"name": "L先生说", "url": "https://mp.weixin.qq.com/mp/profile?action=home&__biz=MzA5NjEyMDUyMA==", "weight": 3, "tags": ["认知科学", "学习方法"]},
+      {"name": "万维钢", "url": "https://mp.weixin.qq.com/mp/profile?action=home&__biz=MjM5NTgzMjg0MQ==", "weight": 3, "tags": ["精英日课", "深度思考"]}
+    ]
+  },
+  "keywords": {
+    "high_priority": [
+      "AI学习", "AI转型", "AI工具", "提示词工程", "AI副业",
+      "大模型应用", "Agent", "AI焦虑", "终身学习", "认知升级",
+      "第二曲线", "技能升级", "未来职业", "人机协作"
+    ],
+    "medium_priority": [
+      "ChatGPT", "Claude", "Gemini", "国产大模型", "AI编程",
+      "AI写作", "AI设计", "AI视频", "AI音乐", "效率工具"
+    ],
+    "blacklist": [
+      "政治", "色情", "暴力", "赌博", "迷信",
+      "未经证实的健康建议", "一夜暴富", "快速致富"
+    ]
+  },
+  "hot_tracking": {
+    "weibo_hot": true,
+    "zhihu_hot": true,
+    "twitter_trends": ["#AI", "#ChatGPT", "#MachineLearning"],
+    "min_score": 70
+  }
+}

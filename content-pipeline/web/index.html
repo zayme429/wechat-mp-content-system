@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>内容管理系统</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { 
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: #f5f7fa;
+            color: #333;
+            line-height: 1.6;
+        }
+        .container { max-width: 1200px; margin: 0 auto; padding: 20px; }
+        header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 40px;
+            border-radius: 15px;
+            margin-bottom: 30px;
+        }
+        header h1 { font-size: 32px; margin-bottom: 10px; }
+        header p { opacity: 0.9; font-size: 16px; }
+        
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        .stat-card {
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+        }
+        .stat-card h3 { color: #666; font-size: 14px; margin-bottom: 8px; text-transform: uppercase; }
+        .stat-card .value { font-size: 36px; font-weight: bold; color: #667eea; }
+        .stat-card .change { font-size: 14px; color: #28a745; margin-top: 5px; }
+        
+        .section {
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            margin-bottom: 30px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+        }
+        .section h2 { margin-bottom: 20px; color: #333; font-size: 20px; }
+        
+        .article-list { list-style: none; }
+        .article-item {
+            border-left: 4px solid #667eea;
+            padding: 20px;
+            margin-bottom: 15px;
+            background: #f8f9fa;
+            border-radius: 0 8px 8px 0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .article-item.pending { border-left-color: #ffc107; }
+        .article-item.published { border-left-color: #28a745; }
+        .article-item.rejected { border-left-color: #dc3545; }
+        
+        .article-info h4 { margin-bottom: 5px; font-size: 16px; }
+        .article-info .meta { font-size: 14px; color: #666; }
+        .article-actions button {
+            padding: 8px 16px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            margin-left: 10px;
+            font-size: 14px;
+        }
+        .btn-primary { background: #667eea; color: white; }
+        .btn-secondary { background: #e9ecef; color: #333; }
+        
+        .preferences {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+        }
+        .preference-group {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 8px;
+        }
+        .preference-group h4 { margin-bottom: 15px; color: #667eea; }
+        .tag {
+            display: inline-block;
+            background: #e7f3ff;
+            color: #0066cc;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 14px;
+            margin: 5px;
+        }
+        .tag.negative { background: #ffe7e7; color: #cc0000; }
+        
+        .feedback-log {
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        .feedback-item {
+            padding: 15px;
+            border-bottom: 1px solid #eee;
+        }
+        .feedback-item .type {
+            display: inline-block;
+            background: #667eea;
+            color: white;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            margin-right: 10px;
+        }
+        .feedback-item .content { color: #333; }
+        .feedback-item .time { font-size: 12px; color: #999; margin-top: 5px; }
+        
+        .actions-bar {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        .actions-bar button {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 500;
+        }
+        .btn-generate { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; }
+        
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.5);
+            justify-content: center;
+            align-items: center;
+        }
+        .modal-content {
+            background: white;
+            padding: 40px;
+            border-radius: 15px;
+            max-width: 800px;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>📄 AI内容管理系统</h1>
+            <p>自动化内容生产 · 智能审核 · 持续优化</p>
+        </header>
+        
+        <div class="stats">
+            <div class="stat-card">
+                <h3>本月生成</h3>
+                <div class="value">12</div>
+                <div class="change">↑ 3 篇较上月</div>
+            </div>
+            <div class="stat-card">
+                <h3>平均质量分</h3>
+                <div class="value">8.2</div>
+                <div class="change">↑ 0.5 分</div>
+            </div>
+            <div class="stat-card">
+                <h3>已固化偏好</h3>
+                <div class="value">8</div>
+                <div class="change">基于 15 条反馈</div>
+            </div>
+            <div class="stat-card">
+                <h3>待审核</h3>
+                <div class="value">1</div>
+                <div class="change">今日生成</div>
+            </div>
+        </div>
+        
+        <div class="actions-bar">
+            <button class="btn-generate" onclick="generateNow()">🚀 立即生成</button>
+            <button class="btn-secondary" onclick="showConfig()">⚙️ 配置偏好</button>
+            <button class="btn-secondary" onclick="showFeedback()">💬 反馈历史</button>
+        </div>
+        
+        <div class="section">
+            <h2>📋 文章审核队列</h2>
+            <ul class="article-list" id="articleList">
+                <li class="article-item pending">
+                    <div class="article-info">
+                        <h4>Agentic Workflows时代：程序员的核心竞争力正从"写代码"转向"造规则"</h4>
+                        <div class="meta">2026-02-26 | 3个候选 | 平均质量分 8.5</div>
+                    </div>
+                    <div class="article-actions">
+                        <button class="btn-primary" onclick="reviewArticle('2026-02-26')">审核</button>
+                        <button class="btn-secondary" onclick="previewArticle('2026-02-26')">预览</button>
+                    </div>
+                </li>
+                <li class="article-item published">
+                    <div class="article-info">
+                        <h4>AI时代的学习革命：从被动接受到主动构建</h4>
+                        <div class="meta">2026-02-25 | 已发布 | 阅读 234 | 分享 18</div>
+                    </div>
+                    <div class="article-actions">
+                        <button class="btn-secondary">查看数据</button>
+                    </div>
+                </li>
+                <li class="article-item published">
+                    <div class="article-info">
+                        <h4>当AI可以写文案，内容创作者的核心价值还剩什么？</h4>
+                        <div class="meta">2026-02-24 | 已发布 | 阅读 189 | 分享 12</div>
+                    </div>
+                    <div class="article-actions">
+                        <button class="btn-secondary">查看数据</button>
+                    </div>
+                </li>
+            </ul>
+        </div>
+        
+        <div class="section">
+            <h2>🎯 已固化的内容偏好</h2>
+            <div class="preferences">
+                <div class="preference-group">
+                    <h4>✅ 必须包含</h4>
+                    <span class="tag">具体案例</span>
+                    <span class="tag">数据支撑</span>
+                    <span class="tag">可执行建议</span>
+                    <span class="tag">底层逻辑分析</span>
+                </div>
+                <div class="preference-group">
+                    <h4>❌ 避免使用</h4>
+                    <span class="tag negative">贩卖焦虑</span>
+                    <span class="tag negative">陈词滥调</span>
+                    <span class="tag negative">过度营销</span>
+                    <span class="tag negative">简单罗列123</span>
+                </div>
+                <div class="preference-group">
+                    <h4>🎨 语气风格</h4>
+                    <span class="tag">理性</span>
+                    <span class="tag">克制</span>
+                    <span class="tag">有洞见</span>
+                    <span class="tag">案例支撑</span>
+                </div>
+                <div class="preference-group">
+                    <h4>📚 热门主题</h4>
+                    <span class="tag">AI工具提效</span>
+                    <span class="tag">职业转型</span>
+                    <span class="tag">学习方法论</span>
+                </div>
+            </div>
+        </div>
+        
+        <div class="section">
+            <h2>💬 最近反馈</h2>
+            <div class="feedback-log">
+                <div class="feedback-item">
+                    <span class="type">风格问题</span>
+                    <span class="content">避免过度使用技术术语，应该更接地气一些</span>
+                    <div class="time">2026-02-25 14:32 | 已固化</div>
+                </div>
+                <div class="feedback-item">
+                    <span class="type">内容方向</span>
+                    <span class="content">多写一些具体的工具使用教程，理论太多</span>
+                    <div class="time">2026-02-24 09:15 | 已固化</div>
+                </div>
+                <div class="feedback-item">
+                    <span class="type">结构问题</span>
+                    <span class="content">案例分析部分可以更详细，包括具体操作步骤</span>
+                    <div class="time">2026-02-23 16:45 | 已固化</div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="modal" id="reviewModal">
+        <div class="modal-content">
+            <h2>文章审核</h2>
+            <div id="reviewContent"></div>
+            <button onclick="closeModal()">关闭</button>
+        </div>
+    </div>
+    
+    <script>
+        function generateNow() {
+            if (confirm('确定要立即生成今日内容吗？')) {
+                alert('生成中...请稍后查看');
+                // TODO: 调用API
+            }
+        }
+        
+        function reviewArticle(date) {
+            document.getElementById('reviewModal').style.display = 'flex';
+            document.getElementById('reviewContent').innerHTML = `
+                <p>正在加载 ${date} 的文章...</p>
+                <p>候选1: 实战派角度</p>
+                <p>候选2: 深度派角度</p>
+                <p>候选3: 故事派角度</p>
+            `;
+        }
+        
+        function previewArticle(date) {
+            window.open(`/output/article_${date}.md`, '_blank');
+        }
+        
+        function closeModal() {
+            document.getElementById('reviewModal').style.display = 'none';
+        }
+        
+        function showConfig() {
+            alert('配置页面开发中...');
+        }
+        
+        function showFeedback() {
+            alert('反馈历史页面开发中...');
+        }
+    </script>
+</body>
+</html>

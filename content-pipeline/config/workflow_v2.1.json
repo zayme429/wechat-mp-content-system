@@ -1,0 +1,71 @@
+{
+  "workflow_version": "2.1",
+  "update_date": "2026-02-26",
+  "changes": [
+    "添加循环审核机制：生成→审核→优化→直到满意",
+    "用户反馈实时固化到文件",
+    "优化版文章自动发布到微信草稿箱"
+  ],
+  "workflow_steps": [
+    {
+      "step": 1,
+      "name": "RSS采集",
+      "description": "自动采集热点资讯"
+    },
+    {
+      "step": 2,
+      "name": "AI选题",
+      "description": "分析热点，选出最佳切入角度"
+    },
+    {
+      "step": 3,
+      "name": "生成初版",
+      "description": "生成第一版候选文章（3个角度）"
+    },
+    {
+      "step": 4,
+      "name": "发送审核",
+      "description": "发送HTML格式完整文章给用户审核"
+    },
+    {
+      "step": 5,
+      "name": "接收反馈",
+      "description": "通过Zapier接收用户回复"
+    },
+    {
+      "step": 6,
+      "name": "判断反馈类型",
+      "branches": {
+        "满意": "发布到微信草稿箱",
+        "需要修改": "记录反馈→重新生成→再次审核（循环）",
+        "重写": "按新方向重新生成→再次审核（循环）"
+      }
+    },
+    {
+      "step": 7,
+      "name": "循环优化",
+      "description": "根据反馈重新生成，直到用户满意",
+      "max_iterations": 5
+    },
+    {
+      "step": 8,
+      "name": "发布到微信",
+      "description": "最终版发布到微信公众号草稿箱"
+    },
+    {
+      "step": 9,
+      "name": "固化反馈",
+      "description": "将所有反馈保存到文件，用于优化未来生成"
+    }
+  ],
+  "feedback_mechanism": {
+    "storage": "feedback/feedback_YYYYMMDD_NNN.json",
+    "auto_apply": true,
+    "apply_to": ["content_style", "must_include", "avoid"]
+  },
+  "publishing": {
+    "target": "wechat_mp_draft",
+    "method": "wenyan-cli",
+    "auto_publish": false
+  }
+}

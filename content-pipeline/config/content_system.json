@@ -1,0 +1,91 @@
+{
+  "content_strategy": {
+    "pillar_topics": [
+      {
+        "id": "learning_method",
+        "name": "AI时代的学习方法论",
+        "weight": 20,
+        "last_used": null,
+        "performance_score": 0
+      },
+      {
+        "id": "cognitive_upgrade", 
+        "name": "认知升级与思维模型",
+        "weight": 20,
+        "last_used": null,
+        "performance_score": 0
+      },
+      {
+        "id": "ai_tools",
+        "name": "AI工具提效实战",
+        "weight": 20,
+        "last_used": null,
+        "performance_score": 0
+      },
+      {
+        "id": "career_transition",
+        "name": "职业转型与机会挖掘",
+        "weight": 20,
+        "last_used": null,
+        "performance_score": 0
+      },
+      {
+        "id": "creativity",
+        "name": "AI时代的创造力培养",
+        "weight": 10,
+        "last_used": null,
+        "performance_score": 0
+      },
+      {
+        "id": "knowledge_mgmt",
+        "name": "信息筛选与知识管理",
+        "weight": 10,
+        "last_used": null,
+        "performance_score": 0
+      }
+    ],
+    "content_preferences": {
+      "tone": ["理性", "克制", "有洞见", "案例支撑"],
+      "avoid": ["贩卖焦虑", "陈词滥调", "简单罗列", "过度营销"],
+      "must_include": ["具体案例", "数据支撑", "可执行建议"],
+      "article_length": "1500-2000字",
+      "structure": "引言→现象→深度分析→行动建议→结语"
+    },
+    "style_evolution": {
+      "learned_preferences": [],
+      "rejected_patterns": [],
+      "successful_patterns": [],
+      "audience_feedback": {}
+    }
+  },
+  "multi_candidate": {
+    "enabled": true,
+    "candidate_count": 3,
+    "variation_strategy": ["角度差异", "深度差异", "风格差异"]
+  },
+  "review_system": {
+    "notification_method": "email",
+    "review_deadline_hours": 24,
+    "auto_publish_if_no_response": false,
+    "review_stages": [
+      "选题确认",
+      "大纲确认", 
+      "初稿审核",
+      "终稿确认"
+    ]
+  },
+  "feedback_loop": {
+    "collect_detailed_feedback": true,
+    "auto_update_prompts": true,
+    "learning_interval_days": 7,
+    "preference_threshold": 3
+  },
+  "quality_criteria": {
+    "min_word_count": 1200,
+    "max_word_count": 2500,
+    "must_have_case": true,
+    "must_have_data": true,
+    "must_have_actionable_advice": true,
+    "uniqueness_score_min": 7
+  }
+}
