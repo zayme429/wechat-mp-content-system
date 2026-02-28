@@ -96,36 +96,6 @@ class PromptManager:
 直接输出推荐理由，不要其他内容。""",
             "variables": ["query", "intent", "title", "topic", "angle_type", "match_score"],
             "model": "kimi-k2.5"
-        },
-        
-        "content_generation": {
-            "name": "文章内容生成",
-            "description": "根据主题和角度生成保险行业文章",
-            "template": """你是一位资深保险行业内容创作者。
-
-【写作任务】
-主题：{{topic}}
-角度：{{angle}}
-目标受众：保险代理人
-
-【写作要求】
-1. 字数：1200-1800字
-2. 避免技术术语（如：数字化、SaaS、CRM、私域流量等）
-3. 使用保险行业通俗用语（如：跟进、回访、约访、促成、缘故客户等）
-4. 必须包含：
-   - 具体案例或场景
-   - 可直接使用的话术或方法
-   - 清晰的步骤或要点
-5. 语言风格：接地气、像有经验的保险代理人在分享经验
-
-【内容结构】
-- 开头：场景引入或问题抛出
-- 中间：案例分析 + 方法讲解 + 话术示范
-- 结尾：总结要点 + 行动建议
-
-请直接输出文章内容（不要标题）。""",
-            "variables": ["topic", "angle"],
-            "model": "kimi-k2.5"
         }
     }
     
@@ -264,11 +234,14 @@ if __name__ == '__main__':
     from datetime import datetime
     
     pm = get_prompt_manager()
-    print("📝 Prompt管理器")
-    print(f"\n可用Prompt:")
+    print("📝 查询推荐Prompt管理器")
+    print("\n查询推荐过程中使用的Prompt:")
     for key, info in pm.get_all_prompts().items():
-        print(f"  - {key}: {info['name']}")
+        print(f"\n  - {key}: {info['name']}")
+        print(f"    说明: {info['description']}")
         print(f"    变量: {', '.join(info['variables'])}")
+    
+    print(f"\n共 {len(pm.get_all_prompts())} 个Prompt，用于查询推荐流程")
     
     # 测试渲染
     print("\n测试渲染 intent_recognition:")
