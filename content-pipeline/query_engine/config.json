@@ -1,82 +1,118 @@
 {
   "version": "1.0",
-  "description": "查询推荐引擎配置",
+  "description": "查询推荐引擎配置 - 详细版",
   
   "recall_strategies": {
     "topic_exact": {
       "name": "主题精确匹配",
-      "description": "按主题字段精确匹配",
+      "description": "只匹配主题字段完全相同的文章。适用于用户明确指定主题的场景。",
+      "how_it_works": "1. 从用户查询提取主题\n2. SQL查询: WHERE topic = '提取的主题'\n3. 按质量分排序返回",
+      "pros": "精准、速度快、结果相关性强",
+      "cons": "可能漏掉主题相近但不完全匹配的好文章",
       "params": {
         "match_type": "exact"
-      }
+      },
+      "example": "查询'客户经营' → 只返回topic='客户经营'的文章"
     },
     "keyword_fuzzy": {
       "name": "关键词模糊匹配", 
-      "description": "标题和内容关键词模糊匹配",
+      "description": "在标题和内容中搜索关键词。适用于用户描述比较宽泛的场景。",
+      "how_it_works": "1. 提取查询关键词\n2. SQL查询: WHERE title LIKE '%关键词%' OR content LIKE '%关键词%'\n3. 匹配越多关键词的文章排名越前",
+      "pros": "覆盖面广、能发现潜在相关文章",
+      "cons": "可能召回一些相关性较弱的文章",
       "params": {
         "match_type": "fuzzy",
         "fields": ["title", "content"]
-      }
+      },
+      "example": "查询'怎么维护老客户' → 匹配标题/内容包含'维护'或'老客户'的文章"
     },
     "semantic_vector": {
       "name": "语义向量相似度",
-      "description": "基于语义向量的相似度匹配",
+      "description": "基于语义向量计算相似度。适用于需要理解深层语义的场景（需要预先生成向量）。",
+      "how_it_works": "1. 将查询转换为向量\n2. 计算与文章向量的余弦相似度\n3. 返回相似度>阈值的文章",
+      "pros": "理解语义、能找到主题相关但用词不同的文章",
+      "cons": "需要预计算向量、计算成本较高",
       "params": {
         "vector_field": "embedding",
         "similarity_threshold": 0.7
-      }
+      },
+      "example": "查询'让客户信任我' → 能找到'建立客户信任'、'赢得客户信赖'等语义相近的文章"
     },
     "hybrid": {
       "name": "混合策略",
-      "description": "主题+关键词+语义混合匹配",
+      "description": "综合主题匹配、关键词匹配和语义匹配的加权得分。推荐作为默认策略。",
+      "how_it_works": "1. 分别用主题、关键词、语义三种方式召回\n2. 按权重计算综合得分: score = 0.4*主题分 + 0.3*关键词分 + 0.3*语义分\n3. 返回加权得分最高的文章",
+      "pros": "兼顾精准性和覆盖面、效果最好",
+      "cons": "计算复杂度较高",
       "params": {
         "weights": {
           "topic": 0.4,
           "keyword": 0.3,
           "semantic": 0.3
         }
-      }
+      },
+      "example": "综合考量主题、关键词和语义，返回最平衡的结果"
     },
     "quality_first": {
       "name": "质量优先",
-      "description": "优先召回高质量文章",
+      "description": "优先返回高质量文章（质量分≥8.0），不考虑主题匹配。适用于只想要好文章的场景。",
+      "how_it_works": "1. 筛选质量分≥阈值的文章\n2. 按质量分排序\n3. 返回前N篇",
+      "pros": "确保文章质量、适合展示精选内容",
+      "cons": "可能主题不匹配",
       "params": {
         "min_quality_score": 8.0,
         "order_by": "quality_score DESC"
-      }
+      },
+      "example": "返回所有质量分≥8.0的文章，不管主题是什么"
     }
   },
 
   "filter_strategies": {
     "threshold": {
       "name": "阈值过滤",
-      "description": "只保留匹配度高于阈值的文章",
+      "description": "只保留匹配度高于阈值的文章，低于阈值的直接丢弃。",
+      "how_it_works": "1. 计算每篇文章的匹配度\n2. 过滤掉匹配度 < 阈值的文章\n3. 返回剩余的文章",
+      "pros": "严格筛选、确保推荐的文章都有一定相关性",
+      "cons": "可能返回空结果（如果都低于阈值）",
       "params": {
         "min_match_score": 6.0
-      }
+      },
+      "example": "阈值=6.0，匹配度5.5的文章被丢弃，只返回≥6.0的文章"
     },
     "top_n": {
       "name": "Top N后随机",
-      "description": "先排序取Top N，再随机选择",
+      "description": "先排序取匹配度最高的N篇，然后从中随机选1篇。避免总是推荐同一篇。",
+      "how_it_works": "1. 按匹配度降序排序\n2. 取前N篇（默认Top 3）\n3. 从这N篇中随机选1篇推荐\n4. 其余N-1篇作为备选",
+      "pros": "既保证质量（Top N）又增加多样性（随机）",
+      "cons": "可能错过第N+1篇其实也很好的文章",
       "params": {
         "top_n": 3,
         "selection": "random"
-      }
+      },
+      "example": "10篇文章 → 排序取Top 3 → 从Top 3中随机选1篇作为推荐"
     },
     "weighted_random": {
       "name": "加权随机",
-      "description": "按匹配度加权后随机选择",
+      "description": "按匹配度作为权重，概率性地选择。匹配度高的被选中的概率大，但不是100%。",
+      "how_it_works": "1. 计算每篇文章的权重 = 匹配度\n2. 计算选择概率 = 单篇权重 / 总权重\n3. 按概率随机选择\n4. 匹配度高的文章概率高，但低分文章也有机会",
+      "pros": "非常自然、高分文章大概率被选中但低分也有机会",
+      "cons": "可能偶尔选中匹配度一般的文章",
       "params": {
         "temperature": 1.0
-      }
+      },
+      "example": "文章A(9分)权重9，文章B(6分)权重6 → A被选中的概率=9/15=60%，B=6/15=40%"
     },
     "diversity": {
       "name": "多样性保证",
-      "description": "确保不同角度的文章都有机会被选中",
+      "description": "确保推荐的文章覆盖不同角度/类型，避免千篇一律。",
+      "how_it_works": "1. 按写作角度(angle_type)对文章分组\n2. 每个角度选匹配度最高的1篇\n3. 确保至少覆盖min_angles个不同角度\n4. 从多样化的候选中随机选择",
+      "pros": "内容丰富多样、用户能看到不同角度的观点",
+      "cons": "可能牺牲一些匹配度来换取多样性",
       "params": {
         "max_per_angle": 1,
         "min_angles": 2
-      }
+      },
+      "example": "有3篇'故事案例'角度，2篇'话术实战'角度 → 各角度选1篇 → 从中随机推荐"
     }
   },
 

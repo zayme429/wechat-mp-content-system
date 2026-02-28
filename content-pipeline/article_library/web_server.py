@@ -2541,6 +2541,195 @@ def api_query():
 
 # ==================== 查询引擎配置管理 ====================
 
+@app.route('/query/prompts', methods=['GET', 'POST'])
+def query_prompts_page():
+    """Prompt配置页面"""
+    import sys
+    sys.path.insert(0, '/root/.openclaw/workspace/content-pipeline')
+    from query_engine.prompt_manager import get_prompt_manager
+    
+    pm = get_prompt_manager()
+    
+    if request.method == 'POST':
+        action = request.form.get('action')
+        prompt_key = request.form.get('prompt_key')
+        
+        if action == 'update':
+            template = request.form.get('template')
+            name = request.form.get('name')
+            description = request.form.get('description')
+            
+            success = pm.update_prompt(prompt_key, template, name, description)
+            if success:
+                flash('✅ Prompt已更新', 'success')
+            else:
+                flash('❌ 更新失败', 'error')
+        
+        elif action == 'reset':
+            success = pm.reset_prompt(prompt_key)
+            if success:
+                flash('✅ 已恢复默认Prompt', 'success')
+            else:
+                flash('❌ 恢复失败', 'error')
+        
+        return redirect('/query/prompts')
+    
+    prompts = pm.get_all_prompts()
+    return render_template_string(PROMPT_TEMPLATE, prompts=prompts)
+
+
+PROMPT_TEMPLATE = '''
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Prompt配置 | 微信公众号</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif;
+            background: #f5f5f5;
+            padding: 20px;
+        }
+        .container { max-width: 1000px; margin: 0 auto; }
+        .header {
+            background: linear-gradient(135deg, #07c160 0%, #05a050 100%);
+            color: white;
+            padding: 30px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+        }
+        .header h1 { font-size: 24px; margin-bottom: 8px; }
+        .header p { opacity: 0.9; font-size: 14px; }
+        .prompt-list { display: flex; flex-direction: column; gap: 20px; }
+        .prompt-card {
+            background: white;
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        .prompt-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: start;
+            margin-bottom: 15px;
+        }
+        .prompt-title { font-size: 18px; font-weight: 600; color: #333; }
+        .prompt-desc { font-size: 13px; color: #666; margin-top: 5px; }
+        .prompt-variables {
+            font-size: 12px;
+            color: #07c160;
+            margin-top: 10px;
+        }
+        .prompt-variables span {
+            background: #e8f5e9;
+            padding: 2px 8px;
+            border-radius: 4px;
+            margin-right: 5px;
+        }
+        .prompt-template {
+            width: 100%;
+            min-height: 200px;
+            padding: 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-family: monospace;
+            font-size: 13px;
+            resize: vertical;
+            margin-top: 15px;
+        }
+        .prompt-template:focus {
+            outline: none;
+            border-color: #07c160;
+        }
+        .prompt-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+        }
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+        .btn-primary { background: #07c160; color: white; }
+        .btn-secondary { background: #f0f0f0; color: #666; }
+        .back-link {
+            display: inline-block;
+            margin-top: 20px;
+            color: #07c160;
+            text-decoration: none;
+        }
+        .tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+        .tab {
+            padding: 10px 20px;
+            background: white;
+            border-radius: 6px;
+            text-decoration: none;
+            color: #666;
+        }
+        .tab.active {
+            background: #07c160;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>📝 Prompt配置</h1>
+            <p>自定义AI提示词模板，控制查询引擎的行为</p>
+        </div>
+        
+        <div class="tabs">
+            <a href="/query/config" class="tab">策略配置</a>
+            <a href="/query/prompts" class="tab active">Prompt配置</a>
+        </div>
+        
+        <div class="prompt-list">
+            {% for key, info in prompts.items() %}
+            <div class="prompt-card">
+                <form method="POST">
+                    <input type="hidden" name="prompt_key" value="{{ key }}">
+                    <input type="hidden" name="name" value="{{ info.name }}">
+                    <input type="hidden" name="description" value="{{ info.description }}">
+                    
+                    <div class="prompt-header">
+                        <div>
+                            <div class="prompt-title">{{ info.name }}</div>
+                            <div class="prompt-desc">{{ info.description }}</div>
+                            <div class="prompt-variables">
+                                变量: {% for var in info.variables %}<span>{{ var }}</span>{% endfor %}
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <textarea name="template" class="prompt-template">{{ info.template }}</textarea>
+                    
+                    <div class="prompt-actions">
+                        <button type="submit" name="action" value="update" class="btn btn-primary">💾 保存修改</button>
+                        <button type="submit" name="action" value="reset" class="btn btn-secondary" 
+                                onclick="return confirm('确定恢复默认Prompt？自定义内容将丢失。')">↩️ 恢复默认</button>
+                    </div>
+                </form>
+            </div>
+            {% endfor %}
+        </div>
+        
+        <a href="/query" class="back-link">← 返回查询页面</a>
+    </div>
+</body>
+</html>
+'''
+
+
 @app.route('/query/config', methods=['GET', 'POST'])
 def query_config_page():
     """查询引擎配置页面"""
@@ -2706,36 +2895,55 @@ CONFIG_TEMPLATE = '''
             <p>自定义召回策略、筛选策略和推送模式</p>
         </div>
         
+        <div class="tabs" style="display: flex; gap: 10px; margin-bottom: 20px;">
+            <a href="/query/config" style="padding: 10px 20px; background: #07c160; color: white; border-radius: 6px; text-decoration: none;">策略配置</a>
+            <a href="/query/prompts" style="padding: 10px 20px; background: white; color: #666; border-radius: 6px; text-decoration: none;">Prompt配置</a>
+        </div>
+        
         <div class="config-form">
             <form method="POST">
-                <div class="section-title">📥 召回策略</div>
+                <div class="section-title">📥 召回策略 <small style="font-weight: normal; color: #666;">（如何从文章库找到候选文章）</small></div>
                 <div class="form-group">
                     <label class="form-label">选择召回策略</label>
-                    <select name="recall_strategy" class="form-select">
+                    <select name="recall_strategy" class="form-select" onchange="showStrategyDetail('recall', this.value)">
                         {% for key, info in recall_strategies.items() %}
                         <option value="{{ key }}" {% if current_config.recall_strategy == key %}selected{% endif %}>
                             {{ info.name }}
                         </option>
                         {% endfor %}
                     </select>
-                    <p class="option-desc">
-                        {{ recall_strategies[current_config.recall_strategy].description }}
-                    </p>
+                    <div id="recall-detail" class="strategy-detail">
+                        <p class="option-desc"><strong>说明：</strong>{{ recall_strategies[current_config.recall_strategy].description }}</p>
+                        <div class="detail-box">
+                            <p><strong>工作原理：</strong></p>
+                            <pre style="background: #f5f5f5; padding: 10px; border-radius: 4px; font-size: 12px; white-space: pre-wrap;">{{ recall_strategies[current_config.recall_strategy].how_it_works }}</pre>
+                            <p style="margin-top: 10px;"><span style="color: #07c160;">✓ 优点：</span>{{ recall_strategies[current_config.recall_strategy].pros }}</p>
+                            <p><span style="color: #f57c00;">✗ 缺点：</span>{{ recall_strategies[current_config.recall_strategy].cons }}</p>
+                            <p style="margin-top: 10px; font-style: italic; color: #666;">💡 示例：{{ recall_strategies[current_config.recall_strategy].example }}</p>
+                        </div>
+                    </div>
                 </div>
                 
-                <div class="section-title">🔍 筛选策略</div>
+                <div class="section-title">🔍 筛选策略 <small style="font-weight: normal; color: #666;">（如何从候选中选出最终推荐）</small></div>
                 <div class="form-group">
                     <label class="form-label">选择筛选策略</label>
-                    <select name="filter_strategy" class="form-select">
+                    <select name="filter_strategy" class="form-select" onchange="showStrategyDetail('filter', this.value)">
                         {% for key, info in filter_strategies.items() %}
                         <option value="{{ key }}" {% if current_config.filter_strategy == key %}selected{% endif %}>
                             {{ info.name }}
                         </option>
                         {% endfor %}
                     </select>
-                    <p class="option-desc">
-                        {{ filter_strategies[current_config.filter_strategy].description }}
-                    </p>
+                    <div id="filter-detail" class="strategy-detail">
+                        <p class="option-desc"><strong>说明：</strong>{{ filter_strategies[current_config.filter_strategy].description }}</p>
+                        <div class="detail-box">
+                            <p><strong>工作原理：</strong></p>
+                            <pre style="background: #f5f5f5; padding: 10px; border-radius: 4px; font-size: 12px; white-space: pre-wrap;">{{ filter_strategies[current_config.filter_strategy].how_it_works }}</pre>
+                            <p style="margin-top: 10px;"><span style="color: #07c160;">✓ 优点：</span>{{ filter_strategies[current_config.filter_strategy].pros }}</p>
+                            <p><span style="color: #f57c00;">✗ 缺点：</span>{{ filter_strategies[current_config.filter_strategy].cons }}</p>
+                            <p style="margin-top: 10px; font-style: italic; color: #666;">💡 示例：{{ filter_strategies[current_config.filter_strategy].example }}</p>
+                        </div>
+                    </div>
                 </div>
                 
                 <div class="section-title">🚀 推送模式</div>
@@ -2797,6 +3005,31 @@ CONFIG_TEMPLATE = '''
         
         <a href="/query" class="back-link">← 返回查询页面</a>
     </div>
+    
+    <script>
+        // 策略详情数据
+        const strategies = {
+            recall: {{ recall_strategies|tojson }},
+            filter: {{ filter_strategies|tojson }}
+        };
+        
+        function showStrategyDetail(type, key) {
+            const info = strategies[type][key];
+            if (!info) return;
+            
+            const detailDiv = document.getElementById(type + '-detail');
+            detailDiv.innerHTML = `
+                <p class="option-desc"><strong>说明：</strong>${info.description}</p>
+                <div class="detail-box" style="background: #f8f9fa; padding: 15px; border-radius: 8px; margin-top: 10px;">
+                    <p><strong>工作原理：</strong></p>
+                    <pre style="background: white; padding: 10px; border-radius: 4px; font-size: 12px; white-space: pre-wrap; border: 1px solid #e0e0e0;">${info.how_it_works}</pre>
+                    <p style="margin-top: 10px;"><span style="color: #07c160;">✓ 优点：</span>${info.pros}</p>
+                    <p><span style="color: #f57c00;">✗ 缺点：</span>${info.cons}</p>
+                    <p style="margin-top: 10px; font-style: italic; color: #666;">💡 示例：${info.example}</p>
+                </div>
+            `;
+        }
+    </script>
 </body>
 </html>
 '''
