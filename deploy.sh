@@ -1,5 +1,16 @@
 #!/bin/bash
+#!/bin/bash
 # Deploy script for WeChat Content Management System
+# Usage: ./deploy.sh [install|start|stop|restart|status|backup|migrate|docker-build|docker-up|help]
+#
+# Quick start:
+#   ./deploy.sh install    # Install dependencies
+#   ./deploy.sh start      # Start the service
+#   ./deploy.sh status     # Check status
+#
+# Migration:
+#   ./deploy.sh backup     # Backup data
+#   ./deploy.sh migrate    # Show migration instructions
 # Usage: ./deploy.sh [install|start|stop|status]
 
 set -e
