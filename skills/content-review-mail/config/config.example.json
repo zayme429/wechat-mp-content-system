@@ -1,0 +1,24 @@
+{
+  "imap": {
+    "host": "imap.gmail.com",
+    "port": 993,
+    "user": "your-email@gmail.com",
+    "pass": "your-app-password",
+    "tls": true,
+    "mailbox": "INBOX"
+  },
+  "smtp": {
+    "host": "smtp.gmail.com",
+    "port": 587,
+    "secure": false,
+    "user": "your-email@gmail.com",
+    "pass": "your-app-password",
+    "from": "your-email@gmail.com"
+  },
+  "review": {
+    "check_interval_minutes": 5,
+    "auto_reply": true,
+    "save_history": true,
+    "default_recipient": "your-receive-email@example.com"
+  }
+}

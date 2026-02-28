@@ -1,0 +1,41 @@
+{
+  "version": 1,
+  "skills": {
+    "wechat-publisher": {
+      "version": "0.1.0",
+      "installedAt": 1772033739472
+    },
+    "xiaohongshu-mcp": {
+      "version": "1.0.0",
+      "installedAt": 1772089306914
+    },
+    "imap-smtp-email": {
+      "version": "0.0.2",
+      "installedAt": 1772097054872
+    },
+    "git-helper": {
+      "version": "1.0.0",
+      "installedAt": 1772154060925
+    },
+    "wechat-search": {
+      "version": "1.0.3",
+      "installedAt": 1772158576699
+    },
+    "web-search-exa": {
+      "version": "1.0.1",
+      "installedAt": 1772158580718
+    },
+    "deep-scraper": {
+      "version": "1.0.1",
+      "installedAt": 1772158596382
+    },
+    "tavily-search": {
+      "version": "1.0.0",
+      "installedAt": 1772160170840
+    },
+    "sendclaw": {
+      "version": "1.7.5",
+      "installedAt": 1772164707080
+    }
+  }
+}

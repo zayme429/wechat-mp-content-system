@@ -1,0 +1,19 @@
+# Python dependencies for WeChat Content Management System
+
+# Web Framework
+flask>=2.0.0
+
+# HTTP Requests
+requests>=2.28.0
+
+# Date/Time handling
+python-dateutil>=2.8.0
+
+# Markdown processing (optional, for content preview)
+markdown>=3.4.0
+
+# Environment variables (optional)
+python-dotenv>=0.20.0
+
+# Production server (optional, recommended)
+gunicorn>=20.1.0

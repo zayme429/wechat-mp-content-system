@@ -1,0 +1,25 @@
+{
+  "imap": {
+    "host": "imap.163.com",
+    "port": 993,
+    "user": "13257667003@163.com",
+    "pass": "XUnhjmQwxUa7pKFt",
+    "tls": true,
+    "mailbox": "INBOX"
+  },
+  "smtp": {
+    "host": "smtp.163.com",
+    "port": 465,
+    "secure": true,
+    "user": "13257667003@163.com",
+    "pass": "XUnhjmQwxUa7pKFt",
+    "from": "13257667003@163.com"
+  },
+  "review": {
+    "check_interval_minutes": 5,
+    "auto_reply": true,
+    "save_history": true,
+    "default_recipient": "ZaymeShaw199742@outlook.com",
+    "zapier_email": "zaymeclawstart.rpd217@zapiermail.com"
+  }
+}

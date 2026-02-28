@@ -1,0 +1,18 @@
+{
+  "name": "content-review-mail",
+  "version": "1.0.0",
+  "description": "内容审核邮件系统 - 通过邮件实现内容审核的双向通信",
+  "main": "scripts/content_review_mail.py",
+  "scripts": {
+    "start": "python3 scripts/content_review_mail.py",
+    "send": "python3 scripts/content_review_mail.py --send",
+    "check": "python3 scripts/content_review_mail.py --check",
+    "loop": "python3 scripts/content_review_mail.py --loop"
+  },
+  "dependencies": {
+    "imap-smtp-email": "file:../imap-smtp-email"
+  },
+  "keywords": ["email", "review", "content", "approval"],
+  "author": "AI Content System",
+  "license": "MIT"
+}

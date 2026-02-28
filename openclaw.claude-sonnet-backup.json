@@ -1,0 +1,170 @@
+{
+  "meta": {
+    "lastTouchedVersion": "2026.2.23",
+    "lastTouchedAt": "2026-02-26T02:15:26.987Z"
+  },
+  "browser": {
+    "enabled": true,
+    "executablePath": "/usr/bin/google-chrome",
+    "headless": true,
+    "noSandbox": true,
+    "defaultProfile": "openclaw"
+  },
+  "models": {
+    "providers": {
+      "moonshot": {
+        "baseUrl": "https://api.moonshot.cn/v1",
+        "apiKey": "sk-XalLIoOAOUiHpWbKVFeN6ortpGTYH3GQkBxAmkjcpyqigscK",
+        "auth": "api-key",
+        "api": "openai-completions",
+        "models": [
+          {
+            "id": "moonshot-v1-8k",
+            "name": "Kimi moonshot-v1-8k",
+            "api": "openai-completions",
+            "input": [
+              "text"
+            ],
+            "contextWindow": 8192,
+            "maxTokens": 4096
+          },
+          {
+            "id": "moonshot-v1-32k",
+            "name": "Kimi moonshot-v1-32k",
+            "api": "openai-completions",
+            "input": [
+              "text"
+            ],
+            "contextWindow": 32768,
+            "maxTokens": 4096
+          },
+          {
+            "id": "moonshot-v1-128k",
+            "name": "Kimi moonshot-v1-128k",
+            "api": "openai-completions",
+            "input": [
+              "text"
+            ],
+            "contextWindow": 131072,
+            "maxTokens": 4096
+          },
+          {
+            "id": "kimi-k2.5",
+            "name": "Kimi K2.5",
+            "api": "openai-completions",
+            "reasoning": true,
+            "input": [
+              "text",
+              "image"
+            ],
+            "contextWindow": 262144,
+            "maxTokens": 32768
+          }
+        ]
+      }
+    }
+  },
+  "agents": {
+    "defaults": {
+      "model": {
+        "primary": "anthropic/claude-sonnet-4-6"
+      },
+      "models": {
+        "anthropic/claude-sonnet-4-6": {}
+      },
+      "compaction": {
+        "mode": "safeguard"
+      },
+      "maxConcurrent": 4,
+      "subagents": {
+        "maxConcurrent": 8
+      },
+      "blockStreamingDefault": "on",
+      "blockStreamingBreak": "text_end"
+    }
+  },
+  "messages": {
+    "ackReactionScope": "group-mentions"
+  },
+  "commands": {
+    "native": "auto",
+    "nativeSkills": "auto",
+    "restart": true,
+    "ownerDisplay": "raw"
+  },
+  "channels": {
+    "feishu": {
+      "appId": "cli_a914da88ae391cbb",
+      "appSecret": "l9emA5dQGhpg8XWZEVRFj3Nms8w1nxge",
+      "connectionMode": "websocket",
+      "dmPolicy": "open",
+      "allowFrom": [
+        "*"
+      ],
+      "groupPolicy": "allowlist",
+      "requireMention": true,
+      "blockStreaming": true,
+      "streaming": "partial"
+    },
+    "wecom-app": {
+      "enabled": true,
+      "corpId": "ww2e344324d091482a",
+      "agentId": 1000002,
+      "corpSecret": "Gl-xh24dCRVgVo0t-n0M4FqLDT4u_cjyURXNbhvoZvw",
+      "token": "NVSBEnY52F",
+      "encodingAESKey": "kTThh6KbpeoDmvpRJcGpDGiiFbOWDGMPsz0Q8tUr25I",
+      "dmPolicy": "open",
+      "allowFrom": [
+        "*"
+      ]
+    }
+  },
+  "gateway": {
+    "mode": "local",
+    "bind": "custom",
+    "port": 18789,
+    "auth": {
+      "mode": "token",
+      "token": "9f6e613171c0f411c60f23f53cc07b5938ddd232a6c057e8"
+    },
+    "controlUi": {
+      "allowedOrigins": [
+        "http://154.9.252.35:18789"
+      ],
+      "dangerouslyAllowHostHeaderOriginFallback": true
+    },
+    "customBindHost": "0.0.0.0"
+  },
+  "skills": {
+    "load": {
+      "extraDirs": [
+        "/root/Workspace/OpenClaw/skills"
+      ]
+    }
+  },
+  "plugins": {
+    "entries": {
+      "feishu": {
+        "enabled": true
+      },
+      "wecom-app": {
+        "enabled": true
+      }
+    },
+    "installs": {
+      "wecom-app": {
+        "source": "npm",
+        "spec": "@openclaw-china/wecom-app",
+        "installPath": "/root/.openclaw/extensions/wecom-app",
+        "version": "0.1.8",
+        "resolvedName": "@openclaw-china/wecom-app",
+        "resolvedVersion": "0.1.8",
+        "resolvedSpec": "@openclaw-china/wecom-app@0.1.8",
+        "integrity": "sha512-nks4H8rNrQ3KMEoKieVOXYLCU/0HAlSl3NHrpysB8Sjji3KKmhwcQK2UKQawxmeCF1TaHZCdPxeTuFMjvuvzLQ==",
+        "shasum": "bb199c6c12cbbb787c5a7676d116c4e0a0b2a4fa",
+        "resolvedAt": "2026-02-26T02:15:15.214Z",
+        "installedAt": "2026-02-26T02:15:25.396Z"
+      }
+    }
+  }
+}

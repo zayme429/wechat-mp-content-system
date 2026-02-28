@@ -52,4 +52,15 @@ export WECHAT_APP_SECRET=baf071b9ca8e805992a26111c552b9f9
 
 ---
 
+## 🔧 GitHub 配置
+
+**用户邮箱:** ZaymeShaw199742@outlook.com
+
+**SSH 密钥:** 已配置 ~/.ssh/id_rsa
+
+**常用仓库:**
+- 微信公众号文章管理系统: wechat-mp-content-system
+
+---
+
 Add whatever helps you do your job. This is your cheat sheet.
