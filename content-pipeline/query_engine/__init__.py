@@ -73,12 +73,15 @@ class QueryEngine:
                 return self._build_no_match_result(intent)
             
             filter_strategy = self.config.get("filter_strategy", "top_n")
-            selected, alternatives = self._filter_by_strategy(candidates, filter_strategy)
+            selected, alternatives, recommend_reason = self._filter_by_strategy(
+                candidates, filter_strategy, intent, user_input
+            )
             self.query_trace.append({
                 "step": "filter",
                 "strategy": filter_strategy,
                 "selected": selected["article_id"],
                 "alternatives": [a["article_id"] for a in alternatives],
+                "recommend_reason": recommend_reason,
                 "params": self.config_manager.get_strategy_params("filter", filter_strategy)
             })
             
@@ -95,16 +98,46 @@ class QueryEngine:
                 self.config = original_config
     
     def _recognize_intent(self, user_input: str) -> Dict:
-        """意图识别"""
+        """意图识别 - 使用LLM"""
+        import sys
+        sys.path.insert(0, '/root/.openclaw/workspace/content-pipeline')
+        from query_engine.prompt_manager import get_prompt_manager
+        from generator.content_generator import ContentGenerator
+        
+        # 使用Prompt
+        pm = get_prompt_manager()
+        prompt = pm.render_prompt("intent_recognition", {"query": user_input})
+        
+        # 调用LLM
+        try:
+            generator = ContentGenerator()
+            response = generator._call_llm(prompt)
+            
+            # 解析JSON
+            import json
+            import re
+            json_match = re.search(r'\{.*\}', response, re.DOTALL)
+            if json_match:
+                intent = json.loads(json_match.group())
+                intent["original_query"] = user_input
+                return intent
+        except Exception as e:
+            print(f"LLM意图识别失败: {e}, 使用备用规则")
+        
+        # 备用：规则匹配
+        return self._recognize_intent_fallback(user_input)
+    
+    def _recognize_intent_fallback(self, user_input: str) -> Dict:
+        """意图识别备用（规则匹配）"""
         intent = {
             "original_query": user_input,
             "topic": None,
             "audience": "保险代理人",
             "intent_type": "内容查询",
-            "keywords": []
+            "keywords": [],
+            "specific_requirements": ""
         }
         
-        # 关键词匹配
         keywords_map = {
             "客户经营": ["客户", "经营", "维护", "跟进", "回访"],
             "保险获客": ["获客", "新客户", "转介绍", "开发客户"],
@@ -245,20 +278,92 @@ class QueryEngine:
         conn.close()
         return candidates
     
-    def _filter_by_strategy(self, candidates: List[Dict], strategy: str) -> Tuple[Dict, List[Dict]]:
-        """根据策略筛选"""
+    def _filter_by_strategy(self, candidates: List[Dict], strategy: str, 
+                            intent: Dict = None, query: str = "") -> Tuple[Dict, List[Dict], str]:
+        """根据策略筛选 - 支持LLM分析"""
+        # 如果候选超过2篇且配置允许，使用LLM分析
+        if len(candidates) >= 2 and self.config.get("use_llm_analysis", True):
+            return self._filter_by_llm(candidates, intent, query)
+        
+        # 否则使用规则策略
         params = self.config_manager.get_strategy_params("filter", strategy)
         
         if strategy == "threshold":
-            return self._filter_threshold(candidates, params)
+            selected, alternatives = self._filter_threshold(candidates, params)
         elif strategy == "top_n":
-            return self._filter_top_n(candidates, params)
+            selected, alternatives = self._filter_top_n(candidates, params)
         elif strategy == "weighted_random":
-            return self._filter_weighted_random(candidates, params)
+            selected, alternatives = self._filter_weighted_random(candidates, params)
         elif strategy == "diversity":
-            return self._filter_diversity(candidates, params)
+            selected, alternatives = self._filter_diversity(candidates, params)
         else:
-            return self._filter_top_n(candidates, {"top_n": 3})  # 默认
+            selected, alternatives = self._filter_top_n(candidates, {"top_n": 3})
+        
+        reason = f"使用{strategy}策略筛选，匹配度得分：{selected.get('match_score', 0):.1f}"
+        return selected, alternatives, reason
+    
+    def _filter_by_llm(self, candidates: List[Dict], intent: Dict, query: str) -> Tuple[Dict, List[Dict], str]:
+        """使用LLM分析候选文章并给出推荐"""
+        import sys
+        sys.path.insert(0, '/root/.openclaw/workspace/content-pipeline')
+        from query_engine.prompt_manager import get_prompt_manager
+        from generator.content_generator import ContentGenerator
+        import json
+        import re
+        
+        try:
+            # 准备候选信息
+            candidates_info = []
+            for i, c in enumerate(candidates[:5], 1):  # 最多分析5篇
+                candidates_info.append(f"""
+【文章{i}】
+ID: {c['article_id']}
+标题: {c['title']}
+主题: {c['topic']}
+角度: {c['angle_type']}
+质量分: {c['quality_score']}
+内容预览: {c['content'][:200]}...
+""")
+            
+            # 使用Prompt
+            pm = get_prompt_manager()
+            prompt = pm.render_prompt("candidate_analysis", {
+                "query": query,
+                "intent": json.dumps(intent, ensure_ascii=False),
+                "candidate_count": len(candidates_info),
+                "candidates_info": "\n".join(candidates_info)
+            })
+            
+            # 调用LLM
+            generator = ContentGenerator()
+            response = generator._call_llm(prompt)
+            
+            # 解析JSON
+            json_match = re.search(r'\{.*\}', response, re.DOTALL)
+            if json_match:
+                analysis_result = json.loads(json_match.group())
+                
+                # 找到推荐的文章
+                recommended_id = analysis_result.get("recommendation", {}).get("recommended_id")
+                reason = analysis_result.get("recommendation", {}).get("reason", "")
+                
+                # 从候选中找到对应文章
+                for c in candidates:
+                    if c["article_id"] == recommended_id:
+                        selected = c
+                        alternatives = [x for x in candidates if x["article_id"] != recommended_id][:2]
+                        self.query_trace.append({
+                            "step": "llm_analysis",
+                            "analysis": analysis_result.get("analysis", []),
+                            "recommendation": analysis_result.get("recommendation", {})
+                        })
+                        return selected, alternatives, reason
+        except Exception as e:
+            print(f"LLM分析失败: {e}, 使用备用策略")
+        
+        # 备用：使用top_n
+        selected, alternatives = self._filter_top_n(candidates, {"top_n": 3})
+        return selected, alternatives, f"LLM分析失败，使用Top3随机策略。匹配度：{selected.get('match_score', 0):.1f}"
     
     def _filter_threshold(self, candidates: List[Dict], params: Dict) -> Tuple[Dict, List[Dict]]:
         """阈值过滤"""
@@ -352,20 +457,31 @@ class QueryEngine:
         push_mode = self.config.get("push_mode", "confirm")
         display_options = self.config.get("display", {})
         
+        # 获取LLM推荐理由
+        recommend_reason = ""
+        for trace in self.query_trace:
+            if trace.get("step") == "filter" and "recommend_reason" in trace:
+                recommend_reason = trace["recommend_reason"]
+                break
+        
+        if not recommend_reason:
+            recommend_reason = f"主题匹配'{intent['topic']}'，质量分{selected['quality_score']}"
+        
         result = {
             "status": "success",
             "intent": intent,
             "query_process": {
                 "recall_count": len([t for t in self.query_trace if t["step"] == "recall"]),
                 "filter_top": len(alternatives) + 1,
-                "selection_method": self.config.get("filter_strategy", "top_n")
+                "selection_method": self.config.get("filter_strategy", "top_n"),
+                "used_llm": any(t.get("step") == "llm_analysis" for t in self.query_trace)
             },
             "recommendation": {
                 "article_id": selected["article_id"],
                 "title": selected["title"],
                 "content_preview": selected["content"][:200] + "..." if display_options.get("show_reason", True) else None,
                 "match_score": selected.get("match_score", 0),
-                "match_reason": f"主题匹配'{intent['topic']}'，质量分{selected['quality_score']}" if display_options.get("show_reason", True) else None,
+                "match_reason": recommend_reason if display_options.get("show_reason", True) else None,
                 "topic": selected["topic"],
                 "angle_type": selected["angle_type"]
             },
