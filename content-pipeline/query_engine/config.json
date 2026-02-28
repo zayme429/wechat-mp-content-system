@@ -187,7 +187,7 @@
   },
 
   "default_config": {
-    "recall_strategy": "hybrid",
+    "recall_strategy": "semantic_vector",
     "filter_strategy": "top_n",
     "push_mode": "confirm",
     "display": {
