@@ -375,7 +375,8 @@ QUERY_TEMPLATE = '''
             <p class="subtitle">
                 当前用户: <strong>{{ current_user.name }}</strong> | 
                 行业: {{ current_user.industry }} |
-                查询 · 审核 · 编辑 · 批注 · 删除
+                <a href="/query" style="color: white; text-decoration: underline;">🔍 智能查询</a> · 
+                审核 · 编辑 · 批注 · 删除
             </p>
         </header>
         
@@ -2182,7 +2183,630 @@ def index():
     return redirect('/library')
 
 
+# ==================== 查询推荐引擎 ====================
+
+QUERY_PAGE_TEMPLATE = '''
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>智能文章查询 | 微信公众号</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif;
+            background: #f5f5f5;
+            padding: 20px;
+        }
+        .container { max-width: 800px; margin: 0 auto; }
+        .header {
+            background: linear-gradient(135deg, #07c160 0%, #05a050 100%);
+            color: white;
+            padding: 30px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+        }
+        .header h1 { font-size: 24px; margin-bottom: 8px; }
+        .header p { opacity: 0.9; font-size: 14px; }
+        .query-box {
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+        .query-input {
+            width: 100%;
+            padding: 15px;
+            font-size: 16px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            margin-bottom: 15px;
+        }
+        .query-input:focus {
+            outline: none;
+            border-color: #07c160;
+        }
+        .query-btn {
+            width: 100%;
+            padding: 15px;
+            background: #07c160;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            cursor: pointer;
+        }
+        .query-btn:hover { background: #06ad56; }
+        .result-box {
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        .process-flow {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 30px;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 8px;
+        }
+        .flow-step {
+            text-align: center;
+            flex: 1;
+        }
+        .flow-number {
+            width: 40px;
+            height: 40px;
+            background: #07c160;
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 10px;
+            font-weight: bold;
+        }
+        .flow-label { font-size: 12px; color: #666; }
+        .flow-value { font-size: 14px; font-weight: 600; color: #333; margin-top: 5px; }
+        .recommendation {
+            border: 2px solid #07c160;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+        .rec-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 10px;
+        }
+        .rec-meta {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 15px;
+            font-size: 13px;
+            color: #666;
+        }
+        .rec-score {
+            background: #07c160;
+            color: white;
+            padding: 2px 8px;
+            border-radius: 4px;
+        }
+        .rec-preview {
+            color: #555;
+            line-height: 1.6;
+            margin-bottom: 15px;
+        }
+        .push-btn {
+            display: inline-block;
+            padding: 12px 30px;
+            background: #07c160;
+            color: white;
+            text-decoration: none;
+            border-radius: 6px;
+            font-size: 14px;
+        }
+        .alternatives {
+            margin-top: 20px;
+        }
+        .alt-title {
+            font-size: 14px;
+            color: #666;
+            margin-bottom: 10px;
+        }
+        .alt-item {
+            padding: 10px;
+            background: #f8f9fa;
+            border-radius: 6px;
+            margin-bottom: 8px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .back-link {
+            display: inline-block;
+            margin-top: 20px;
+            color: #07c160;
+            text-decoration: none;
+        }
+        .no-result {
+            text-align: center;
+            padding: 40px;
+            color: #666;
+        }
+        .no-result-icon {
+            font-size: 48px;
+            margin-bottom: 15px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🔍 智能文章查询</h1>
+            <p>输入您的内容需求，系统从文章库智能匹配最合适的文章</p>
+        </div>
+        
+        <div class="query-box">
+            <form method="POST" action="/query">
+                <input type="text" name="query" class="query-input" 
+                       placeholder="例如：客户经营技巧、如何获得转介绍、社群营销方法..."
+                       value="{{ query }}" required>
+                
+                <!-- 策略选择（可折叠） -->
+                <div class="strategy-section" style="margin-bottom: 15px; padding: 15px; background: #f8f9fa; border-radius: 8px;">
+                    <div style="font-size: 14px; color: #666; margin-bottom: 10px; display: flex; justify-content: space-between;">
+                        <span>⚙️ 查询策略配置</span>
+                        <a href="/query/config" style="color: #07c160; font-size: 12px;">高级配置 →</a>
+                    </div>
+                    <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                        <select name="recall_strategy" style="padding: 8px; border: 1px solid #ddd; border-radius: 4px; font-size: 13px;">
+                            <option value="">默认召回策略</option>
+                            <option value="topic_exact">主题精确匹配</option>
+                            <option value="keyword_fuzzy">关键词模糊</option>
+                            <option value="hybrid">混合策略</option>
+                            <option value="quality_first">质量优先</option>
+                        </select>
+                        <select name="filter_strategy" style="padding: 8px; border: 1px solid #ddd; border-radius: 4px; font-size: 13px;">
+                            <option value="">默认筛选策略</option>
+                            <option value="top_n">Top3随机</option>
+                            <option value="threshold">阈值过滤</option>
+                            <option value="weighted_random">加权随机</option>
+                            <option value="diversity">多样性保证</option>
+                        </select>
+                    </div>
+                    <div style="margin-top: 10px;">
+                        <select name="push_mode" style="padding: 8px; border: 1px solid #ddd; border-radius: 4px; font-size: 13px; width: 100%;">
+                            <option value="">默认推送模式</option>
+                            <option value="display_only">仅显示推荐</option>
+                            <option value="confirm">确认后推送</option>
+                            <option value="auto_draft">自动推送（谨慎）</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <button type="submit" class="query-btn">🔍 智能查询</button>
+            </form>
+        </div>
+        
+        {% if result %}
+        <div class="result-box">
+            {% if result.status == 'success' %}
+                <div class="process-flow">
+                    <div class="flow-step">
+                        <div class="flow-number">1</div>
+                        <div class="flow-label">意图识别</div>
+                        <div class="flow-value">{{ result.intent.topic }}</div>
+                    </div>
+                    <div class="flow-step">
+                        <div class="flow-number">2</div>
+                        <div class="flow-label">召回候选</div>
+                        <div class="flow-value">{{ result.query_process.recall_count }}篇</div>
+                    </div>
+                    <div class="flow-step">
+                        <div class="flow-number">3</div>
+                        <div class="flow-label">过滤Top</div>
+                        <div class="flow-value">{{ result.query_process.filter_top }}篇</div>
+                    </div>
+                    <div class="flow-step">
+                        <div class="flow-number">4</div>
+                        <div class="flow-label">随机选择</div>
+                        <div class="flow-value">1篇</div>
+                    </div>
+                </div>
+                
+                <div class="recommendation">
+                    <div class="rec-title">📄 {{ result.recommendation.title }}</div>
+                    <div class="rec-meta">
+                        <span class="rec-score">匹配度: {{ "%.1f"|format(result.recommendation.match_score) }}</span>
+                        <span>主题: {{ result.recommendation.topic }}</span>
+                        <span>角度: {{ result.recommendation.angle_type }}</span>
+                    </div>
+                    <div class="rec-preview">{{ result.recommendation.content_preview }}</div>
+                    
+                    {% if result.push_mode == 'auto_draft' %}
+                        {% if result.auto_push_result and result.auto_push_result.success %}
+                            <div style="background: #e8f5e9; padding: 12px; border-radius: 6px; margin-bottom: 15px;">
+                                ✅ 已自动推送到微信草稿箱<br>
+                                <small>Media ID: {{ result.auto_push_result.message }}</small>
+                            </div>
+                        {% else %}
+                            <div style="background: #ffebee; padding: 12px; border-radius: 6px; margin-bottom: 15px;">
+                                ❌ 自动推送失败: {{ result.auto_push_result.message if result.auto_push_result else '未知错误' }}
+                            </div>
+                        {% endif %}
+                        <a href="/admin/review/{{ result.recommendation.article_id }}" class="push-btn" style="background: #666;">
+                            📋 查看文章详情
+                        </a>
+                    {% else %}
+                        <a href="/admin/review/{{ result.recommendation.article_id }}" class="push-btn">
+                            🚀 查看详情并推送
+                        </a>
+                    {% endif %}
+                </div>
+                
+                {% if result.alternatives %}
+                <div class="alternatives">
+                    <div class="alt-title">📑 其他候选文章（Top {{ result.alternatives|length }}）</div>
+                    {% for alt in result.alternatives %}
+                    <div class="alt-item">
+                        <span>{{ alt.title }}</span>
+                        <span style="color: #07c160;">{{ "%.1f"|format(alt.match_score) }}分</span>
+                    </div>
+                    {% endfor %}
+                </div>
+                {% endif %}
+            {% else %}
+                <div class="no-result">
+                    <div class="no-result-icon">😕</div>
+                    <h3>没有找到匹配的文章</h3>
+                    <p>{{ result.message }}</p>
+                    <p style="margin-top: 15px; font-size: 14px;">
+                        建议：去<a href="/library" style="color: #07c160;">文章库</a>查看现有文章，或生成新文章
+                    </p>
+                </div>
+            {% endif %}
+        </div>
+        {% endif %}
+        
+        <a href="/library" class="back-link">← 返回文章库</a>
+    </div>
+</body>
+</html>
+'''
+
+@app.route('/query', methods=['GET', 'POST'])
+def query_page():
+    """智能查询页面"""
+    import sys
+    sys.path.insert(0, '/root/.openclaw/workspace/content-pipeline')
+    from query_engine import QueryEngine
+    from query_engine.config_manager import get_config
+    
+    query = ''
+    result = None
+    custom_config = {}
+    
+    if request.method == 'POST':
+        query = request.form.get('query', '')
+        
+        # 获取自定义配置
+        recall_strategy = request.form.get('recall_strategy')
+        filter_strategy = request.form.get('filter_strategy')
+        push_mode = request.form.get('push_mode')
+        
+        if recall_strategy:
+            custom_config['recall_strategy'] = recall_strategy
+        if filter_strategy:
+            custom_config['filter_strategy'] = filter_strategy
+        if push_mode:
+            custom_config['push_mode'] = push_mode
+        
+        if query:
+            engine = QueryEngine()
+            result = engine.query(query, custom_config=custom_config if custom_config else None)
+            
+            # 处理自动推送模式
+            if result.get('push_mode') == 'auto_draft' and result.get('status') == 'success':
+                article_id = result['recommendation']['article_id']
+                push_result = engine.push_to_wechat(article_id)
+                result['auto_push_result'] = push_result
+    
+    return render_template_string(QUERY_PAGE_TEMPLATE, query=query, result=result, custom_config=custom_config)
+
+
+@app.route('/api/query', methods=['POST'])
+def api_query():
+    """查询API接口"""
+    import sys
+    sys.path.insert(0, '/root/.openclaw/workspace/content-pipeline')
+    from query_engine import QueryEngine
+    
+    data = request.get_json()
+    query = data.get('query', '')
+    user_id = data.get('user_id', DEFAULT_USER_ID)
+    
+    if not query:
+        return jsonify({"error": "查询内容不能为空"}), 400
+    
+    engine = QueryEngine()
+    result = engine.query(query, user_id)
+    
+    return jsonify(result)
+
+
+# ==================== 查询引擎配置管理 ====================
+
+@app.route('/query/config', methods=['GET', 'POST'])
+def query_config_page():
+    """查询引擎配置页面"""
+    import sys
+    sys.path.insert(0, '/root/.openclaw/workspace/content-pipeline')
+    from query_engine.config_manager import get_config
+    
+    config_manager = get_config()
+    
+    if request.method == 'POST':
+        # 保存用户配置
+        config_manager.set_user_config("recall_strategy", request.form.get('recall_strategy'))
+        config_manager.set_user_config("filter_strategy", request.form.get('filter_strategy'))
+        config_manager.set_user_config("push_mode", request.form.get('push_mode'))
+        config_manager.set_user_config("display", {
+            "show_process": request.form.get('show_process') == 'on',
+            "show_candidates": request.form.get('show_candidates') == 'on',
+            "show_reason": request.form.get('show_reason') == 'on',
+            "show_similar": request.form.get('show_similar') == 'on',
+            "max_alternatives": int(request.form.get('max_alternatives', 2))
+        })
+        flash('✅ 配置已保存', 'success')
+        return redirect('/query/config')
+    
+    # 获取所有可用选项
+    recall_strategies = config_manager.get_recall_strategies()
+    filter_strategies = config_manager.get_filter_strategies()
+    push_modes = config_manager.get_push_modes()
+    display_options = config_manager.get_display_options()
+    current_config = config_manager.get_effective_config()
+    
+    return render_template_string(CONFIG_TEMPLATE,
+                                 recall_strategies=recall_strategies,
+                                 filter_strategies=filter_strategies,
+                                 push_modes=push_modes,
+                                 display_options=display_options,
+                                 current_config=current_config)
+
+
+CONFIG_TEMPLATE = '''
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>查询引擎配置 | 微信公众号</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif;
+            background: #f5f5f5;
+            padding: 20px;
+        }
+        .container { max-width: 800px; margin: 0 auto; }
+        .header {
+            background: linear-gradient(135deg, #07c160 0%, #05a050 100%);
+            color: white;
+            padding: 30px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+        }
+        .header h1 { font-size: 24px; margin-bottom: 8px; }
+        .header p { opacity: 0.9; font-size: 14px; }
+        .config-form {
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        .form-group {
+            margin-bottom: 25px;
+        }
+        .form-label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: #333;
+        }
+        .form-select {
+            width: 100%;
+            padding: 12px;
+            font-size: 14px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            background: white;
+        }
+        .form-select:focus {
+            outline: none;
+            border-color: #07c160;
+        }
+        .option-desc {
+            font-size: 13px;
+            color: #666;
+            margin-top: 5px;
+        }
+        .checkbox-group {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        .checkbox-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .checkbox-item input[type="checkbox"] {
+            width: 18px;
+            height: 18px;
+        }
+        .checkbox-item label {
+            font-size: 14px;
+            color: #333;
+        }
+        .number-input {
+            width: 80px;
+            padding: 8px;
+            border: 2px solid #e0e0e0;
+            border-radius: 6px;
+        }
+        .save-btn {
+            width: 100%;
+            padding: 15px;
+            background: #07c160;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            cursor: pointer;
+            margin-top: 20px;
+        }
+        .save-btn:hover { background: #06ad56; }
+        .section-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: #333;
+            margin: 30px 0 15px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #e0e0e0;
+        }
+        .back-link {
+            display: inline-block;
+            margin-top: 20px;
+            color: #07c160;
+            text-decoration: none;
+        }
+        .warning-box {
+            background: #fff3e0;
+            border-left: 4px solid #f57c00;
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 4px;
+        }
+        .warning-box p {
+            color: #e65100;
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>⚙️ 查询引擎配置</h1>
+            <p>自定义召回策略、筛选策略和推送模式</p>
+        </div>
+        
+        <div class="config-form">
+            <form method="POST">
+                <div class="section-title">📥 召回策略</div>
+                <div class="form-group">
+                    <label class="form-label">选择召回策略</label>
+                    <select name="recall_strategy" class="form-select">
+                        {% for key, info in recall_strategies.items() %}
+                        <option value="{{ key }}" {% if current_config.recall_strategy == key %}selected{% endif %}>
+                            {{ info.name }}
+                        </option>
+                        {% endfor %}
+                    </select>
+                    <p class="option-desc">
+                        {{ recall_strategies[current_config.recall_strategy].description }}
+                    </p>
+                </div>
+                
+                <div class="section-title">🔍 筛选策略</div>
+                <div class="form-group">
+                    <label class="form-label">选择筛选策略</label>
+                    <select name="filter_strategy" class="form-select">
+                        {% for key, info in filter_strategies.items() %}
+                        <option value="{{ key }}" {% if current_config.filter_strategy == key %}selected{% endif %}>
+                            {{ info.name }}
+                        </option>
+                        {% endfor %}
+                    </select>
+                    <p class="option-desc">
+                        {{ filter_strategies[current_config.filter_strategy].description }}
+                    </p>
+                </div>
+                
+                <div class="section-title">🚀 推送模式</div>
+                <div class="form-group">
+                    <label class="form-label">选择推送模式</label>
+                    <select name="push_mode" class="form-select">
+                        {% for key, info in push_modes.items() %}
+                        <option value="{{ key }}" {% if current_config.push_mode == key %}selected{% endif %}>
+                            {{ info.name }}
+                        </option>
+                        {% endfor %}
+                    </select>
+                    <p class="option-desc">
+                        {{ push_modes[current_config.push_mode].description }}
+                    </p>
+                    {% if current_config.push_mode == 'auto_draft' %}
+                    <div class="warning-box">
+                        <p>⚠️ 警告：自动推送模式将直接修改微信草稿箱，请谨慎使用！</p>
+                    </div>
+                    {% endif %}
+                </div>
+                
+                <div class="section-title">👁️ 显示选项</div>
+                <div class="form-group">
+                    <label class="form-label">查询结果展示</label>
+                    <div class="checkbox-group">
+                        <div class="checkbox-item">
+                            <input type="checkbox" name="show_process" id="show_process" 
+                                   {% if current_config.display.show_process %}checked{% endif %}>
+                            <label for="show_process">显示匹配过程</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" name="show_candidates" id="show_candidates"
+                                   {% if current_config.display.show_candidates %}checked{% endif %}>
+                            <label for="show_candidates">显示候选列表</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" name="show_reason" id="show_reason"
+                                   {% if current_config.display.show_reason %}checked{% endif %}>
+                            <label for="show_reason">显示推荐理由</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" name="show_similar" id="show_similar"
+                                   {% if current_config.display.show_similar %}checked{% endif %}>
+                            <label for="show_similar">显示相似文章</label>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">最大备选数</label>
+                    <input type="number" name="max_alternatives" class="number-input"
+                           value="{{ current_config.display.max_alternatives }}" min="0" max="5">
+                </div>
+                
+                <button type="submit" class="save-btn">💾 保存配置</button>
+            </form>
+        </div>
+        
+        <a href="/query" class="back-link">← 返回查询页面</a>
+    </div>
+</body>
+</html>
+'''
+
+
+# ==================== 主程序入口 ====================
+
 if __name__ == '__main__':
     print("🚀 启动文章管理库 Web 服务")
     print(f"📚 管理地址: http://0.0.0.0:8080/library")
+    print(f"🔍 查询地址: http://0.0.0.0:8080/query")
+    print(f"⚙️  配置地址: http://0.0.0.0:8080/query/config")
     app.run(host='0.0.0.0', port=8080, debug=True)

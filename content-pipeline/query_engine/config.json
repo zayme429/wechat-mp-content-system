@@ -1,0 +1,165 @@
+{
+  "version": "1.0",
+  "description": "查询推荐引擎配置",
+  
+  "recall_strategies": {
+    "topic_exact": {
+      "name": "主题精确匹配",
+      "description": "按主题字段精确匹配",
+      "params": {
+        "match_type": "exact"
+      }
+    },
+    "keyword_fuzzy": {
+      "name": "关键词模糊匹配", 
+      "description": "标题和内容关键词模糊匹配",
+      "params": {
+        "match_type": "fuzzy",
+        "fields": ["title", "content"]
+      }
+    },
+    "semantic_vector": {
+      "name": "语义向量相似度",
+      "description": "基于语义向量的相似度匹配",
+      "params": {
+        "vector_field": "embedding",
+        "similarity_threshold": 0.7
+      }
+    },
+    "hybrid": {
+      "name": "混合策略",
+      "description": "主题+关键词+语义混合匹配",
+      "params": {
+        "weights": {
+          "topic": 0.4,
+          "keyword": 0.3,
+          "semantic": 0.3
+        }
+      }
+    },
+    "quality_first": {
+      "name": "质量优先",
+      "description": "优先召回高质量文章",
+      "params": {
+        "min_quality_score": 8.0,
+        "order_by": "quality_score DESC"
+      }
+    }
+  },
+
+  "filter_strategies": {
+    "threshold": {
+      "name": "阈值过滤",
+      "description": "只保留匹配度高于阈值的文章",
+      "params": {
+        "min_match_score": 6.0
+      }
+    },
+    "top_n": {
+      "name": "Top N后随机",
+      "description": "先排序取Top N，再随机选择",
+      "params": {
+        "top_n": 3,
+        "selection": "random"
+      }
+    },
+    "weighted_random": {
+      "name": "加权随机",
+      "description": "按匹配度加权后随机选择",
+      "params": {
+        "temperature": 1.0
+      }
+    },
+    "diversity": {
+      "name": "多样性保证",
+      "description": "确保不同角度的文章都有机会被选中",
+      "params": {
+        "max_per_angle": 1,
+        "min_angles": 2
+      }
+    }
+  },
+
+  "ranking_factors": {
+    "match_score": {
+      "name": "匹配度分数",
+      "weight": 0.5,
+      "description": "查询与文章的相关性分数"
+    },
+    "quality_score": {
+      "name": "质量分",
+      "weight": 0.3,
+      "description": "文章本身的质量评估"
+    },
+    "recency": {
+      "name": "时效性",
+      "weight": 0.2,
+      "description": "文章创建时间的新鲜度"
+    }
+  },
+
+  "push_modes": {
+    "display_only": {
+      "name": "仅显示",
+      "description": "只显示推荐结果，不执行任何推送操作",
+      "actions": ["display"],
+      "confirm_required": false
+    },
+    "confirm": {
+      "name": "确认后推送",
+      "description": "显示推荐结果，用户确认后推送到草稿箱",
+      "actions": ["display", "confirm", "push"],
+      "confirm_required": true
+    },
+    "auto_draft": {
+      "name": "自动推送",
+      "description": "查询后立即自动推送到微信草稿箱",
+      "actions": ["push"],
+      "confirm_required": false,
+      "warning": "此模式将直接修改微信草稿箱，请谨慎使用"
+    }
+  },
+
+  "display_options": {
+    "show_process": {
+      "name": "显示匹配过程",
+      "description": "展示召回→筛选→选择的完整流程",
+      "default": true
+    },
+    "show_candidates": {
+      "name": "显示候选列表",
+      "description": "展示被筛选掉的候选文章",
+      "default": true
+    },
+    "show_reason": {
+      "name": "显示推荐理由",
+      "description": "解释为什么推荐这篇文章",
+      "default": true
+    },
+    "show_similar": {
+      "name": "显示相似文章",
+      "description": "展示主题相似的其他文章",
+      "default": false
+    },
+    "max_alternatives": {
+      "name": "最大备选数",
+      "description": "除推荐文章外最多显示多少备选",
+      "default": 2,
+      "min": 0,
+      "max": 5
+    }
+  },
+
+  "default_config": {
+    "recall_strategy": "hybrid",
+    "filter_strategy": "top_n",
+    "push_mode": "confirm",
+    "display": {
+      "show_process": true,
+      "show_candidates": true,
+      "show_reason": true,
+      "show_similar": false,
+      "max_alternatives": 2
+    }
+  }
+}
