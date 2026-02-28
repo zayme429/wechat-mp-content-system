@@ -119,6 +119,8 @@ class QueryEngine:
             return self._recall_topic_exact(intent)
         elif strategy == "keyword_fuzzy":
             return self._recall_keyword_fuzzy(intent)
+        elif strategy == "semantic_vector":
+            return self._recall_semantic_vector(intent)
         elif strategy == "hybrid":
             return self._recall_hybrid(intent)
         elif strategy == "quality_first":
@@ -176,6 +178,28 @@ class QueryEngine:
         conn.close()
         return candidates
     
+    def _recall_semantic_vector(self, intent: Dict) -> List[Dict]:
+        """语义向量召回"""
+        import sys
+        sys.path.insert(0, '/root/.openclaw/workspace/content-pipeline')
+        from query_engine.embedding_manager import EmbeddingManager
+        
+        # 构建查询文本
+        query_text = f"{intent['original_query']} {intent['topic']} {' '.join(intent.get('keywords', []))}"
+        
+        # 向量搜索
+        manager = EmbeddingManager(self.db_path)
+        results = manager.search_by_vector(query_text, top_k=20)
+        
+        # 过滤低相似度的
+        filtered = [r for r in results if r["vector_similarity"] >= 0.5]
+        
+        if not filtered and results:
+            # 如果没有超过阈值的，返回前3个
+            filtered = results[:3]
+        
+        return filtered
+    
     def _recall_hybrid(self, intent: Dict) -> List[Dict]:
         """混合策略"""
         # 主题召回
@@ -184,17 +208,35 @@ class QueryEngine:
         # 关键词召回
         keyword_candidates = self._recall_keyword_fuzzy(intent)
         
+        # 尝试语义向量召回（如果有向量数据）
+        vector_candidates = []
+        try:
+            vector_candidates = self._recall_semantic_vector(intent)
+        except:
+            pass
+        
         # 合并
         all_candidates = {}
+        
+        # 主题匹配权重 0.4
         for c in topic_candidates:
-            c["match_score"] = 7.0 + c["quality_score"] * 0.3
+            c["match_score"] = 4.0 + c["quality_score"] * 0.3
             all_candidates[c["article_id"]] = c
         
+        # 关键词匹配权重 0.3
         for c in keyword_candidates:
             if c["article_id"] in all_candidates:
                 all_candidates[c["article_id"]]["match_score"] += 3.0
             else:
-                c["match_score"] = 5.0 + c["quality_score"] * 0.3
+                c["match_score"] = 3.0 + c["quality_score"] * 0.3
+                all_candidates[c["article_id"]] = c
+        
+        # 语义向量权重 0.3
+        for c in vector_candidates:
+            if c["article_id"] in all_candidates:
+                all_candidates[c["article_id"]]["match_score"] += c.get("match_score", 0) * 0.3
+            else:
+                c["match_score"] = c.get("match_score", 0) * 0.3
                 all_candidates[c["article_id"]] = c
         
         return list(all_candidates.values())
