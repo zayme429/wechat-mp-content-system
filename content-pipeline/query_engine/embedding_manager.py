@@ -107,12 +107,11 @@ class EmbeddingManager:
         conn = sqlite3.connect(self.db_path)
         cursor = conn.cursor()
         
+        # 放宽条件：只要有向量的候选文章都可以搜索
         cursor.execute("""
             SELECT article_id, title, content, topic, angle_type, quality_score, embedding
             FROM articles 
             WHERE embedding IS NOT NULL AND embedding != ''
-              AND status = 'reviewed_approved'
-              AND push_status = 'article_library'
         """)
         
         results = []
