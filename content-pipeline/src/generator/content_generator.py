@@ -67,13 +67,18 @@ class ContentGenerator:
             if system_prompt is None:
                 system_prompt = '你是一位资深的科技专栏作家，专注于AI时代的个人成长与职业发展。'
 
+            # kimi-k2.5 enforces temperature=1
+            temp = temperature
+            if (self.model or '').strip().lower() in ('kimi-k2.5', 'kimi_k2.5', 'kimi-k2.5-32k'):
+                temp = 1
+
             data = {
                 'model': self.model,
                 'messages': [
                     {'role': 'system', 'content': system_prompt},
                     {'role': 'user', 'content': prompt}
                 ],
-                'temperature': temperature,
+                'temperature': temp,
                 'max_tokens': 4000
             }
             
