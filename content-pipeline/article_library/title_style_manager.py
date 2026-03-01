@@ -17,6 +17,7 @@ from typing import Optional
 
 _BASE_DIR = Path("/root/.openclaw/workspace/content-pipeline")
 _STYLE_DIR = _BASE_DIR / "user_memory"
+_GENERAL_TITLE = _STYLE_DIR / "general_non_insurance_title_style.md"
 
 
 @dataclass
@@ -29,12 +30,22 @@ def load_title_style(user_id: str) -> Optional[TitleStyle]:
     if not user_id:
         return None
 
+    parts = []
+
+    # 通用：除保险外其他用户共用
+    if user_id != "insurance_agent" and _GENERAL_TITLE.exists():
+        gt = _GENERAL_TITLE.read_text(encoding="utf-8").strip()
+        if gt:
+            parts.append(gt)
+
+    # 专用：用户自己的覆盖/补充
     path = _STYLE_DIR / f"{user_id}_title_style.md"
-    if not path.exists():
+    if path.exists():
+        ut = path.read_text(encoding="utf-8").strip()
+        if ut:
+            parts.append(ut)
+
+    if not parts:
         return None
 
-    text = path.read_text(encoding="utf-8").strip()
-    if not text:
-        return None
-
-    return TitleStyle(user_id=user_id, instructions=text)
+    return TitleStyle(user_id=user_id, instructions="\n\n".join(parts))

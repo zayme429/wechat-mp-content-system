@@ -157,12 +157,26 @@ class DiverseArticleGenerator:
         try:
             from pathlib import Path
 
-            p = Path('/root/.openclaw/workspace/content-pipeline/user_memory') / f"{self.user_id}_article_style.md"
+            base = Path('/root/.openclaw/workspace/content-pipeline/user_memory')
+            parts = []
+
+            # 通用：除保险外其他用户共用
+            general = base / 'general_non_insurance_article_style.md'
+            if self.user_id != 'insurance_agent' and general.exists():
+                gt = general.read_text(encoding='utf-8').strip()
+                if gt:
+                    parts.append(gt)
+
+            # 专用：用户自己的覆盖/补充
+            p = base / f"{self.user_id}_article_style.md"
             if p.exists():
-                return p.read_text(encoding='utf-8').strip()
+                ut = p.read_text(encoding='utf-8').strip()
+                if ut:
+                    parts.append(ut)
+
+            return "\n\n".join(parts).strip()
         except Exception:
-            pass
-        return ""
+            return ""
 
     def _build_prompt(self, topic: str, angle: Dict, literature: List[Dict] = None) -> str:
         """构建生成提示词"""

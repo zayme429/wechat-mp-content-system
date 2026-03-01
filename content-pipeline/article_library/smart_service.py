@@ -183,6 +183,17 @@ class SmartArticleService:
         print("\n💾 步骤3: 保存到文章库...")
         article_ids = self._save_candidates_to_library(candidates)
         print(f"  已保存 {len(article_ids)} 篇候选")
+
+        # 关联到用户（用于文章库的用户筛选）
+        if user_id and article_ids:
+            try:
+                from article_library.user_manager import UserPreferenceManager
+
+                um = UserPreferenceManager()
+                for aid in article_ids:
+                    um.associate_article(user_id, aid)
+            except Exception:
+                pass
         
         # 为每篇文章建立搜索索引
         print("\n📇 步骤4: 建立搜索索引...")
