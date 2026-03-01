@@ -1298,18 +1298,26 @@ function selectedRunKey(){
   return 'discover_selected_run_' + persona;
 }
 
+const ALL_RUNS = '__all__';
+
 function setSelectedRun(taskId){
   const k = selectedRunKey();
-  if (!taskId) {
+  if (taskId == null || taskId === '') {
     localStorage.removeItem(k);
     return;
   }
   localStorage.setItem(k, taskId);
 }
 
-function getSelectedRun(){
+function getSelectedRunRaw(){
   const k = selectedRunKey();
   return localStorage.getItem(k) || '';
+}
+
+function getSelectedRun(){
+  const v = getSelectedRunRaw();
+  // When ALL_RUNS is selected, we don't pass run_id to /items
+  return (v === ALL_RUNS) ? '' : v;
 }
 
 async function pollRun(taskId){
@@ -1445,17 +1453,20 @@ async function loadRuns(){
   }
 
   // auto-select latest run for this persona if none selected
-  if (!getSelectedRun() && j.runs[0] && j.runs[0].task_id) {
+  if (!getSelectedRunRaw() && j.runs[0] && j.runs[0].task_id) {
     setSelectedRun(j.runs[0].task_id);
   }
 
-  document.getElementById('run_meta').textContent = `runs=${j.runs.length} | selected=${getSelectedRun() || '(none)'}`;
+  const selRaw = getSelectedRunRaw();
+  const selLabel = (selRaw === ALL_RUNS) ? '(all)' : (getSelectedRun() || '(none)');
+  document.getElementById('run_meta').textContent = `runs=${j.runs.length} | selected=${selLabel}`;
 
   for (const run of j.runs) {
     const tr = document.createElement('tr');
     const qn = (run.planned_queries || []).length;
     const started = run.started_at ? new Date(run.started_at * 1000).toLocaleString() : '-';
-    const sel = (getSelectedRun() === run.task_id) ? ' (selected)' : '';
+    const rawSel = getSelectedRunRaw();
+    const sel = (rawSel === ALL_RUNS) ? ' (all)' : ((getSelectedRun() === run.task_id) ? ' (selected)' : '');
     const isRunning = (run.status === 'running');
     tr.innerHTML = `
       <td class="mono">${esc(run.task_id || '')}${sel}</td>
@@ -1525,7 +1536,8 @@ if (!window.__discover_runs_bound) {
     }
 
     if (action === 'all') {
-      setSelectedRun('');
+      // Mark ALL_RUNS explicitly so loadRuns() won't auto-select latest run again.
+      setSelectedRun(ALL_RUNS);
       const m = document.getElementById('conclusion_meta');
       if (m) m.textContent = 'selected=(all)';
       await loadRuns();
