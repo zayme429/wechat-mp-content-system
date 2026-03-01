@@ -29,8 +29,6 @@ def plan_queries(persona: str, search_prompt: str, max_queries: int = 6) -> List
 只输出 JSON 数组。
 """
 
-    raw = (gen._call_llm(prompt, temperature=0.2) or '').strip()
-
     def _parse_json_array(text: str) -> List[str]:
         try:
             arr = json.loads(text)
@@ -46,66 +44,57 @@ def plan_queries(persona: str, search_prompt: str, max_queries: int = 6) -> List
                     out.append(s)
         return out
 
-    # 1) strict parse
-    out = _parse_json_array(raw)
-
-    # 2) try to extract the first JSON array substring
-    if not out:
-        l = raw.find('[')
-        r = raw.rfind(']')
+    def _extract_first_array(text: str) -> str:
+        l = text.find('[')
+        r = text.rfind(']')
         if l != -1 and r != -1 and r > l:
-            out = _parse_json_array(raw[l : r + 1])
+            return text[l : r + 1]
+        return text
 
-    # 3) fallback: heuristic queries by persona (avoid searching the meta prompt itself)
+    # 1) first attempt
+    raw = (gen._call_llm(prompt, temperature=0.2) or '').strip()
+    out = _parse_json_array(raw) or _parse_json_array(_extract_first_array(raw))
+
+    # 2) repair attempt (ask the model to output ONLY a JSON array)
+    if not out and raw:
+        repair_prompt = f"""你刚才的输出无法被 JSON 解析。
+
+请你只输出一个 JSON 数组（不要 Markdown，不要解释），元素是字符串，最多 {max_queries} 条。
+
+原始 prompt：
+{search_prompt}
+
+你上一次的输出：
+{raw}
+"""
+        raw2 = (gen._call_llm(repair_prompt, temperature=0.0) or '').strip()
+        out = _parse_json_array(raw2) or _parse_json_array(_extract_first_array(raw2))
+
+    # 3) generic fallback (avoid hard-coded rules): derive queries from prompt bullets/lines
     if not out:
-        sp = (search_prompt or '').lower()
-        ai_focus = any(
-            k in sp
-            for k in [
-                'ai',
-                'aigc',
-                'llm',
-                'agent',
-                'rag',
-                '大模型',
-                '人工智能',
-                '智能体',
-                '模型',
-                '推理',
-            ]
-        )
+        lines: List[str] = []
+        for ln in (search_prompt or '').splitlines():
+            s = ln.strip()
+            if not s:
+                continue
+            if s.startswith('#'):
+                continue
+            if s.startswith('-'):
+                s = s.lstrip('-').strip()
+            # drop meta instruction-like lines
+            if s.startswith('你是') or s.startswith('请') or s.startswith('输出') or s.startswith('Persona'):
+                continue
+            lines.append(s)
 
-        if persona == 'tech_enthusiast':
-            if ai_focus:
-                out = [
-                    '大模型 应用 落地 复盘 踩坑',
-                    'LLM Agent 智能体 实战 架构',
-                    'RAG 检索 增强 方案 评估',
-                    '推理 成本 优化 延迟 吞吐',
-                    '提示词 工程 评估 指标 对比',
-                    'AI 工程化 监控 质量 回归',
-                ]
-            else:
-                out = [
-                    '工程 实践 复盘 踩坑 总结',
-                    '性能 优化 实战 对比 数据',
-                    '成本 优化 云 账单 复盘',
-                    '架构 演进 取舍 代价 边界条件',
-                    '技术 方案 评估 指标 对比',
-                    '生产 故障 复盘 根因 解决',
-                ]
-        elif persona == 'jp_music_fan':
-            out = [
-                'J-POP 新歌 安利 歌单',
-                '日摇 现场感 乐评 副歌',
-                '编曲 吉他 鼓点 情绪 推进',
-                '入坑 指南 推荐 歌手 专辑',
-                '燃向 摇滚 现场 Live 体验',
-                '二次元 歌单 热血 高燃',
-            ]
-        else:
-            s = (search_prompt or '').strip()
-            if s:
-                out = [s[:24]]
+        # pick a few distinct short phrases
+        for s in lines:
+            s2 = s.replace('：', ' ').replace(':', ' ').strip()
+            if not s2:
+                continue
+            s2 = s2[:40]
+            if s2 and s2 not in out:
+                out.append(s2)
+            if len(out) >= max_queries:
+                break
 
     return out[:max_queries]
