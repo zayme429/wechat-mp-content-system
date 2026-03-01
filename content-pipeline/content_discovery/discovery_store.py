@@ -253,6 +253,10 @@ def list_candidates(
         where.append('c.run_id = ?')
         params.append(run_id)
 
+    # When runs are hard-deleted, old candidates can become orphaned (run_id not present in discovery_runs).
+    # Exclude orphaned candidates by default so "view all runs" matches the remaining runs list.
+    where.append('(c.run_id IS NULL OR c.run_id IN (SELECT task_id FROM discovery_runs))')
+
     sql = (
         'SELECT c.*, '
         'f.rating AS rating, f.comment AS comment, f.updated_at AS feedback_updated_at '
@@ -286,9 +290,11 @@ def list_candidates(
 def stats(db_path: str) -> Dict[str, Any]:
     init_db(db_path)
     with connect(db_path) as con:
-        total = con.execute('SELECT COUNT(*) AS c FROM content_candidates').fetchone()['c']
+        total = con.execute(
+            "SELECT COUNT(*) AS c FROM content_candidates WHERE run_id IS NULL OR run_id IN (SELECT task_id FROM discovery_runs)"
+        ).fetchone()['c']
         by_persona = con.execute(
-            'SELECT persona, COUNT(*) AS c FROM content_candidates GROUP BY persona ORDER BY c DESC'
+            "SELECT persona, COUNT(*) AS c FROM content_candidates WHERE run_id IS NULL OR run_id IN (SELECT task_id FROM discovery_runs) GROUP BY persona ORDER BY c DESC"
         ).fetchall()
     return {
         'total': total,
