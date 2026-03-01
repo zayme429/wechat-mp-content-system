@@ -2795,9 +2795,124 @@ def article_view(share_token):
     return render_template_string(ARTICLE_TEMPLATE, article=article, content_html=content_html)
 
 
+HOME_TEMPLATE = '''
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>内容工作台 | 微信公众号</title>
+  <style>
+    * { margin:0; padding:0; box-sizing:border-box; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif;
+      background: radial-gradient(1200px 600px at 20% 0%, rgba(14,165,233,0.14), transparent 60%),
+                  radial-gradient(1000px 700px at 80% 10%, rgba(17,24,39,0.10), transparent 55%),
+                  linear-gradient(180deg, #f8fafc 0%, #f1f5f9 100%);
+      color: #0f172a;
+      padding: 22px;
+    }
+    .container { max-width: 1200px; margin: 0 auto; }
+    header {
+      background: linear-gradient(135deg, #111827 0%, #0f172a 30%, #0369a1 100%);
+      color: white;
+      padding: 26px 28px;
+      border-radius: 16px;
+      box-shadow: 0 10px 30px rgba(2,6,23,0.18);
+      margin-bottom: 18px;
+    }
+    h1 { font-size: 22px; letter-spacing: 0.2px; margin-bottom: 8px; }
+    .sub { font-size: 13px; opacity: 0.9; }
+
+    .grid { display:grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 14px; }
+    .card {
+      background: rgba(255,255,255,0.9);
+      border: 1px solid rgba(148,163,184,0.35);
+      border-radius: 16px;
+      padding: 16px 16px 14px;
+      box-shadow: 0 8px 20px rgba(15,23,42,0.06);
+      backdrop-filter: blur(8px);
+      transition: transform 0.15s ease, box-shadow 0.15s ease;
+    }
+    .card:hover { transform: translateY(-2px); box-shadow: 0 12px 26px rgba(15,23,42,0.10); }
+
+    .card h2 { font-size: 15px; margin-bottom: 6px; }
+    .card p { font-size: 13px; color:#475569; line-height: 1.55; }
+
+    .actions { margin-top: 12px; display:flex; gap: 10px; flex-wrap: wrap; }
+    .btn {
+      display:inline-block;
+      text-decoration:none;
+      padding: 9px 12px;
+      border-radius: 12px;
+      border: 1px solid rgba(148,163,184,0.45);
+      background: #ffffff;
+      color:#0f172a;
+      font-size: 13px;
+    }
+    .btn.primary { background:#0ea5e9; border-color:#0ea5e9; color:white; }
+
+    .row { margin-top: 14px; display:flex; gap: 10px; flex-wrap: wrap; }
+    .pill { font-size: 12px; padding: 6px 10px; border-radius: 999px; border: 1px solid rgba(148,163,184,0.45); background: rgba(255,255,255,0.65); }
+
+    @media (max-width: 640px) { body { padding: 14px; } header { padding: 18px; } }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>内容工作台</h1>
+      <div class="sub">入口页：随时跳转到文章库 / 智能查询 / 内容搜索器 / 人设偏好配置。</div>
+      <div class="row">
+        <span class="pill">/library</span>
+        <span class="pill">/query</span>
+        <span class="pill">/discover</span>
+        <span class="pill">/personas</span>
+      </div>
+    </header>
+
+    <div class="grid">
+      <div class="card">
+        <h2>文章库</h2>
+        <p>管理文章、按用户/状态/推送状态筛选、编辑、审核等。</p>
+        <div class="actions">
+          <a class="btn primary" href="/library">打开文章库</a>
+        </div>
+      </div>
+
+      <div class="card">
+        <h2>智能文章查询</h2>
+        <p>向量召回 → 过滤 → 推荐漏斗。适合验证召回质量与过滤策略。</p>
+        <div class="actions">
+          <a class="btn primary" href="/query">打开智能查询</a>
+        </div>
+      </div>
+
+      <div class="card">
+        <h2>内容搜索器（开发者分析）</h2>
+        <p>采集外部候选（Tavily）并打热度/匹配分，支持筛选与抽样复核。</p>
+        <div class="actions">
+          <a class="btn primary" href="/discover">打开内容搜索器</a>
+        </div>
+      </div>
+
+      <div class="card">
+        <h2>人设与偏好</h2>
+        <p>编辑各 persona 的标题/正文偏好（user_memory），作为采集分析与生成依据。</p>
+        <div class="actions">
+          <a class="btn primary" href="/personas">打开偏好配置</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</body>
+</html>
+'''
+
+
 @app.route('/')
 def index():
-    return redirect('/library')
+    return render_template_string(HOME_TEMPLATE)
 
 
 # ==================== 查询推荐引擎 ====================
