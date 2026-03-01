@@ -748,6 +748,164 @@ QUERY_TEMPLATE = '''
 
 
 # 编辑页面模板
+PERSONA_TEMPLATE = '''
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>人设与偏好 | 开发者</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif;
+            background: #f5f5f5;
+            color: #333;
+            line-height: 1.6;
+        }
+        .container { max-width: 1400px; margin: 0 auto; padding: 20px; }
+        header {
+            background: linear-gradient(135deg, #111827 0%, #334155 100%);
+            color: white;
+            padding: 24px 28px;
+            border-radius: 12px;
+            margin-bottom: 18px;
+        }
+        h1 { font-size: 22px; margin-bottom: 6px; }
+        .subtitle { opacity: 0.9; font-size: 13px; }
+        .nav {
+            display: flex;
+            gap: 10px;
+            margin: 14px 0 6px;
+            flex-wrap: wrap;
+        }
+        .nav a {
+            text-decoration: none;
+            background: rgba(255,255,255,0.12);
+            color: white;
+            padding: 6px 10px;
+            border-radius: 999px;
+            font-size: 13px;
+        }
+        .panel {
+            background: white;
+            padding: 18px;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+            margin-bottom: 14px;
+        }
+        label { font-size: 12px; color: #666; display: block; margin-bottom: 6px; }
+        select, textarea {
+            width: 100%;
+            padding: 10px 12px;
+            border: 1px solid #e5e7eb;
+            border-radius: 10px;
+            font-size: 14px;
+        }
+        textarea { min-height: 220px; font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', monospace; }
+        .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+        .actions { display:flex; gap:10px; justify-content:flex-end; margin-top:10px; flex-wrap:wrap; }
+        .btn {
+            padding: 9px 14px;
+            border-radius: 10px;
+            border: 1px solid #e5e7eb;
+            background: #f8fafc;
+            cursor: pointer;
+            font-size: 13px;
+        }
+        .btn-primary { background:#111827; border-color:#111827; color:white; }
+        .hint { font-size:12px; color:#64748b; margin-top:8px; }
+        .file { font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', monospace; font-size:12px; color:#0f172a; }
+        @media (max-width: 900px) { .grid { grid-template-columns: 1fr; } }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>人设与偏好</h1>
+            <div class="subtitle">这里的配置会作为“爬虫采集 + 热度/偏好分析 + 文章生成”的共同依据。支持直接修改 user_memory 记忆文件内容。</div>
+            <div class="nav">
+                <a href="/query">文章查询</a>
+                <a href="/library">文章库</a>
+                <a href="/discover">内容搜索器</a>
+                <a href="/personas">人设与偏好</a>
+            </div>
+        </header>
+
+        <div class="panel">
+            <form method="GET" action="/personas">
+                <label>选择用户</label>
+                <select name="user" onchange="this.form.submit()">
+                    {% for u in all_users %}
+                      <option value="{{u.user_id}}" {% if u.user_id==current_user.user_id %}selected{% endif %}>{{u.display_name}} ({{u.user_id}})</option>
+                    {% endfor %}
+                </select>
+            </form>
+            <div class="hint">当前用户：<span class="file">{{ current_user.user_id }}</span></div>
+        </div>
+
+        <div class="panel">
+            <div class="grid">
+                <div>
+                    <div class="hint">通用标题偏好（除 insurance_agent 外）文件：<span class="file">{{ paths.general_title }}</span></div>
+                    <form method="POST" action="/personas/save">
+                        <input type="hidden" name="user" value="{{ current_user.user_id }}" />
+                        <input type="hidden" name="kind" value="general_title" />
+                        <label>general_non_insurance_title_style.md</label>
+                        <textarea name="content">{{ general_title_text }}</textarea>
+                        <div class="actions"><button class="btn btn-primary" type="submit">保存通用标题偏好</button></div>
+                    </form>
+                </div>
+                <div>
+                    <div class="hint">用户专用标题偏好文件：<span class="file">{{ paths.user_title }}</span></div>
+                    <form method="POST" action="/personas/save">
+                        <input type="hidden" name="user" value="{{ current_user.user_id }}" />
+                        <input type="hidden" name="kind" value="user_title" />
+                        <label>{{ current_user.user_id }}_title_style.md</label>
+                        <textarea name="content">{{ user_title_text }}</textarea>
+                        <div class="actions"><button class="btn btn-primary" type="submit">保存用户标题偏好</button></div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <div class="panel">
+            <div class="grid">
+                <div>
+                    <div class="hint">通用正文偏好（除 insurance_agent 外）文件：<span class="file">{{ paths.general_article }}</span></div>
+                    <form method="POST" action="/personas/save">
+                        <input type="hidden" name="user" value="{{ current_user.user_id }}" />
+                        <input type="hidden" name="kind" value="general_article" />
+                        <label>general_non_insurance_article_style.md</label>
+                        <textarea name="content">{{ general_article_text }}</textarea>
+                        <div class="actions"><button class="btn btn-primary" type="submit">保存通用正文偏好</button></div>
+                    </form>
+                </div>
+                <div>
+                    <div class="hint">用户专用正文偏好文件：<span class="file">{{ paths.user_article }}</span></div>
+                    <form method="POST" action="/personas/save">
+                        <input type="hidden" name="user" value="{{ current_user.user_id }}" />
+                        <input type="hidden" name="kind" value="user_article" />
+                        <label>{{ current_user.user_id }}_article_style.md</label>
+                        <textarea name="content">{{ user_article_text }}</textarea>
+                        <div class="actions"><button class="btn btn-primary" type="submit">保存用户正文偏好</button></div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <div class="panel">
+            <div class="hint">说明：</div>
+            <div class="hint">- 这些内容就是你之前跟我说的人设与偏好（当前值来自 user_memory/*.md）。</div>
+            <div class="hint">- 后续爬虫采集/热度分析/偏好判别会引用这些偏好作为依据。</div>
+        </div>
+
+    </div>
+</body>
+</html>
+'''
+
+
 DISCOVERY_TEMPLATE = '''
 <!DOCTYPE html>
 <html lang="zh-CN">
@@ -865,6 +1023,7 @@ DISCOVERY_TEMPLATE = '''
                 <a href="/query">文章查询</a>
                 <a href="/library">文章库</a>
                 <a href="/discover">内容搜索器</a>
+                <a href="/personas">人设与偏好</a>
             </div>
         </header>
 
@@ -1294,6 +1453,72 @@ def library_view():
                                   current_user=current_user,
                                   all_users=all_users,
                                   draft_sync_result=draft_sync_result)
+
+
+def _read_text(path: str) -> str:
+    try:
+        with open(path, 'r', encoding='utf-8') as f:
+            return f.read()
+    except Exception:
+        return ''
+
+
+def _write_text(path: str, content: str) -> None:
+    from pathlib import Path
+
+    p = Path(path)
+    p.parent.mkdir(parents=True, exist_ok=True)
+    # Always end with newline for git diffs
+    txt = (content or '').rstrip() + '\n'
+    p.write_text(txt, encoding='utf-8')
+
+
+@app.route('/personas')
+def personas_view():
+    current_user_id = request.args.get('user', DEFAULT_USER_ID)
+    current_user = user_manager.get_user_profile(current_user_id)
+    all_users = user_manager.list_users()
+
+    base = '/root/.openclaw/workspace/content-pipeline/user_memory'
+    paths = {
+        'general_title': f'{base}/general_non_insurance_title_style.md',
+        'general_article': f'{base}/general_non_insurance_article_style.md',
+        'user_title': f'{base}/{current_user_id}_title_style.md',
+        'user_article': f'{base}/{current_user_id}_article_style.md',
+    }
+
+    return render_template_string(
+        PERSONA_TEMPLATE,
+        current_user=current_user,
+        all_users=all_users,
+        paths=paths,
+        general_title_text=_read_text(paths['general_title']),
+        general_article_text=_read_text(paths['general_article']),
+        user_title_text=_read_text(paths['user_title']),
+        user_article_text=_read_text(paths['user_article']),
+    )
+
+
+@app.route('/personas/save', methods=['POST'])
+def personas_save():
+    user_id = (request.form.get('user') or '').strip() or DEFAULT_USER_ID
+    kind = (request.form.get('kind') or '').strip()
+    content = request.form.get('content') or ''
+
+    base = '/root/.openclaw/workspace/content-pipeline/user_memory'
+    mapping = {
+        'general_title': f'{base}/general_non_insurance_title_style.md',
+        'general_article': f'{base}/general_non_insurance_article_style.md',
+        'user_title': f'{base}/{user_id}_title_style.md',
+        'user_article': f'{base}/{user_id}_article_style.md',
+    }
+    path = mapping.get(kind)
+    if not path:
+        abort(400)
+
+    _write_text(path, content)
+    flash(f'已保存：{path}', 'success')
+    return redirect(f'/personas?user={user_id}')
 
 
 @app.route('/discover')
