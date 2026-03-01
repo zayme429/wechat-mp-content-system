@@ -12,23 +12,12 @@ sys.path.insert(0, '/root/.openclaw/workspace/content-pipeline')
 from content_discovery.collector import estimate_heat, now_ts, tavily_search
 from content_discovery.analyzer import analyze_fit
 from content_discovery.discovery_store import DEFAULT_DB_PATH, upsert_candidate
+from content_discovery.query_planner import plan_queries
 
 
-DEFAULT_QUERIES = {
-    'tech_enthusiast': [
-        'AI 工具链 实战 复盘',
-        '大模型 工程化 踩坑 复盘',
-        'RAG 落地 评估 指标 复盘',
-        '性能 优化 成本 延迟 复盘',
-        'Agent 工程 实战 工具链',
-    ],
-    'jp_music_fan': [
-        'J-POP 高燃 日本摇滚 歌单 推荐',
-        '日摇 现场 ライブ 体验 推荐',
-        '动漫 OP ED J-POP 推荐 歌单',
-        '日本摇滚 乐队 入坑 指南',
-        '甜嗓 高燃 副歌 日本摇滚 推荐',
-    ],
+DEFAULT_PROMPT_FILES = {
+    'tech_enthusiast': '/root/.openclaw/workspace/content-pipeline/user_memory/tech_enthusiast_search_prompt.md',
+    'jp_music_fan': '/root/.openclaw/workspace/content-pipeline/user_memory/jp_music_fan_search_prompt.md',
 }
 
 
@@ -36,15 +25,31 @@ def main() -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument('--persona', required=True)
     ap.add_argument('--query', action='append', default=[])
+    ap.add_argument('--prompt-file', default='')
     ap.add_argument('--max-results', type=int, default=6)
     ap.add_argument('--db-path', default=DEFAULT_DB_PATH)
     ap.add_argument('--sleep', type=float, default=0.8)
     args = ap.parse_args()
 
     persona = args.persona
-    queries = args.query or DEFAULT_QUERIES.get(persona, [])
+
+    prompt_file = args.prompt_file or DEFAULT_PROMPT_FILES.get(persona, '')
+    search_prompt = ''
+    if prompt_file:
+        try:
+            with open(prompt_file, 'r', encoding='utf-8') as f:
+                search_prompt = f.read().strip()
+        except Exception:
+            search_prompt = ''
+
+    queries = args.query
     if not queries:
-        raise SystemExit('No queries provided and no defaults for persona')
+        if not search_prompt:
+            raise SystemExit('No queries provided and search prompt file missing/empty')
+        queries = plan_queries(persona, search_prompt, max_queries=6)
+
+    if not queries:
+        raise SystemExit('Failed to plan queries from prompt')
 
     if not os.environ.get('TAVILY_API_KEY'):
         raise SystemExit('Missing TAVILY_API_KEY in environment')

@@ -917,6 +917,18 @@ PERSONA_TEMPLATE = '''
         </div>
 
         <div class="panel">
+            <div class="hint">搜索 Prompt（用于内容采集；LLM 会先把 prompt 拆解成多轮关键词/查询再去搜）文件：<span class="file">{{ paths.search_prompt }}</span></div>
+            <form method="POST" action="/personas/save">
+                <input type="hidden" name="user" value="{{ current_user.user_id }}" />
+                <input type="hidden" name="kind" value="search_prompt" />
+                <label>{{ current_user.user_id }}_search_prompt.md</label>
+                <textarea name="content">{{ search_prompt_text }}</textarea>
+                <div class="actions"><button class="btn btn-primary" type="submit">保存搜索 Prompt</button></div>
+            </form>
+            <div class="hint">提示：这里写的是“完整意图描述”，不是单个关键词。后续 discover 会用它生成多条搜索 query。</div>
+        </div>
+
+        <div class="panel">
             <div class="hint">说明：</div>
             <div class="hint">- 这些内容就是你之前跟我说的人设与偏好（当前值来自 user_memory/*.md）。</div>
             <div class="hint">- 后续爬虫采集/热度分析/偏好判别会引用这些偏好作为依据。</div>
@@ -1553,6 +1565,7 @@ def personas_view():
         'general_article': f'{base}/general_non_insurance_article_style.md',
         'user_title': f'{base}/{current_user_id}_title_style.md',
         'user_article': f'{base}/{current_user_id}_article_style.md',
+        'search_prompt': f'{base}/{current_user_id}_search_prompt.md',
     }
 
     return render_template_string(
@@ -1564,6 +1577,7 @@ def personas_view():
         general_article_text=_read_text(paths['general_article']),
         user_title_text=_read_text(paths['user_title']),
         user_article_text=_read_text(paths['user_article']),
+        search_prompt_text=_read_text(paths['search_prompt']),
     )
 
 
@@ -1579,6 +1593,7 @@ def personas_save():
         'general_article': f'{base}/general_non_insurance_article_style.md',
         'user_title': f'{base}/{user_id}_title_style.md',
         'user_article': f'{base}/{user_id}_article_style.md',
+        'search_prompt': f'{base}/{user_id}_search_prompt.md',
     }
     path = mapping.get(kind)
     if not path:
@@ -1649,12 +1664,16 @@ def discover_api_run():
     task_id = str(uuid.uuid4())
     log_path = f"/root/.openclaw/workspace/content-pipeline/content_discovery/run_{task_id}.log"
 
+    prompt_path = f"/root/.openclaw/workspace/content-pipeline/user_memory/{persona}_search_prompt.md"
+
     cmd = [
         'python3',
         '-u',
         '/root/.openclaw/workspace/content-pipeline/scripts/discover_collect.py',
         '--persona',
         persona,
+        '--prompt-file',
+        prompt_path,
         '--db-path',
         DISCOVERY_DB_PATH,
     ]
