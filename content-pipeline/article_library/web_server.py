@@ -1453,9 +1453,9 @@ async function loadRuns(){
     return;
   }
 
-  // auto-select latest run for this persona if none selected
-  if (!getSelectedRunRaw() && j.runs[0] && j.runs[0].task_id) {
-    setSelectedRun(j.runs[0].task_id);
+  // Default to viewing all runs for this persona unless user explicitly selects a task
+  if (!getSelectedRunRaw()) {
+    setSelectedRun(ALL_RUNS);
   }
 
   const selRaw = getSelectedRunRaw();
