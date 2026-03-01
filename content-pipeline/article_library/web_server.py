@@ -1100,6 +1100,10 @@ DISCOVERY_TEMPLATE = '''
                     <label>min fit_score</label>
                     <input id="min_fit" type="number" step="1" placeholder="例如：70" />
                 </div>
+                <div>
+                    <label>min quality_score</label>
+                    <input id="min_quality" type="number" step="1" placeholder="例如：60" />
+                </div>
             </div>
             <div class="actions">
                 <button class="btn btn-primary" onclick="loadItems()">刷新列表</button>
@@ -1137,6 +1141,7 @@ DISCOVERY_TEMPLATE = '''
                             <th>persona</th>
                             <th>热度</th>
                             <th>匹配</th>
+                            <th>质量</th>
                             <th>来源</th>
                             <th>标题 / 摘要</th>
                         </tr>
@@ -1237,7 +1242,33 @@ async function runCollect(){
     alert('启动失败：' + (j.error || 'unknown'));
     return;
   }
+  document.getElementById('meta').textContent = `采集已启动 task_id=${j.task_id} | persona=${persona}`;
+  if (j.planned_queries && j.planned_queries.length) {
+    document.getElementById('conclusion_meta').textContent = 'planned_queries: ' + j.planned_queries.join(' | ');
+  }
   alert(`已启动采集任务：${j.task_id}`);
+  // poll progress
+  pollRun(j.task_id);
+}
+
+async function pollRun(taskId){
+  for (let i=0;i<60;i++){
+    const r = await fetch('/discover/api/run_status?task_id=' + encodeURIComponent(taskId));
+    const j = await r.json();
+    if (j.ok){
+      if (j.tail){
+        document.getElementById('conclusion').value = (j.tail || '').trim();
+      }
+      if (j.inserted != null){
+        document.getElementById('conclusion_meta').textContent = `task=${taskId} status=${j.status} inserted=${j.inserted}`;
+      }
+      if (j.status && j.status !== 'running'){
+        await loadItems();
+        return;
+      }
+    }
+    await new Promise(res=>setTimeout(res, 2000));
+  }
 }
 
 async function loadConclusion(){
@@ -1278,11 +1309,13 @@ async function loadItems(){
   const q = document.getElementById('q').value;
   const min_heat = document.getElementById('min_heat').value;
   const min_fit = document.getElementById('min_fit').value;
+  const min_quality = document.getElementById('min_quality').value;
   const params = new URLSearchParams();
   if (persona) params.set('persona', persona);
   if (q) params.set('q', q);
   if (min_heat) params.set('min_heat', min_heat);
   if (min_fit) params.set('min_fit', min_fit);
+  if (min_quality) params.set('min_quality', min_quality);
   const r = await fetch('/discover/api/items?' + params.toString());
   const j = await r.json();
   document.getElementById('meta').textContent = `返回 ${j.items.length} 条 | 按 heat*fit 排序 | db=${j.db_path}`;
@@ -1298,6 +1331,7 @@ async function loadItems(){
     const tr = document.createElement('tr');
     const heat = (it.heat_score == null) ? '-' : Number(it.heat_score).toFixed(0);
     const fit = (it.fit_score == null) ? '-' : Number(it.fit_score).toFixed(0);
+    const quality = (it.quality_score == null) ? '-' : Number(it.quality_score).toFixed(0);
     const src = esc(it.source || '-');
     const url = it.url ? `<a href="${esc(it.url)}" target="_blank" rel="noreferrer" class="mono">link</a>` : '<span class="muted">-</span>';
     const title = esc(it.title || '');
@@ -1306,6 +1340,7 @@ async function loadItems(){
       <td><span class="pill">${esc(it.persona || '')}</span></td>
       <td class="score">${heat}</td>
       <td class="score">${fit}</td>
+      <td class="score">${quality}</td>
       <td>${src}<div class="small">${url}</div></td>
       <td>
         <div style="font-weight:700;">${title}</div>
@@ -1678,6 +1713,7 @@ def discover_api_items():
 
     min_heat = request.args.get('min_heat')
     min_fit = request.args.get('min_fit')
+    min_quality = request.args.get('min_quality')
 
     try:
         min_heat_v = float(min_heat) if min_heat not in (None, '') else None
@@ -1687,6 +1723,10 @@ def discover_api_items():
         min_fit_v = float(min_fit) if min_fit not in (None, '') else None
     except Exception:
         min_fit_v = None
+    try:
+        min_quality_v = float(min_quality) if min_quality not in (None, '') else None
+    except Exception:
+        min_quality_v = None
 
     items = discovery_list_candidates(
         DISCOVERY_DB_PATH,
@@ -1694,6 +1734,7 @@ def discover_api_items():
         q=q,
         min_heat=min_heat_v,
         min_fit=min_fit_v,
+        min_quality=min_quality_v,
         limit=200,
     )
     return jsonify({'db_path': DISCOVERY_DB_PATH, 'items': items})
@@ -1721,6 +1762,19 @@ def discover_api_run():
 
     prompt_path = f"/root/.openclaw/workspace/content-pipeline/user_memory/{persona}_search_prompt.md"
 
+    # Plan queries once for UX (show what will be searched)
+    planned_queries = []
+    try:
+        if os.path.exists(prompt_path):
+            with open(prompt_path, 'r', encoding='utf-8') as f:
+                _p = f.read().strip()
+            if _p:
+                from content_discovery.query_planner import plan_queries
+
+                planned_queries = plan_queries(persona, _p, max_queries=6)
+    except Exception:
+        planned_queries = []
+
     cmd = [
         'python3',
         '-u',
@@ -1734,14 +1788,27 @@ def discover_api_run():
     ]
 
     env = dict(os.environ)
+    env['DISCOVERY_RUN_ID'] = task_id
     # ensure tavily env is present (loaded at startup if possible)
     if not env.get('TAVILY_API_KEY'):
         return jsonify({'ok': False, 'error': 'Missing TAVILY_API_KEY'}), 400
 
     with open(log_path, 'w', encoding='utf-8') as f:
+        if planned_queries:
+            f.write('PLANNED_QUERIES\n')
+            for q in planned_queries:
+                f.write(f"- {q}\n")
+            f.write('\n')
         subprocess.Popen(cmd, stdout=f, stderr=f, env=env, cwd='/root/.openclaw/workspace/content-pipeline')
 
-    return jsonify({'ok': True, 'task_id': task_id, 'log_path': log_path, 'cmd': cmd, 'db_path': DISCOVERY_DB_PATH})
+    try:
+        from content_discovery.runs import start_run
+
+        start_run(task_id, persona, planned_queries, log_path, db_path=DISCOVERY_DB_PATH)
+    except Exception:
+        pass
+
+    return jsonify({'ok': True, 'task_id': task_id, 'log_path': log_path, 'cmd': cmd, 'db_path': DISCOVERY_DB_PATH, 'planned_queries': planned_queries})
 
 
 @app.route('/discover/api/conclusion', methods=['GET'])
@@ -1800,6 +1867,47 @@ def discover_api_post_prompt():
         return jsonify({'ok': False, 'error': str(e)}), 500
 
     return jsonify({'ok': True, 'persona': persona, 'path': path})
+
+
+@app.route('/discover/api/run_status', methods=['GET'])
+def discover_api_run_status():
+    task_id = (request.args.get('task_id') or '').strip()
+    if not task_id:
+        return jsonify({'ok': False, 'error': 'missing task_id'}), 400
+
+    # compute inserted count by run_id
+    inserted = 0
+    try:
+        from content_discovery.discovery_store import init_db, connect
+
+        init_db(DISCOVERY_DB_PATH)
+        with connect(DISCOVERY_DB_PATH) as con:
+            row = con.execute('SELECT COUNT(*) AS c FROM content_candidates WHERE run_id=?', (task_id,)).fetchone()
+            inserted = int(row['c']) if row else 0
+    except Exception:
+        inserted = 0
+
+    log_path = f"/root/.openclaw/workspace/content-pipeline/content_discovery/run_{task_id}.log"
+    tail = ''
+    try:
+        with open(log_path, 'r', encoding='utf-8') as f:
+            lines = f.readlines()[-40:]
+            tail = ''.join(lines)
+    except Exception:
+        tail = ''
+
+    status = 'running'
+    # naive: if log ends with DONE, mark finished
+    if 'DONE total' in tail:
+        status = 'finished'
+        try:
+            from content_discovery.runs import finish_run
+
+            finish_run(task_id, status='finished', db_path=DISCOVERY_DB_PATH)
+        except Exception:
+            pass
+
+    return jsonify({'ok': True, 'task_id': task_id, 'status': status, 'inserted': inserted, 'log_path': log_path, 'tail': tail})
 
 
 # 审核页面模板

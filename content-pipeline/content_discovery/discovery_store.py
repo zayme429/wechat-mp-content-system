@@ -43,6 +43,8 @@ def init_db(db_path: str = DEFAULT_DB_PATH) -> None:
               heat_evidence TEXT,
               fit_score REAL,
               fit_evidence TEXT,
+              quality_score REAL,
+              run_id TEXT,
               tags_json TEXT,
               fetched_at INTEGER NOT NULL
             );
@@ -52,6 +54,32 @@ def init_db(db_path: str = DEFAULT_DB_PATH) -> None:
         con.execute('CREATE INDEX IF NOT EXISTS idx_candidates_heat ON content_candidates(heat_score)')
         con.execute('CREATE INDEX IF NOT EXISTS idx_candidates_fit ON content_candidates(fit_score)')
         con.execute('CREATE UNIQUE INDEX IF NOT EXISTS idx_candidates_url ON content_candidates(url)')
+        con.execute('CREATE INDEX IF NOT EXISTS idx_candidates_run ON content_candidates(run_id)')
+
+        # Forward-compatible schema upgrades
+        try:
+            con.execute('ALTER TABLE content_candidates ADD COLUMN quality_score REAL')
+        except Exception:
+            pass
+        try:
+            con.execute('ALTER TABLE content_candidates ADD COLUMN run_id TEXT')
+        except Exception:
+            pass
+
+        con.execute(
+            """
+            CREATE TABLE IF NOT EXISTS discovery_runs (
+              task_id TEXT PRIMARY KEY,
+              persona TEXT NOT NULL,
+              planned_queries_json TEXT,
+              log_path TEXT,
+              status TEXT,
+              started_at INTEGER NOT NULL,
+              finished_at INTEGER
+            );
+            """
+        )
+        con.execute('CREATE INDEX IF NOT EXISTS idx_runs_persona_started ON discovery_runs(persona, started_at)')
 
         con.execute(
             """
@@ -82,8 +110,8 @@ def upsert_candidate(db_path: str, c: Dict[str, Any]) -> None:
             """
             INSERT INTO content_candidates(
               persona, query, title, url, source, author, published_at, snippet,
-              heat_score, heat_evidence, fit_score, fit_evidence, tags_json, fetched_at
-            ) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?)
+              heat_score, heat_evidence, fit_score, fit_evidence, quality_score, run_id, tags_json, fetched_at
+            ) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)
             ON CONFLICT(url) DO UPDATE SET
               persona=excluded.persona,
               query=excluded.query,
@@ -96,6 +124,8 @@ def upsert_candidate(db_path: str, c: Dict[str, Any]) -> None:
               heat_evidence=excluded.heat_evidence,
               fit_score=excluded.fit_score,
               fit_evidence=excluded.fit_evidence,
+              quality_score=excluded.quality_score,
+              run_id=excluded.run_id,
               tags_json=excluded.tags_json,
               fetched_at=excluded.fetched_at
             """,
@@ -112,6 +142,8 @@ def upsert_candidate(db_path: str, c: Dict[str, Any]) -> None:
                 c.get('heat_evidence'),
                 c.get('fit_score'),
                 c.get('fit_evidence'),
+                c.get('quality_score'),
+                c.get('run_id'),
                 tags_json,
                 fetched_at,
             ),
@@ -141,6 +173,8 @@ def list_candidates(
     q: Optional[str] = None,
     min_heat: Optional[float] = None,
     min_fit: Optional[float] = None,
+    min_quality: Optional[float] = None,
+    run_id: Optional[str] = None,
     limit: int = 200,
 ) -> List[Dict[str, Any]]:
     init_db(db_path)
@@ -159,6 +193,12 @@ def list_candidates(
     if min_fit is not None:
         where.append('(fit_score IS NOT NULL AND fit_score >= ?)')
         params.append(float(min_fit))
+    if min_quality is not None:
+        where.append('(quality_score IS NOT NULL AND quality_score >= ?)')
+        params.append(float(min_quality))
+    if run_id:
+        where.append('run_id = ?')
+        params.append(run_id)
 
     sql = (
         'SELECT * FROM content_candidates '

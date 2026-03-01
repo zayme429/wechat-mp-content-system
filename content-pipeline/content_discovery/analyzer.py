@@ -36,7 +36,8 @@ persona描述：{persona_desc}
 要求：
 1) 输出必须是 JSON（不要 Markdown）
 2) 字段：
-   - fit_score: 0-100 的整数
+   - fit_score: 0-100 的整数（是不是这个 persona 会喜欢）
+   - quality_score: 0-100 的整数（只看信息密度/可读性/具体性，不看是否喜欢）
    - like_prob: 0-1 小数
    - reasons: 3-6条，具体而非空话
    - evidence: 从标题/摘要中摘取 2-4 个短语作为证据（必须来自给定文本）
@@ -48,15 +49,18 @@ persona描述：{persona_desc}
     try:
         j = json.loads(raw)
         fit = int(max(0, min(100, int(j.get('fit_score', 0)))))
+        quality = int(max(0, min(100, int(j.get('quality_score', 0)))))
         like_prob = float(j.get('like_prob', 0.0))
         return {
             'fit_score': fit,
+            'quality_score': quality,
             'fit_evidence': json.dumps(
                 {
                     'reasons': j.get('reasons', []),
                     'evidence': j.get('evidence', []),
                     'tags': j.get('tags', []),
                     'like_prob': like_prob,
+                    'quality_score': quality,
                 },
                 ensure_ascii=False,
             ),
@@ -66,6 +70,7 @@ persona描述：{persona_desc}
         # conservative fallback
         return {
             'fit_score': 0,
+            'quality_score': 0,
             'fit_evidence': json.dumps({'raw': raw[:800]}, ensure_ascii=False),
             'tags': [],
         }

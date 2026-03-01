@@ -67,6 +67,8 @@ def main() -> int:
             heat = estimate_heat(r, rank=idx)
             fit = analyze_fit(persona, title=title, snippet=snippet, url=url)
 
+            run_id = os.environ.get('DISCOVERY_RUN_ID')
+
             cand = {
                 'persona': persona,
                 'query': q,
@@ -80,13 +82,15 @@ def main() -> int:
                 'heat_evidence': heat['heat_evidence'],
                 'fit_score': fit['fit_score'],
                 'fit_evidence': fit['fit_evidence'],
+                'quality_score': fit.get('quality_score', 0),
+                'run_id': run_id,
                 'tags': fit.get('tags') or [],
                 'fetched_at': now_ts(),
             }
 
             upsert_candidate(args.db_path, cand)
             total += 1
-            print('UPSERT', persona, fit['fit_score'], int(heat['heat_score']), title[:60])
+            print('UPSERT', persona, fit['fit_score'], fit.get('quality_score', 0), int(heat['heat_score']), title[:60])
             time.sleep(max(0.0, args.sleep))
 
     print('DONE total', total, 'db', args.db_path)
