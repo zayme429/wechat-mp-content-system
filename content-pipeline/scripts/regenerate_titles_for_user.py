@@ -98,19 +98,34 @@ def main() -> int:
     ap.add_argument('--article-id', action='append', default=[])
     ap.add_argument('--user-id', default='')
     ap.add_argument('--revision-needed', action='store_true')
+    ap.add_argument('--user-last-n', type=int, default=0, help='Regenerate titles for last N articles of given --user-id')
     args = ap.parse_args()
 
     if args.user_id == 'insurance_agent':
         raise SystemExit('Refusing to touch insurance_agent')
 
-    con = sqlite3.connect(LIB_DB)
+    con = sqlite3.connect(LIB_DB, timeout=30)
     con.row_factory = sqlite3.Row
+    con.execute('PRAGMA busy_timeout=30000')
     cur = con.cursor()
 
     targets = []
     if args.revision_needed:
         cur.execute("select article_id,topic,angle,content,file_path from articles where status='reviewed_revision_needed'")
         targets = cur.fetchall()
+    elif args.user_last_n and args.user_id:
+        up = sqlite3.connect(UP_DB)
+        upcur = up.cursor()
+        upcur.execute(
+            'select article_id from user_articles where user_id=? order by id desc limit ?',
+            (args.user_id, args.user_last_n),
+        )
+        ids = [r[0] for r in upcur.fetchall()]
+        up.close()
+        if ids:
+            q = 'select article_id,topic,angle,content,file_path from articles where article_id in (%s)' % (','.join('?'*len(ids)))
+            cur.execute(q, ids)
+            targets = cur.fetchall()
     elif args.article_id:
         q = 'select article_id,topic,angle,content,file_path from articles where article_id in (%s)' % (','.join('?'*len(args.article_id)))
         cur.execute(q, args.article_id)
