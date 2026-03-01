@@ -81,7 +81,8 @@ class DiverseArticleGenerator:
         }
     ]
     
-    def __init__(self):
+    def __init__(self, user_id: str = None):
+        self.user_id = user_id
         self.generator = ContentGenerator()
         self.config = self._load_config()
     
@@ -216,19 +217,48 @@ class DiverseArticleGenerator:
         return min(score, 10.0)
     
     def _extract_title(self, content: str, topic: str, angle_name: str) -> str:
-        """从内容中提取标题"""
+        """生成/提取标题。
+
+        - 默认行为：从正文第一行提取（不改变既有逻辑）
+        - 对 tech_enthusiast：如果存在标题风格记忆文件，则用 LLM 生成标题
+        """
+        # tech 走定制标题风格
+        if self.user_id:
+            try:
+                from article_library.title_style_manager import load_title_style
+
+                style = load_title_style(self.user_id)
+                if style:
+                    prompt = (
+                        "你将根据文章内容生成一个标题。\n\n"
+                        "【用户标题风格要求】\n"
+                        f"{style.instructions}\n\n"
+                        "【文章主题】\n"
+                        f"{topic}\n\n"
+                        "【写作角度】\n"
+                        f"{angle_name}\n\n"
+                        "【文章内容节选】\n"
+                        f"{content[:1200]}\n\n"
+                        "请输出一个标题。"
+                    )
+                    title = self.generator._call_llm(prompt, temperature=0.6).strip()
+                    # 简单清理
+                    title = title.strip().strip('"').strip("'")
+                    if 5 <= len(title) <= 80:
+                        return title
+            except Exception:
+                pass
+
+        # 默认：从内容中提取标题
         lines = content.strip().split('\n')
-        
-        # 找第一行非空内容
+
         for line in lines:
             line = line.strip()
             if line and not line.startswith('#') and len(line) > 5:
-                # 清理Markdown标题标记
                 title = line.lstrip('#').strip()
                 if len(title) < 100:
                     return title
-        
-        # 默认标题
+
         return f"{topic}：{angle_name}视角"
     
     def generate_custom_count(self, topic: str, count: int, 

@@ -39,8 +39,13 @@ class SmartArticleService:
         
         print("✅ 智能文章服务初始化完成")
     
-    def handle_request(self, user_input: str, user_email: str = None, 
-                       force_generate: bool = False) -> Dict:
+    def handle_request(
+        self,
+        user_input: str,
+        user_email: str = None,
+        force_generate: bool = False,
+        user_id: str = None,
+    ) -> Dict:
         """
         处理用户请求
         
@@ -108,7 +113,7 @@ class SmartArticleService:
                 return search_result
             else:
                 print("  查库未命中，转为生成")
-                return self._handle_generate_intent(intent_result, user_email)
+                return self._handle_generate_intent(intent_result, user_email, user_id=user_id)
     
     def _handle_search_intent(self, intent_result: Dict, user_email: str = None) -> Dict:
         """处理查库意图"""
@@ -149,7 +154,7 @@ class SmartArticleService:
                 'message': '文章库中没有匹配的文章'
             }
     
-    def _handle_generate_intent(self, intent_result: Dict, user_email: str = None) -> Dict:
+    def _handle_generate_intent(self, intent_result: Dict, user_email: str = None, user_id: str = None) -> Dict:
         """处理生成意图"""
         print("\n✍️ 步骤2: 生成新文章...")
         
@@ -159,8 +164,11 @@ class SmartArticleService:
         count = self._extract_count_from_requirements(intent_result.get('requirements', {}))
         print(f"  将生成 {count} 篇候选文章")
         
-        # 生成文章
-        candidates = self.generator.generate_custom_count(topic, count=count)
+        # 生成文章（按用户标题风格区分）
+        generator = self.generator
+        if user_id:
+            generator = DiverseArticleGenerator(user_id=user_id)
+        candidates = generator.generate_custom_count(topic, count=count)
         
         if not candidates:
             return {
