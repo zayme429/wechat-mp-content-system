@@ -50,13 +50,7 @@ def init_db(db_path: str = DEFAULT_DB_PATH) -> None:
             );
             """
         )
-        con.execute('CREATE INDEX IF NOT EXISTS idx_candidates_persona ON content_candidates(persona)')
-        con.execute('CREATE INDEX IF NOT EXISTS idx_candidates_heat ON content_candidates(heat_score)')
-        con.execute('CREATE INDEX IF NOT EXISTS idx_candidates_fit ON content_candidates(fit_score)')
-        con.execute('CREATE UNIQUE INDEX IF NOT EXISTS idx_candidates_url ON content_candidates(url)')
-        con.execute('CREATE INDEX IF NOT EXISTS idx_candidates_run ON content_candidates(run_id)')
-
-        # Forward-compatible schema upgrades
+        # Forward-compatible schema upgrades (must run before creating indexes on new columns)
         try:
             con.execute('ALTER TABLE content_candidates ADD COLUMN quality_score REAL')
         except Exception:
@@ -65,6 +59,12 @@ def init_db(db_path: str = DEFAULT_DB_PATH) -> None:
             con.execute('ALTER TABLE content_candidates ADD COLUMN run_id TEXT')
         except Exception:
             pass
+
+        con.execute('CREATE INDEX IF NOT EXISTS idx_candidates_persona ON content_candidates(persona)')
+        con.execute('CREATE INDEX IF NOT EXISTS idx_candidates_heat ON content_candidates(heat_score)')
+        con.execute('CREATE INDEX IF NOT EXISTS idx_candidates_fit ON content_candidates(fit_score)')
+        con.execute('CREATE UNIQUE INDEX IF NOT EXISTS idx_candidates_url ON content_candidates(url)')
+        con.execute('CREATE INDEX IF NOT EXISTS idx_candidates_run ON content_candidates(run_id)')
 
         con.execute(
             """
