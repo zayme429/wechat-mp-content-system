@@ -66,12 +66,18 @@ def _leading_token(t: str) -> str:
     return t[:4]
 
 
+def _extract_tokens(title: str) -> list[str]:
+    # alnum tokens (brands/models/numbers) that often indicate hallucination
+    return re.findall(r"[A-Za-z0-9][A-Za-z0-9\-]{2,}", title or "")
+
+
 def generate_title(
     user_id: str,
     topic: str,
     angle: str,
     content: str,
     recent_titles: list[str],
+    batch_state: dict,
 ) -> str:
     """Goal-driven title generation without prescribing a single template.
 
@@ -146,18 +152,44 @@ def generate_title(
     recent_bigrams = [_bigrams(t) for t in recent[:30]]
     recent_prefixes = {_leading_token(t) for t in recent[:60]}
 
+    used_prefixes = batch_state.get('used_prefixes', set())
+    colon_count = int(batch_state.get('colon_count', 0))
+    processed_count = int(batch_state.get('processed_count', 0))
+
+    content_norm = re.sub(r"\s+", "", (content or ""))
+
     def novelty(t: str) -> float:
         bg = _bigrams(t)
         sim = 0.0
         for rbg in recent_bigrams:
             sim = max(sim, _jaccard(bg, rbg))
         nov = 1.0 - sim
-        # penalize repeating the same leading token within a user batch
-        if _leading_token(t) in recent_prefixes:
-            nov -= 0.12
-        # penalize too many colon-like titles to avoid uniform "X：Y"
-        if '：' in t or ':' in t:
-            nov -= 0.08
+
+        lead = _leading_token(t)
+        # strong penalty: repeating leading token in recent history OR in this batch
+        if lead in recent_prefixes:
+            nov -= 0.22
+        if lead in used_prefixes:
+            nov -= 0.28
+
+        # strong penalty: too many colon-like titles to avoid uniform "X：Y"
+        has_colon = ('：' in t) or (':' in t)
+        if has_colon:
+            nov -= 0.28
+            # if batch already has many colons, punish harder
+            ratio = (colon_count / processed_count) if processed_count else 0.0
+            if ratio >= 0.25:
+                nov -= 0.18
+
+        # hallucination penalty: alnum tokens not present in content excerpt
+        toks = _extract_tokens(t)
+        missing = 0
+        for tok in toks[:4]:
+            if tok and tok not in content_norm and tok.lower() not in content_norm.lower():
+                missing += 1
+        if missing:
+            nov -= 0.12 * missing
+
         return max(0.0, nov)
 
     best = None
@@ -165,12 +197,22 @@ def generate_title(
     for t in cands:
         s = scores.get(t, 5.0)
         n = novelty(t)
-        total = 0.62 * (s / 10.0) + 0.38 * n
+        total = 0.58 * (s / 10.0) + 0.42 * n
         if total > best_score:
             best_score = total
             best = t
 
-    return _clean_title(best or cands[0])
+    best = _clean_title(best or cands[0])
+
+    # update batch_state for diversity
+    batch_state.setdefault('used_prefixes', set()).add(_leading_token(best))
+    batch_state['processed_count'] = processed_count + 1
+    if '：' in best or ':' in best:
+        batch_state['colon_count'] = colon_count + 1
+    else:
+        batch_state['colon_count'] = colon_count
+
+    return best
 
 
 def update_markdown_title(file_path: str, title: str) -> None:
@@ -247,6 +289,7 @@ def main() -> int:
     upcur = up.cursor()
 
     updated = 0
+    batch_state = {'used_prefixes': set(), 'colon_count': 0, 'processed_count': 0}
     for row in targets:
         aid = row['article_id']
         user_id = args.user_id
@@ -275,7 +318,7 @@ def main() -> int:
         title = ''
         for attempt in range(1, args.retries + 1):
             try:
-                title = generate_title(user_id, row['topic'], row['angle'], row['content'], recent_titles)
+                title = generate_title(user_id, row['topic'], row['angle'], row['content'], recent_titles, batch_state)
                 break
             except Exception as e:
                 msg = str(e)
