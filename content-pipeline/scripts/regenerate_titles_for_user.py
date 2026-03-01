@@ -45,18 +45,24 @@ def _clean_title(t: str) -> str:
     return t.strip()
 
 
-def generate_title(user_id: str, topic: str, angle: str, content: str) -> str:
+def generate_title(user_id: str, topic: str, angle: str, content: str, recent_titles: list[str]) -> str:
     style = load_title_style(user_id)
     style_text = style.instructions if style else ''
+
+    recent_text = "\n".join(f"- {t}" for t in (recent_titles or [])[:20])
 
     prompt = (
         "你将为一篇文章生成一个公众号标题。\n"
         "硬性要求：\n"
         "- 只输出标题本身（不要加\"标题：\"前缀，不要引号，不要Markdown加粗）。\n"
         "- 16-32个中文字符优先，最长不超过36个中文字符。\n"
-        "- 要有吸引力，但不要标题党。\n\n"
+        "- 要有吸引力，但不要标题党。\n"
+        "- 提高多样性：尽量不要复用相同开头词（例如：探索/从X到Y/未来趋势/实战/指南）。\n"
+        "- 标题结构尽量换一种（问句/对比/清单/结论先行/反直觉/入坑路线/场景化）。\n\n"
         "【用户标题偏好（通用+专用，必须遵守）】\n"
         f"{style_text}\n\n"
+        "【该用户最近已用过的标题（请避免相似结构/措辞）】\n"
+        f"{recent_text}\n\n"
         "【主题】\n"
         f"{topic}\n\n"
         "【角度】\n"
@@ -66,7 +72,7 @@ def generate_title(user_id: str, topic: str, angle: str, content: str) -> str:
     )
 
     gen = ContentGenerator()
-    t = gen._call_llm(prompt, temperature=0.7)
+    t = gen._call_llm(prompt, temperature=0.9)
     return _clean_title(t)
 
 
@@ -155,7 +161,22 @@ def main() -> int:
             print('SKIP insurance_agent', aid)
             continue
 
-        title = generate_title(user_id, row['topic'], row['angle'], row['content'])
+        # collect some recent titles for diversity constraint
+        upcur.execute('select article_id from user_articles where user_id=? order by id desc limit 60', (user_id,))
+        recent_ids = [r[0] for r in upcur.fetchall()]
+        recent_titles = []
+        if recent_ids:
+            q2 = 'select title from articles where article_id in (%s)' % (','.join('?'*len(recent_ids)))
+            cur.execute(q2, recent_ids)
+            recent_titles = [(_clean_title(r[0]) if r and r[0] else '') for r in cur.fetchall()]
+            recent_titles = [t for t in recent_titles if t]
+
+        try:
+            title = generate_title(user_id, row['topic'], row['angle'], row['content'], recent_titles)
+        except Exception as e:
+            print('ERROR title generation', aid, 'user', user_id, str(e))
+            continue
+
         if not title:
             print('SKIP empty title', aid)
             continue

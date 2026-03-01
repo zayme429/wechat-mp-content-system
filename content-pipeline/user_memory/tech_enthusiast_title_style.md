@@ -6,6 +6,7 @@ Goal: make the title feel like a tech enthusiast / product person wrote it, not 
 
 Rules:
 - Prefer concise, information-dense, slightly geeky titles.
+- Diversity: vary structures across a batch; avoid repeating the same opener words.
 - Avoid insurance/销售/客户经营/转介绍/理赔/保单/代理人等措辞。
 - Avoid鸡汤/情绪化夸张（例如："让我明白"、"你一定要"、"太真实了"）。
 - Use concrete nouns: 具体技术名词/产品特性/使用场景/对比结论。
