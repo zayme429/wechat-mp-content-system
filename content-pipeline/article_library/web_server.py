@@ -1278,13 +1278,23 @@ async function runCollect(){
   pollRun(j.task_id);
 }
 
+function selectedRunKey(){
+  const persona = document.getElementById('persona').value || 'all';
+  return 'discover_selected_run_' + persona;
+}
+
 function setSelectedRun(taskId){
-  if (!taskId) return;
-  localStorage.setItem('discover_selected_run', taskId);
+  const k = selectedRunKey();
+  if (!taskId) {
+    localStorage.removeItem(k);
+    return;
+  }
+  localStorage.setItem(k, taskId);
 }
 
 function getSelectedRun(){
-  return localStorage.getItem('discover_selected_run') || '';
+  const k = selectedRunKey();
+  return localStorage.getItem(k) || '';
 }
 
 async function pollRun(taskId){
@@ -1409,6 +1419,11 @@ async function loadRuns(){
     return;
   }
 
+  // auto-select latest run for this persona if none selected
+  if (!getSelectedRun() && j.runs[0] && j.runs[0].task_id) {
+    setSelectedRun(j.runs[0].task_id);
+  }
+
   document.getElementById('run_meta').textContent = `runs=${j.runs.length} | selected=${getSelectedRun() || '(none)'}`;
 
   for (const run of j.runs) {
@@ -1434,6 +1449,7 @@ async function loadRuns(){
 }
 
 document.getElementById('persona').addEventListener('change', async () => {
+  // persona changed: use per-persona selected run key; if none, auto-select latest in loadRuns()
   await loadRuns();
   await loadConclusion();
   const sel = getSelectedRun();
