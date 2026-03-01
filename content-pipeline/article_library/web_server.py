@@ -902,6 +902,7 @@ DISCOVERY_TEMPLATE = '''
             <div class="actions">
                 <button class="btn btn-primary" onclick="loadItems()">刷新列表</button>
                 <button class="btn" onclick="toggleImport()">导入 JSONL</button>
+                <button class="btn" onclick="runCollect()">运行采集（Tavily）</button>
             </div>
 
             <div class="row2" id="import_box" style="display:none;">
@@ -965,6 +966,21 @@ async function importJsonl(){
   alert(`import ok=${j.ok} bad=${j.bad}`);
   await loadStats();
   await loadItems();
+}
+
+async function runCollect(){
+  const persona = document.getElementById('persona').value || 'tech_enthusiast';
+  const r = await fetch('/discover/api/run', {
+    method: 'POST',
+    headers: {'Content-Type':'application/json'},
+    body: JSON.stringify({persona})
+  });
+  const j = await r.json();
+  if (!j.ok) {
+    alert('启动失败：' + (j.error || 'unknown'));
+    return;
+  }
+  alert(`已启动采集任务：${j.task_id}`);
 }
 
 function esc(s){
@@ -1326,6 +1342,39 @@ def discover_api_import():
     jsonl = data.get('jsonl') or ''
     ok, bad = discovery_import_jsonl(DISCOVERY_DB_PATH, jsonl)
     return jsonify({'ok': ok, 'bad': bad, 'db_path': DISCOVERY_DB_PATH})
+
+
+@app.route('/discover/api/run', methods=['POST'])
+def discover_api_run():
+    data = request.get_json(silent=True) or {}
+    persona = (data.get('persona') or '').strip() or 'tech_enthusiast'
+
+    # run as background process; results land in discovery.db
+    import uuid
+    import subprocess
+
+    task_id = str(uuid.uuid4())
+    log_path = f"/root/.openclaw/workspace/content-pipeline/content_discovery/run_{task_id}.log"
+
+    cmd = [
+        'python3',
+        '-u',
+        '/root/.openclaw/workspace/content-pipeline/scripts/discover_collect.py',
+        '--persona',
+        persona,
+        '--db-path',
+        DISCOVERY_DB_PATH,
+    ]
+
+    env = dict(os.environ)
+    # ensure tavily env is present (loaded at startup if possible)
+    if not env.get('TAVILY_API_KEY'):
+        return jsonify({'ok': False, 'error': 'Missing TAVILY_API_KEY'}), 400
+
+    with open(log_path, 'w', encoding='utf-8') as f:
+        subprocess.Popen(cmd, stdout=f, stderr=f, env=env, cwd='/root/.openclaw/workspace/content-pipeline')
+
+    return jsonify({'ok': True, 'task_id': task_id, 'log_path': log_path, 'cmd': cmd, 'db_path': DISCOVERY_DB_PATH})
 
 
 # 审核页面模板
