@@ -15,8 +15,8 @@ def plan_queries(persona: str, search_prompt: str, max_queries: int = 6) -> List
 
     prompt = f"""你是搜索策略规划器。我们要为 persona={persona} 做内容采集。
 
-用户提供的搜索意图（prompt）：
-{search_prompt}
+用户提供的搜索意图（prompt，已截断）：
+{(search_prompt or '')[:2000]}
 
 请你输出一个 JSON 数组（不要 Markdown），数组元素是字符串，每个字符串是一条可以用于搜索引擎/站内搜索的查询关键词组合。
 
