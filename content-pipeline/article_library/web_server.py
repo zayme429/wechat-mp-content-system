@@ -15,6 +15,13 @@ sys.path.insert(0, '/root/.openclaw/workspace/content-pipeline')
 from article_library.library import ArticleLibrary
 from article_library.user_manager import UserPreferenceManager
 
+from content_discovery.discovery_store import (
+    DEFAULT_DB_PATH as DISCOVERY_DB_PATH,
+    import_jsonl as discovery_import_jsonl,
+    list_candidates as discovery_list_candidates,
+    stats as discovery_stats,
+)
+
 app = Flask(__name__)
 app.secret_key = 'your-secret-key-here'  # 用于 flash 消息
 
@@ -726,6 +733,279 @@ QUERY_TEMPLATE = '''
 
 
 # 编辑页面模板
+DISCOVERY_TEMPLATE = '''
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>内容搜索器 | 开发者分析</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', sans-serif;
+            background: #f5f5f5;
+            color: #333;
+            line-height: 1.6;
+        }
+        .container { max-width: 1400px; margin: 0 auto; padding: 20px; }
+        header {
+            background: linear-gradient(135deg, #0ea5e9 0%, #0369a1 100%);
+            color: white;
+            padding: 24px 28px;
+            border-radius: 12px;
+            margin-bottom: 18px;
+        }
+        h1 { font-size: 22px; margin-bottom: 6px; }
+        .subtitle { opacity: 0.9; font-size: 13px; }
+
+        .nav {
+            display: flex;
+            gap: 10px;
+            margin: 14px 0 6px;
+            flex-wrap: wrap;
+        }
+        .nav a {
+            text-decoration: none;
+            background: rgba(255,255,255,0.14);
+            color: white;
+            padding: 6px 10px;
+            border-radius: 999px;
+            font-size: 13px;
+        }
+
+        .panel {
+            background: white;
+            padding: 18px;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+            margin-bottom: 14px;
+        }
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 12px;
+        }
+        label { font-size: 12px; color: #666; display: block; margin-bottom: 6px; }
+        input, select, textarea {
+            width: 100%;
+            padding: 10px 12px;
+            border: 1px solid #e5e7eb;
+            border-radius: 10px;
+            font-size: 14px;
+        }
+        textarea { min-height: 140px; font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', monospace; }
+        .actions { display: flex; gap: 10px; justify-content: flex-end; margin-top: 12px; flex-wrap: wrap; }
+        .btn {
+            padding: 9px 14px;
+            border-radius: 10px;
+            border: 1px solid #e5e7eb;
+            background: #f8fafc;
+            cursor: pointer;
+            font-size: 13px;
+        }
+        .btn-primary {
+            background: #0ea5e9;
+            border-color: #0ea5e9;
+            color: white;
+        }
+        .kpis { display: flex; gap: 12px; flex-wrap: wrap; }
+        .kpi { background: #f8fafc; border: 1px solid #e5e7eb; border-radius: 12px; padding: 10px 12px; }
+        .kpi .v { font-weight: 700; font-size: 18px; color: #0ea5e9; }
+        .kpi .t { font-size: 12px; color: #666; }
+
+        table { width: 100%; border-collapse: collapse; }
+        th { text-align: left; font-size: 12px; color: #64748b; padding: 10px; border-bottom: 2px solid #eef2f7; white-space: nowrap; }
+        td { padding: 10px; border-bottom: 1px solid #f1f5f9; font-size: 13px; vertical-align: top; }
+        tr:hover { background: #f8fafc; }
+        .mono { font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono', monospace; }
+        .pill {
+            display: inline-block;
+            padding: 2px 8px;
+            border-radius: 999px;
+            background: #eef2ff;
+            color: #3730a3;
+            font-size: 12px;
+        }
+        .score {
+            font-weight: 700;
+        }
+        .muted { color: #64748b; }
+        .small { font-size: 12px; }
+        .row2 { margin-top: 10px; display: grid; grid-template-columns: 1fr; gap: 10px; }
+
+        @media (max-width: 760px) {
+            .actions { justify-content: stretch; }
+            .btn { flex: 1; }
+            th:nth-child(4), td:nth-child(4) { display: none; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>内容搜索器 | 开发者分析</h1>
+            <div class="subtitle">用于采集外部内容候选（标题+摘要+热度+偏好匹配），并对不同 persona 的偏好进行可视化与抽样复核。</div>
+            <div class="nav">
+                <a href="/query">文章查询</a>
+                <a href="/library">文章库</a>
+                <a href="/discover">内容搜索器</a>
+            </div>
+        </header>
+
+        <div class="panel">
+            <div class="kpis" id="kpis">
+                <div class="kpi"><div class="v" id="kpi_total">-</div><div class="t">候选总数</div></div>
+                <div class="kpi"><div class="v" id="kpi_tech">-</div><div class="t">tech_enthusiast</div></div>
+                <div class="kpi"><div class="v" id="kpi_jp">-</div><div class="t">jp_music_fan</div></div>
+            </div>
+        </div>
+
+        <div class="panel">
+            <div class="grid">
+                <div>
+                    <label>Persona</label>
+                    <select id="persona">
+                        <option value="">(all)</option>
+                        <option value="tech_enthusiast">tech_enthusiast</option>
+                        <option value="jp_music_fan">jp_music_fan</option>
+                    </select>
+                </div>
+                <div>
+                    <label>关键词（title/snippet/url）</label>
+                    <input id="q" placeholder="例如：工具链 / 高燃 / 歌单 / 复盘" />
+                </div>
+                <div>
+                    <label>min heat_score</label>
+                    <input id="min_heat" type="number" step="1" placeholder="例如：60" />
+                </div>
+                <div>
+                    <label>min fit_score</label>
+                    <input id="min_fit" type="number" step="1" placeholder="例如：70" />
+                </div>
+            </div>
+            <div class="actions">
+                <button class="btn btn-primary" onclick="loadItems()">刷新列表</button>
+                <button class="btn" onclick="toggleImport()">导入 JSONL</button>
+            </div>
+
+            <div class="row2" id="import_box" style="display:none;">
+                <div class="small muted">JSONL 每行一个对象：至少包含 `persona` 和 `title`，建议包含 `url/source/snippet/heat_score/fit_score/...`。url 存在时会去重更新。</div>
+                <textarea id="jsonl" class="mono" placeholder='{"persona":"tech_enthusiast","title":"...","url":"https://...","heat_score":80,"fit_score":72,"snippet":"..."}'></textarea>
+                <div class="actions">
+                    <button class="btn btn-primary" onclick="importJsonl()">导入</button>
+                    <button class="btn" onclick="toggleImport()">收起</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="panel">
+            <div class="small muted" id="meta">-</div>
+            <div style="overflow:auto;">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>persona</th>
+                            <th>热度</th>
+                            <th>匹配</th>
+                            <th>来源</th>
+                            <th>标题 / 摘要</th>
+                        </tr>
+                    </thead>
+                    <tbody id="rows">
+                        <tr><td colspan="5" class="muted">加载中...</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+<script>
+async function loadStats() {
+  const r = await fetch('/discover/api/stats');
+  const j = await r.json();
+  document.getElementById('kpi_total').textContent = j.total ?? '-';
+  let tech = 0, jp = 0;
+  (j.by_persona || []).forEach(x => {
+    if (x.persona === 'tech_enthusiast') tech = x.c;
+    if (x.persona === 'jp_music_fan') jp = x.c;
+  });
+  document.getElementById('kpi_tech').textContent = tech;
+  document.getElementById('kpi_jp').textContent = jp;
+}
+
+function toggleImport(){
+  const el = document.getElementById('import_box');
+  el.style.display = (el.style.display === 'none') ? 'block' : 'none';
+}
+
+async function importJsonl(){
+  const text = document.getElementById('jsonl').value;
+  const r = await fetch('/discover/api/import', {
+    method: 'POST',
+    headers: {'Content-Type':'application/json'},
+    body: JSON.stringify({jsonl: text})
+  });
+  const j = await r.json();
+  alert(`import ok=${j.ok} bad=${j.bad}`);
+  await loadStats();
+  await loadItems();
+}
+
+function esc(s){
+  return (s||'').replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;');
+}
+
+async function loadItems(){
+  const persona = document.getElementById('persona').value;
+  const q = document.getElementById('q').value;
+  const min_heat = document.getElementById('min_heat').value;
+  const min_fit = document.getElementById('min_fit').value;
+  const params = new URLSearchParams();
+  if (persona) params.set('persona', persona);
+  if (q) params.set('q', q);
+  if (min_heat) params.set('min_heat', min_heat);
+  if (min_fit) params.set('min_fit', min_fit);
+  const r = await fetch('/discover/api/items?' + params.toString());
+  const j = await r.json();
+  document.getElementById('meta').textContent = `返回 ${j.items.length} 条 | 按 heat*fit 排序 | db=${j.db_path}`;
+
+  const rows = document.getElementById('rows');
+  rows.innerHTML = '';
+  if (!j.items.length) {
+    rows.innerHTML = '<tr><td colspan="5" class="muted">暂无数据（可先导入 JSONL 验证 UI）</td></tr>';
+    return;
+  }
+
+  for (const it of j.items) {
+    const tr = document.createElement('tr');
+    const heat = (it.heat_score == null) ? '-' : Number(it.heat_score).toFixed(0);
+    const fit = (it.fit_score == null) ? '-' : Number(it.fit_score).toFixed(0);
+    const src = esc(it.source || '-');
+    const url = it.url ? `<a href="${esc(it.url)}" target="_blank" rel="noreferrer" class="mono">link</a>` : '<span class="muted">-</span>';
+    const title = esc(it.title || '');
+    const snippet = esc(it.snippet || '');
+    tr.innerHTML = `
+      <td><span class="pill">${esc(it.persona || '')}</span></td>
+      <td class="score">${heat}</td>
+      <td class="score">${fit}</td>
+      <td>${src}<div class="small">${url}</div></td>
+      <td>
+        <div style="font-weight:700;">${title}</div>
+        <div class="small muted">${snippet}</div>
+      </td>
+    `;
+    rows.appendChild(tr);
+  }
+}
+
+loadStats().then(loadItems);
+</script>
+</body>
+</html>
+'''
+
+
 EDIT_TEMPLATE = '''
 <!DOCTYPE html>
 <html lang="zh-CN">
@@ -983,6 +1263,54 @@ def library_view():
                                   current_user=current_user,
                                   all_users=all_users,
                                   draft_sync_result=draft_sync_result)
+
+
+@app.route('/discover')
+def discover_view():
+    return render_template_string(DISCOVERY_TEMPLATE)
+
+
+@app.route('/discover/api/stats')
+def discover_api_stats():
+    s = discovery_stats(DISCOVERY_DB_PATH)
+    s['db_path'] = DISCOVERY_DB_PATH
+    return jsonify(s)
+
+
+@app.route('/discover/api/items')
+def discover_api_items():
+    persona = request.args.get('persona') or None
+    q = request.args.get('q') or None
+
+    min_heat = request.args.get('min_heat')
+    min_fit = request.args.get('min_fit')
+
+    try:
+        min_heat_v = float(min_heat) if min_heat not in (None, '') else None
+    except Exception:
+        min_heat_v = None
+    try:
+        min_fit_v = float(min_fit) if min_fit not in (None, '') else None
+    except Exception:
+        min_fit_v = None
+
+    items = discovery_list_candidates(
+        DISCOVERY_DB_PATH,
+        persona=persona,
+        q=q,
+        min_heat=min_heat_v,
+        min_fit=min_fit_v,
+        limit=200,
+    )
+    return jsonify({'db_path': DISCOVERY_DB_PATH, 'items': items})
+
+
+@app.route('/discover/api/import', methods=['POST'])
+def discover_api_import():
+    data = request.get_json(silent=True) or {}
+    jsonl = data.get('jsonl') or ''
+    ok, bad = discovery_import_jsonl(DISCOVERY_DB_PATH, jsonl)
+    return jsonify({'ok': ok, 'bad': bad, 'db_path': DISCOVERY_DB_PATH})
 
 
 # 审核页面模板
