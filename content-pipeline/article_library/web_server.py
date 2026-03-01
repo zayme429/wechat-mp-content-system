@@ -2050,6 +2050,14 @@ def discover_api_run_status():
             finish_run(task_id, status='finished', db_path=DISCOVERY_DB_PATH)
         except Exception:
             pass
+    elif 'Failed to plan queries from prompt' in all_text or 'No queries provided and search prompt file missing/empty' in all_text:
+        status = 'failed'
+        try:
+            from content_discovery.runs import finish_run
+
+            finish_run(task_id, status='failed', db_path=DISCOVERY_DB_PATH)
+        except Exception:
+            pass
 
     progress = None
     if expected:

@@ -49,7 +49,12 @@ def main() -> int:
         queries = plan_queries(persona, search_prompt, max_queries=6)
 
     if not queries:
-        raise SystemExit('Failed to plan queries from prompt')
+        # Fallback to using the original prompt as a single query so the run shows progress/logs.
+        s = (search_prompt or '').strip()
+        if not s:
+            raise SystemExit('Failed to plan queries from prompt')
+        print('WARN', 'Failed to plan queries from prompt; fallback to prompt itself', flush=True)
+        queries = [s[:80]]
 
     if not os.environ.get('TAVILY_API_KEY'):
         raise SystemExit('Missing TAVILY_API_KEY in environment')

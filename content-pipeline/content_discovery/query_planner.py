@@ -30,8 +30,12 @@ def plan_queries(persona: str, search_prompt: str, max_queries: int = 6) -> List
 """
 
     raw = (gen._call_llm(prompt, temperature=0.2) or '').strip()
-    try:
-        arr = json.loads(raw)
+
+    def _parse_json_array(text: str) -> List[str]:
+        try:
+            arr = json.loads(text)
+        except Exception:
+            return []
         if not isinstance(arr, list):
             return []
         out: List[str] = []
@@ -40,6 +44,22 @@ def plan_queries(persona: str, search_prompt: str, max_queries: int = 6) -> List
                 s = x.strip()
                 if s and s not in out:
                     out.append(s)
-        return out[:max_queries]
-    except Exception:
-        return []
+        return out
+
+    # 1) strict parse
+    out = _parse_json_array(raw)
+
+    # 2) try to extract the first JSON array substring
+    if not out:
+        l = raw.find('[')
+        r = raw.rfind(']')
+        if l != -1 and r != -1 and r > l:
+            out = _parse_json_array(raw[l : r + 1])
+
+    # 3) fallback: use the prompt itself as one query
+    if not out:
+        s = (search_prompt or '').strip()
+        if s:
+            out = [s[:80]]
+
+    return out[:max_queries]
