@@ -56,10 +56,29 @@ def plan_queries(persona: str, search_prompt: str, max_queries: int = 6) -> List
         if l != -1 and r != -1 and r > l:
             out = _parse_json_array(raw[l : r + 1])
 
-    # 3) fallback: use the prompt itself as one query
+    # 3) fallback: heuristic queries by persona (avoid searching the meta prompt itself)
     if not out:
-        s = (search_prompt or '').strip()
-        if s:
-            out = [s[:80]]
+        if persona == 'tech_enthusiast':
+            out = [
+                '工程 实践 复盘 踩坑 总结',
+                '性能 优化 实战 对比 数据',
+                '成本 优化 云 账单 复盘',
+                '架构 演进 取舍 代价 边界条件',
+                '技术 方案 评估 指标 对比',
+                '生产 故障 复盘 根因 解决',
+            ]
+        elif persona == 'jp_music_fan':
+            out = [
+                'J-POP 新歌 安利 歌单',
+                '日摇 现场感 乐评 副歌',
+                '编曲 吉他 鼓点 情绪 推进',
+                '入坑 指南 推荐 歌手 专辑',
+                '燃向 摇滚 现场 Live 体验',
+                '二次元 歌单 热血 高燃',
+            ]
+        else:
+            s = (search_prompt or '').strip()
+            if s:
+                out = [s[:24]]
 
     return out[:max_queries]
