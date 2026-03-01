@@ -84,6 +84,20 @@ QUERY_TEMPLATE = '''
         }
         h1 { font-size: 28px; margin-bottom: 10px; }
         .subtitle { opacity: 0.9; font-size: 14px; }
+        .nav {
+            display: flex;
+            gap: 10px;
+            margin-top: 14px;
+            flex-wrap: wrap;
+        }
+        .nav a {
+            text-decoration: none;
+            background: rgba(255,255,255,0.14);
+            color: white;
+            padding: 6px 10px;
+            border-radius: 999px;
+            font-size: 13px;
+        }
         
         /* Flash 消息 */
         .flash-messages {
@@ -397,9 +411,15 @@ QUERY_TEMPLATE = '''
             <p class="subtitle">
                 当前用户: <strong>{{ current_user.name }}</strong> | 
                 行业: {{ current_user.industry }} |
-                <a href="/query" style="color: white; text-decoration: underline;">🔍 智能查询</a> · 
                 审核 · 编辑 · 批注 · 删除
             </p>
+            <div class="nav">
+                <a href="/">主页</a>
+                <a href="/library">文章库</a>
+                <a href="/query">智能查询</a>
+                <a href="/discover">内容搜索器</a>
+                <a href="/personas">人设与偏好</a>
+            </div>
         </header>
         
         {% with messages = get_flashed_messages(with_categories=true) %}
