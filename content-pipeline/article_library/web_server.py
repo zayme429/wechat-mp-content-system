@@ -32,7 +32,9 @@ from article_library.user_manager import UserPreferenceManager
 
 from content_discovery.discovery_store import (
     DEFAULT_DB_PATH as DISCOVERY_DB_PATH,
+    connect as discovery_connect,
     import_jsonl as discovery_import_jsonl,
+    init_db as discovery_init_db,
     list_candidates as discovery_list_candidates,
     stats as discovery_stats,
 )
