@@ -1474,8 +1474,18 @@ async function loadRuns(){
           await loadRuns();
           return;
         }
-        // immediate UI feedback
+        // immediate UI feedback + persist selection
+        setSelectedRun(taskId);
         document.getElementById('conclusion_meta').textContent = `task=${taskId} status=loading...`;
+        try {
+          await loadRuns();
+          await loadItems();
+        } catch (e) {}
+        const box = document.getElementById('conclusion');
+        if (box && box.scrollIntoView) {
+          box.scrollIntoView({behavior: 'smooth', block: 'start'});
+          try { box.focus(); } catch (e) {}
+        }
         pollRun(taskId);
       });
     }
