@@ -85,6 +85,7 @@ class DiverseArticleGenerator:
         self.user_id = user_id
         self.generator = ContentGenerator()
         self.config = self._load_config()
+        self._style_instructions = self._load_article_style_instructions()
     
     def _load_config(self) -> Dict:
         """加载配置"""
@@ -150,21 +151,37 @@ class DiverseArticleGenerator:
         print(f"\n✅ 生成完成，平均质量分: {sum(c['quality_score'] for c in candidates)/len(candidates):.1f}")
         return candidates
     
+    def _load_article_style_instructions(self) -> str:
+        if not self.user_id:
+            return ""
+        try:
+            from pathlib import Path
+
+            p = Path('/root/.openclaw/workspace/content-pipeline/user_memory') / f"{self.user_id}_article_style.md"
+            if p.exists():
+                return p.read_text(encoding='utf-8').strip()
+        except Exception:
+            pass
+        return ""
+
     def _build_prompt(self, topic: str, angle: Dict, literature: List[Dict] = None) -> str:
         """构建生成提示词"""
-        
+
         # 构建文献参考
         refs_text = ""
         if literature:
             refs_text = "\n参考资料（请在文章中适当引用）：\n"
             for i, ref in enumerate(literature[:5], 1):
-                refs_text += f"[{i}] {ref.get('title', '')} - {ref.get('source', '')}\n"
-        
+                refs_text += f"[{i}] {ref.get('title', '')} - {ref.get('source', '')}\n"        
         # 获取写作要求
         content_prefs = self.config.get('content_strategy', {}).get('content_preferences', {})
         tone = ', '.join(content_prefs.get('tone', ['理性', '克制', '有洞见']))
         must_include = ', '.join(content_prefs.get('must_include', ['具体案例', '数据支撑', '可执行建议']))
         
+        style_text = ""
+        if self._style_instructions:
+            style_text = f"\n\n【用户风格记忆（必须遵守）】\n{self._style_instructions}\n"
+
         prompt = f"""你是一位资深科技专栏作家。请以下面的角度撰写一篇关于「{topic}」的文章：
 
 【写作角度】{angle['name']}
@@ -181,6 +198,7 @@ class DiverseArticleGenerator:
 4. 避免：贩卖焦虑、陈词滥调、简单罗列、过度营销
 5. 必须从这个特定角度切入，不要写成通用文章
 6. 标题要有吸引力，体现角度特色
+{style_text}
 
 请直接输出完整文章内容（包含标题）。"""
         

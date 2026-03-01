@@ -54,18 +54,21 @@ class ContentGenerator:
 
         return {"apiKey": None, "baseUrl": None}
     
-    def _call_llm(self, prompt, temperature=0.7):
+    def _call_llm(self, prompt, temperature=0.7, system_prompt: str = None):
         """调用LLM API"""
         try:
             headers = {
                 'Authorization': f'Bearer {self.api_key}',
                 'Content-Type': 'application/json'
             }
-            
+
+            if system_prompt is None:
+                system_prompt = '你是一位资深的科技专栏作家，专注于AI时代的个人成长与职业发展。'
+
             data = {
                 'model': self.model,
                 'messages': [
-                    {'role': 'system', 'content': '你是一位资深的科技专栏作家，专注于AI时代的个人成长与职业发展。'},
+                    {'role': 'system', 'content': system_prompt},
                     {'role': 'user', 'content': prompt}
                 ],
                 'temperature': temperature,
