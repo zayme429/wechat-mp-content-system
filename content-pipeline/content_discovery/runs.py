@@ -74,10 +74,10 @@ def list_runs(
     limit: int = 20,
 ) -> List[Dict[str, Any]]:
     init_db(db_path)
-    sql = 'SELECT * FROM discovery_runs '
+    sql = 'SELECT * FROM discovery_runs WHERE COALESCE(is_deleted,0)=0 '
     params: List[Any] = []
     if persona:
-        sql += 'WHERE persona=? '
+        sql += 'AND persona=? '
         params.append(persona)
     sql += 'ORDER BY started_at DESC LIMIT ?'
     params.append(int(limit))

@@ -93,6 +93,7 @@ def init_db(db_path: str = DEFAULT_DB_PATH) -> None:
               log_path TEXT,
               status TEXT,
               pid INTEGER,
+              is_deleted INTEGER DEFAULT 0,
               started_at INTEGER NOT NULL,
               finished_at INTEGER
             );
@@ -109,8 +110,29 @@ def init_db(db_path: str = DEFAULT_DB_PATH) -> None:
                 con.execute('ALTER TABLE discovery_runs ADD COLUMN pid INTEGER')
             except Exception:
                 pass
+        if 'is_deleted' not in run_cols:
+            try:
+                con.execute('ALTER TABLE discovery_runs ADD COLUMN is_deleted INTEGER DEFAULT 0')
+            except Exception:
+                pass
 
         con.execute('CREATE INDEX IF NOT EXISTS idx_runs_persona_started ON discovery_runs(persona, started_at)')
+        con.execute('CREATE INDEX IF NOT EXISTS idx_runs_deleted ON discovery_runs(is_deleted, started_at)')
+
+        con.execute(
+            """
+            CREATE TABLE IF NOT EXISTS candidate_feedback (
+              id INTEGER PRIMARY KEY AUTOINCREMENT,
+              persona TEXT NOT NULL,
+              url TEXT NOT NULL,
+              keep INTEGER,
+              rating INTEGER,
+              comment TEXT,
+              updated_at INTEGER NOT NULL
+            );
+            """
+        )
+        con.execute('CREATE UNIQUE INDEX IF NOT EXISTS idx_feedback_persona_url ON candidate_feedback(persona, url)')
 
         con.execute(
             """
@@ -231,10 +253,16 @@ def list_candidates(
         where.append('run_id = ?')
         params.append(run_id)
 
+    # Filter out candidates from deleted runs (but keep candidates with NULL run_id)
+    where.append('(run_id IS NULL OR run_id NOT IN (SELECT task_id FROM discovery_runs WHERE is_deleted=1))')
+
     sql = (
-        'SELECT * FROM content_candidates '
+        'SELECT c.*, '
+        'f.keep AS keep, f.rating AS rating, f.comment AS comment, f.updated_at AS feedback_updated_at '
+        'FROM content_candidates c '
+        'LEFT JOIN candidate_feedback f ON f.persona=c.persona AND f.url=c.url '
         f"WHERE {' AND '.join(where)} "
-        'ORDER BY (COALESCE(heat_score,0) * COALESCE(fit_score,0)) DESC, fetched_at DESC '
+        'ORDER BY (COALESCE(c.heat_score,0) * COALESCE(c.fit_score,0)) DESC, c.fetched_at DESC '
         'LIMIT ?'
     )
     params.append(int(limit))

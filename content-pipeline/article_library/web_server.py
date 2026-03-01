@@ -1403,6 +1403,10 @@ async function loadItems(){
     const url = it.url ? `<a href="${esc(it.url)}" target="_blank" rel="noreferrer" class="mono">link</a>` : '<span class="muted">-</span>';
     const title = esc(it.title || '');
     const snippet = esc(it.snippet || '');
+    const keep = (it.keep == null) ? 1 : Number(it.keep);
+    const rating = (it.rating == null) ? 0 : Number(it.rating);
+    const comment = it.comment || '';
+
     tr.innerHTML = `
       <td><span class="pill">${esc(it.persona || '')}</span></td>
       <td class="score">${heat}</td>
@@ -1412,6 +1416,15 @@ async function loadItems(){
       <td>
         <div style="font-weight:700;">${title}</div>
         <div class="small muted">${snippet}</div>
+        <div class="small" style="margin-top:6px; display:flex; gap:8px; align-items:center; flex-wrap:wrap;">
+          <span class="pill" style="background:${keep? '#e8fff3':'#ffecec'}; color:${keep? '#0b7a3b':'#b42318'};">${keep? '保留':'不保留'}</span>
+          <button class="btn" data-action="keep" data-keep="${keep?0:1}" data-persona="${esc(it.persona||'')}" data-url="${esc(it.url||'')}">${keep? '移除':'保留'}</button>
+          <button class="btn" data-action="rate" data-rating="1" data-persona="${esc(it.persona||'')}" data-url="${esc(it.url||'')}">👍</button>
+          <button class="btn" data-action="rate" data-rating="-1" data-persona="${esc(it.persona||'')}" data-url="${esc(it.url||'')}">👎</button>
+          <span class="small muted">当前:${rating>0?'好评':(rating<0?'差评':'未评')}</span>
+          <input class="input" style="min-width:240px; flex:1;" placeholder="评论（可选）" value="${esc(comment)}" data-action="comment" data-persona="${esc(it.persona||'')}" data-url="${esc(it.url||'')}">
+          <button class="btn" data-action="save_comment" data-persona="${esc(it.persona||'')}" data-url="${esc(it.url||'')}">保存</button>
+        </div>
       </td>
     `;
     rows.appendChild(tr);
@@ -1454,7 +1467,9 @@ async function loadRuns(){
       <td class="small muted">${qn}</td>
       <td>
         <button class="btn" data-task="${esc(run.task_id || '')}" data-action="view">查看</button>
+        <button class="btn" data-task="${esc(run.task_id || '')}" data-action="all">查看全部</button>
         ${isRunning ? `<button class="btn" data-task="${esc(run.task_id || '')}" data-action="cancel">终止</button>` : ''}
+        <button class="btn" data-task="${esc(run.task_id || '')}" data-action="delete">删除任务</button>
       </td>
     `;
     rows.appendChild(tr);
@@ -1481,7 +1496,7 @@ if (!window.__discover_runs_bound) {
     if (!b) return;
     const taskId = b.getAttribute('data-task') || '';
     const action = b.getAttribute('data-action') || 'view';
-    if (!taskId) return;
+    if (action !== 'all' && !taskId) return;
 
     if (action === 'cancel') {
       if (!confirm('确定要终止这个采集任务吗？')) return;
@@ -1492,6 +1507,30 @@ if (!window.__discover_runs_bound) {
         return;
       }
       await loadRuns();
+      return;
+    }
+
+    if (action === 'delete') {
+      if (!confirm('确定要删除这个采集任务吗？删除后结论生成将不再考虑该任务的文章。')) return;
+      const r = await fetch('/discover/api/run_delete', {method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({task_id: taskId})});
+      const j2 = await r.json();
+      if (!j2.ok) {
+        alert('删除失败：' + (j2.error || 'unknown'));
+        return;
+      }
+      // if deleted task is currently selected, clear selection
+      if (getSelectedRun() === taskId) setSelectedRun('');
+      await loadRuns();
+      await loadItems();
+      return;
+    }
+
+    if (action === 'all') {
+      setSelectedRun('');
+      const m = document.getElementById('conclusion_meta');
+      if (m) m.textContent = 'selected=(all)';
+      await loadRuns();
+      await loadItems();
       return;
     }
 
@@ -1509,6 +1548,43 @@ if (!window.__discover_runs_bound) {
       try { box.focus(); } catch (e) {}
     }
     pollRun(taskId);
+  });
+}
+
+// Item feedback actions (event delegation)
+if (!window.__discover_items_bound) {
+  window.__discover_items_bound = true;
+  const rows = document.getElementById('rows');
+  rows.addEventListener('click', async (ev) => {
+    const b = ev.target && ev.target.closest ? ev.target.closest('button[data-action]') : null;
+    if (!b) return;
+    const action = b.getAttribute('data-action');
+    const persona = b.getAttribute('data-persona') || '';
+    const url = b.getAttribute('data-url') || '';
+    if (!persona || !url) {
+      alert('缺少 persona/url');
+      return;
+    }
+
+    let payload = {persona, url};
+    if (action === 'keep') {
+      payload.keep = b.getAttribute('data-keep');
+    } else if (action === 'rate') {
+      payload.rating = b.getAttribute('data-rating');
+    } else if (action === 'save_comment') {
+      const inp = rows.querySelector(`input[data-action="comment"][data-persona="${persona}"][data-url="${url}"]`);
+      payload.comment = inp ? inp.value : '';
+    } else {
+      return;
+    }
+
+    const r = await fetch('/discover/api/item_feedback', {method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(payload)});
+    const j = await r.json();
+    if (!j.ok) {
+      alert('保存失败：' + (j.error || 'unknown'));
+      return;
+    }
+    await loadItems();
   });
 }
 
@@ -2057,6 +2133,70 @@ def discover_api_runs():
             }
         )
     return jsonify({'ok': True, 'runs': slim})
+
+
+@app.route('/discover/api/run_delete', methods=['POST'])
+def discover_api_run_delete():
+    data = request.get_json(silent=True) or {}
+    task_id = (data.get('task_id') or '').strip()
+    if not task_id:
+        return jsonify({'ok': False, 'error': 'missing task_id'}), 400
+
+    try:
+        discovery_init_db(DISCOVERY_DB_PATH)
+        with discovery_connect(DISCOVERY_DB_PATH) as con:
+            con.execute('UPDATE discovery_runs SET is_deleted=1 WHERE task_id=?', (task_id,))
+    except Exception as e:
+        return jsonify({'ok': False, 'error': str(e)}), 500
+
+    return jsonify({'ok': True, 'task_id': task_id, 'is_deleted': 1})
+
+
+@app.route('/discover/api/item_feedback', methods=['POST'])
+def discover_api_item_feedback():
+    import time
+
+    data = request.get_json(silent=True) or {}
+    persona = (data.get('persona') or '').strip()
+    url = (data.get('url') or '').strip()
+    if not persona or not url:
+        return jsonify({'ok': False, 'error': 'missing persona/url'}), 400
+
+    keep = data.get('keep')
+    rating = data.get('rating')
+    comment = data.get('comment')
+
+    def _to_int(v):
+        if v in (None, ''):
+            return None
+        try:
+            return int(v)
+        except Exception:
+            return None
+
+    keep_i = _to_int(keep)
+    rating_i = _to_int(rating)
+    comment_s = (comment or '').strip()
+
+    try:
+        discovery_init_db(DISCOVERY_DB_PATH)
+        with discovery_connect(DISCOVERY_DB_PATH) as con:
+            con.execute(
+                """
+                INSERT INTO candidate_feedback(persona, url, keep, rating, comment, updated_at)
+                VALUES(?,?,?,?,?,?)
+                ON CONFLICT(persona, url) DO UPDATE SET
+                  keep=excluded.keep,
+                  rating=excluded.rating,
+                  comment=excluded.comment,
+                  updated_at=excluded.updated_at
+                """,
+                (persona, url, keep_i, rating_i, comment_s, int(time.time())),
+            )
+    except Exception as e:
+        return jsonify({'ok': False, 'error': str(e)}), 500
+
+    return jsonify({'ok': True, 'persona': persona, 'url': url, 'keep': keep_i, 'rating': rating_i, 'comment': comment_s})
 
 
 @app.route('/discover/api/run_cancel', methods=['POST'])

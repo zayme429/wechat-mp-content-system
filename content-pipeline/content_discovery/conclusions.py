@@ -80,9 +80,27 @@ def generate_conclusion(
     Uses the top candidates by heat*fit from discovery db.
     """
 
-    items = list_candidates(db_path, persona=persona, limit=max(50, top_k))
+    # Use all non-deleted run candidates; apply user feedback (keep/rating/comment)
+    items = list_candidates(db_path, persona=persona, limit=max(200, top_k * 5))
     items = [it for it in items if it.get('title')]
-    items = items[:top_k]
+
+    def _keep(it):
+        v = it.get('keep')
+        if v is None:
+            return True
+        try:
+            return int(v) != 0
+        except Exception:
+            return True
+
+    items = [it for it in items if _keep(it)]
+
+    # Prefer liked items as stronger evidence, but keep neutral ones too
+    liked = [it for it in items if (it.get('rating') or 0) > 0]
+    disliked = [it for it in items if (it.get('rating') or 0) < 0]
+    neutral = [it for it in items if (it.get('rating') or 0) == 0]
+
+    items = (liked + neutral + disliked)[:top_k]
 
     # Build compact evidence pack
     lines: List[str] = []
@@ -93,7 +111,11 @@ def generate_conclusion(
         heat = it.get('heat_score')
         fit = it.get('fit_score')
         url = it.get('url') or ''
-        lines.append(f"- title={title} | heat={heat} fit={fit} | url={url}")
+        rating = it.get('rating')
+        comment = (it.get('comment') or '').strip()
+        lines.append(f"- title={title} | heat={heat} fit={fit} | rating={rating} | url={url}")
+        if comment:
+            lines.append(f"  comment={comment[:160]}")
         if snippet:
             lines.append(f"  snippet={snippet[:180]}")
         used += 1
