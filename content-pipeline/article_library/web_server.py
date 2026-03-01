@@ -1087,6 +1087,7 @@ DISCOVERY_TEMPLATE = '''
             <div class="row2" style="margin-top:12px;">
                 <div class="small muted">采集进度与日志（全局保存：刷新也能从历史 runs 里选中查看）</div>
                 <div class="actions">
+                    <button class="btn" id="view_all_runs">查看全部 runs</button>
                     <button class="btn" onclick="loadRuns()">刷新 runs</button>
                 </div>
                 <div class="small muted" id="run_meta">-</div>
@@ -1596,6 +1597,14 @@ if (!window.__discover_items_bound) {
     await loadItems();
   });
 }
+
+document.getElementById('view_all_runs').addEventListener('click', async () => {
+  setSelectedRun(ALL_RUNS);
+  const m = document.getElementById('conclusion_meta');
+  if (m) m.textContent = 'selected=(all)';
+  await loadRuns();
+  await loadItems();
+});
 
 loadStats().then(async () => {
   await loadRuns();
