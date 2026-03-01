@@ -30,7 +30,7 @@ persona描述：{persona_desc}
 
 候选文章信息：
 - 标题：{title}
-- 摘要/片段（已截断）：{snippet[:900] if snippet else ''}
+- 摘要/片段：{snippet}
 - 链接：{url}
 
 要求：

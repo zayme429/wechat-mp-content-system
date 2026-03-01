@@ -25,7 +25,9 @@ class ContentGenerator:
             or provider.get('baseUrl')
             or 'https://api.moonshot.cn/v1'
         )
-        self.model = os.environ.get('KIMI_MODEL') or os.environ.get('CLAUDE_MODEL') or 'moonshot-v1-8k'
+        # Non-gateway calls should use Kimi with a larger context by default.
+        # Priority: env override > config provider > default
+        self.model = os.environ.get('KIMI_MODEL') or os.environ.get('CLAUDE_MODEL') or 'kimi-k2.5'
         
     def _load_provider(self):
         """从环境变量 / OpenClaw 配置读取 provider 信息（apiKey/baseUrl）。
