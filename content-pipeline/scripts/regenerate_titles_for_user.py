@@ -47,6 +47,25 @@ def _clean_title(t: str) -> str:
     return t.strip()
 
 
+def _bigrams(s: str) -> set[str]:
+    s = re.sub(r"\s+", "", s or "")
+    return {s[i : i + 2] for i in range(len(s) - 1)} if len(s) >= 2 else set()
+
+
+def _jaccard(a: set[str], b: set[str]) -> float:
+    if not a and not b:
+        return 0.0
+    inter = len(a & b)
+    union = len(a | b)
+    return inter / union if union else 0.0
+
+
+def _leading_token(t: str) -> str:
+    t = (t or '').strip()
+    # take up to 4 chars as a crude "prefix token"
+    return t[:4]
+
+
 def generate_title(
     user_id: str,
     topic: str,
@@ -54,28 +73,29 @@ def generate_title(
     content: str,
     recent_titles: list[str],
 ) -> str:
-    """Goal-driven title generation (no fixed template).
+    """Goal-driven title generation without prescribing a single template.
 
-    Strategy:
-    - Ask for 3 candidate titles.
-    - Ask for 1 final selection that is both attractive and not too similar to recent titles.
+    We ask for multiple options, then pick using a novelty+attractiveness score.
     """
 
     style = load_title_style(user_id)
     style_text = style.instructions if style else ''
 
-    recent_text = "\n".join(f"- {t}" for t in (recent_titles or [])[:18])
+    recent = [t for t in (recent_titles or []) if t]
+    recent_text = "\n".join(f"- {t}" for t in recent[:18])
 
+    gen = ContentGenerator()
+
+    # 1) generate candidates
     prompt = (
-        "你是一位公众号标题编辑。请为下面这篇文章生成标题。\n\n"
+        "你是一位公众号标题编辑。请为下面这篇文章生成 8 个标题候选。\n\n"
         "目标：\n"
-        "- 吸引点击（但不标题党）、信息密度高、读完标题能大致知道文章在解决什么问题。\n"
-        "- 让同一用户的一批文章标题整体更丰富：尽量避开近期标题里重复的开头词、重复的句式、重复的关键词组合。\n\n"
+        "- 标题要有吸引力（但不标题党），信息密度高，读完标题能大致知道文章在解决什么问题。\n"
+        "- 同一用户的一批标题要更丰富：尽量避开近期标题里重复的开头词、句式、关键词组合。\n"
+        "- 不要所有标题都用同一种标点结构（例如不要全是‘X：Y’）。\n\n"
         "输出要求：\n"
-        "- 先给出 3 个候选标题（每行一个）。\n"
-        "- 然后给出 1 个最终标题（单独一行，以 FINAL: 开头）。\n"
-        "- 标题只输出标题本身：不要加\"标题：\"前缀，不要引号，不要Markdown。\n"
-        "- 标题长度：16-32 个中文字符优先，最长不超过 36。\n\n"
+        "- 只输出 8 行，每行 1 个标题。不要序号、不要引号、不要 Markdown、不要‘标题：’前缀。\n"
+        "- 16-32 个中文字符优先，最长不超过 36。\n\n"
         "【用户标题偏好（通用+专用）】\n"
         f"{style_text}\n\n"
         "【该用户最近已用过的标题（用于避重复）】\n"
@@ -88,23 +108,69 @@ def generate_title(
         f"{(content or '')[:1400]}\n"
     )
 
-    gen = ContentGenerator()
-    raw = gen._call_llm(prompt, temperature=0.85)
-    raw = (raw or '').strip()
-
-    final = ''
+    raw = (gen._call_llm(prompt, temperature=0.95) or '').strip()
+    cands = []
     for line in raw.splitlines():
-        if line.strip().upper().startswith('FINAL:'):
-            final = line.split(':', 1)[1].strip()
-            break
-    if not final:
-        # fallback to last non-empty line
-        for line in reversed(raw.splitlines()):
-            if line.strip():
-                final = line.strip()
-                break
+        line = _clean_title(line)
+        if not line:
+            continue
+        # drop bullet/numbering just in case
+        line = re.sub(r"^[\-\*\d\.\)\s]+", "", line).strip()
+        if line and line not in cands:
+            cands.append(line)
+    cands = cands[:8]
+    if not cands:
+        return ''
 
-    return _clean_title(final)
+    # 2) attractiveness scoring (soft)
+    score_prompt = (
+        "你是公众号标题编辑。请给每个标题候选打一个【吸引力】分(0-10)，只看标题本身是否想点开，避免标题党。\n"
+        "只输出 JSON 数组，每个元素形如 {\"title\":...,\"score\":...}，按输入顺序返回。\n\n"
+        "候选：\n" + "\n".join(cands)
+    )
+
+    scores = {t: 5.0 for t in cands}
+    try:
+        import json
+
+        j = gen._call_llm(score_prompt, temperature=0.2)
+        arr = json.loads(j)
+        for item in arr:
+            t = _clean_title(item.get('title', ''))
+            s = float(item.get('score', 5.0))
+            if t in scores:
+                scores[t] = max(0.0, min(10.0, s))
+    except Exception:
+        pass
+
+    recent_bigrams = [_bigrams(t) for t in recent[:30]]
+    recent_prefixes = {_leading_token(t) for t in recent[:60]}
+
+    def novelty(t: str) -> float:
+        bg = _bigrams(t)
+        sim = 0.0
+        for rbg in recent_bigrams:
+            sim = max(sim, _jaccard(bg, rbg))
+        nov = 1.0 - sim
+        # penalize repeating the same leading token within a user batch
+        if _leading_token(t) in recent_prefixes:
+            nov -= 0.12
+        # penalize too many colon-like titles to avoid uniform "X：Y"
+        if '：' in t or ':' in t:
+            nov -= 0.08
+        return max(0.0, nov)
+
+    best = None
+    best_score = -1.0
+    for t in cands:
+        s = scores.get(t, 5.0)
+        n = novelty(t)
+        total = 0.62 * (s / 10.0) + 0.38 * n
+        if total > best_score:
+            best_score = total
+            best = t
+
+    return _clean_title(best or cands[0])
 
 
 def update_markdown_title(file_path: str, title: str) -> None:
