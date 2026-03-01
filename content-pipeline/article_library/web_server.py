@@ -1423,9 +1423,13 @@ async function loadRuns(){
       <td class="small muted">${esc(started)}</td>
       <td class="small muted">-</td>
       <td class="small muted">${qn}</td>
-      <td><button class="btn" onclick="pollRun('${esc(run.task_id || '')}')">查看</button></td>
+      <td><button class="btn" data-task="${esc(run.task_id || '')}">查看</button></td>
     `;
     rows.appendChild(tr);
+    const btn = tr.querySelector('button[data-task]');
+    if (btn) {
+      btn.addEventListener('click', () => pollRun(run.task_id || ''));
+    }
   }
 }
 
