@@ -1,5 +1,9 @@
 # Article Style Memory: tech_enthusiast
 
+Persona:
+- 专业能力强，技术迷
+- 不喜欢虚有其表，更偏好“有实在东西 + 特殊认知/洞察”的文章
+
 Audience: 科技爱好者 / 工程师 / 产品经理。
 
 Writing goals:
