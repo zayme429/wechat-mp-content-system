@@ -18,9 +18,11 @@ from __future__ import annotations
 
 import argparse
 import os
+import random
 import re
 import sqlite3
 import sys
+import time
 from pathlib import Path
 
 sys.path.append('/root/.openclaw/workspace/content-pipeline')
@@ -45,23 +47,38 @@ def _clean_title(t: str) -> str:
     return t.strip()
 
 
-def generate_title(user_id: str, topic: str, angle: str, content: str, recent_titles: list[str]) -> str:
+def generate_title(
+    user_id: str,
+    topic: str,
+    angle: str,
+    content: str,
+    recent_titles: list[str],
+) -> str:
+    """Goal-driven title generation (no fixed template).
+
+    Strategy:
+    - Ask for 3 candidate titles.
+    - Ask for 1 final selection that is both attractive and not too similar to recent titles.
+    """
+
     style = load_title_style(user_id)
     style_text = style.instructions if style else ''
 
-    recent_text = "\n".join(f"- {t}" for t in (recent_titles or [])[:20])
+    recent_text = "\n".join(f"- {t}" for t in (recent_titles or [])[:18])
 
     prompt = (
-        "你将为一篇文章生成一个公众号标题。\n"
-        "硬性要求：\n"
-        "- 只输出标题本身（不要加\"标题：\"前缀，不要引号，不要Markdown加粗）。\n"
-        "- 16-32个中文字符优先，最长不超过36个中文字符。\n"
-        "- 要有吸引力，但不要标题党。\n"
-        "- 提高多样性：尽量不要复用相同开头词（例如：探索/从X到Y/未来趋势/实战/指南）。\n"
-        "- 标题结构尽量换一种（问句/对比/清单/结论先行/反直觉/入坑路线/场景化）。\n\n"
-        "【用户标题偏好（通用+专用，必须遵守）】\n"
+        "你是一位公众号标题编辑。请为下面这篇文章生成标题。\n\n"
+        "目标：\n"
+        "- 吸引点击（但不标题党）、信息密度高、读完标题能大致知道文章在解决什么问题。\n"
+        "- 让同一用户的一批文章标题整体更丰富：尽量避开近期标题里重复的开头词、重复的句式、重复的关键词组合。\n\n"
+        "输出要求：\n"
+        "- 先给出 3 个候选标题（每行一个）。\n"
+        "- 然后给出 1 个最终标题（单独一行，以 FINAL: 开头）。\n"
+        "- 标题只输出标题本身：不要加\"标题：\"前缀，不要引号，不要Markdown。\n"
+        "- 标题长度：16-32 个中文字符优先，最长不超过 36。\n\n"
+        "【用户标题偏好（通用+专用）】\n"
         f"{style_text}\n\n"
-        "【该用户最近已用过的标题（请避免相似结构/措辞）】\n"
+        "【该用户最近已用过的标题（用于避重复）】\n"
         f"{recent_text}\n\n"
         "【主题】\n"
         f"{topic}\n\n"
@@ -72,8 +89,22 @@ def generate_title(user_id: str, topic: str, angle: str, content: str, recent_ti
     )
 
     gen = ContentGenerator()
-    t = gen._call_llm(prompt, temperature=0.9)
-    return _clean_title(t)
+    raw = gen._call_llm(prompt, temperature=0.85)
+    raw = (raw or '').strip()
+
+    final = ''
+    for line in raw.splitlines():
+        if line.strip().upper().startswith('FINAL:'):
+            final = line.split(':', 1)[1].strip()
+            break
+    if not final:
+        # fallback to last non-empty line
+        for line in reversed(raw.splitlines()):
+            if line.strip():
+                final = line.strip()
+                break
+
+    return _clean_title(final)
 
 
 def update_markdown_title(file_path: str, title: str) -> None:
@@ -105,6 +136,9 @@ def main() -> int:
     ap.add_argument('--user-id', default='')
     ap.add_argument('--revision-needed', action='store_true')
     ap.add_argument('--user-last-n', type=int, default=0, help='Regenerate titles for last N articles of given --user-id')
+    ap.add_argument('--sleep', type=float, default=0.8, help='Base sleep seconds between articles')
+    ap.add_argument('--jitter', type=float, default=0.6, help='Random jitter seconds added to sleep')
+    ap.add_argument('--retries', type=int, default=5, help='Retries on overloaded/temporary errors')
     args = ap.parse_args()
 
     if args.user_id == 'insurance_agent':
@@ -171,11 +205,19 @@ def main() -> int:
             recent_titles = [(_clean_title(r[0]) if r and r[0] else '') for r in cur.fetchall()]
             recent_titles = [t for t in recent_titles if t]
 
-        try:
-            title = generate_title(user_id, row['topic'], row['angle'], row['content'], recent_titles)
-        except Exception as e:
-            print('ERROR title generation', aid, 'user', user_id, str(e))
-            continue
+        title = ''
+        for attempt in range(1, args.retries + 1):
+            try:
+                title = generate_title(user_id, row['topic'], row['angle'], row['content'], recent_titles)
+                break
+            except Exception as e:
+                msg = str(e)
+                print('ERROR title generation', aid, 'user', user_id, f'attempt={attempt}', msg)
+                # simple backoff for temporary overloads
+                if 'overloaded' in msg or '429' in msg or 'timeout' in msg.lower():
+                    time.sleep(min(20.0, 2.0 ** attempt) + random.random())
+                    continue
+                break
 
         if not title:
             print('SKIP empty title', aid)
@@ -185,6 +227,10 @@ def main() -> int:
         update_markdown_title(row['file_path'], title)
         updated += 1
         print('UPDATED', aid, 'user', user_id, '->', title)
+
+        # reduce provider load
+        if args.sleep or args.jitter:
+            time.sleep(max(0.0, args.sleep + random.random() * max(0.0, args.jitter)))
 
     con.commit()
     con.close()
