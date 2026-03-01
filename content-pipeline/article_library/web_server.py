@@ -825,6 +825,7 @@ PERSONA_TEMPLATE = '''
             <h1>人设与偏好</h1>
             <div class="subtitle">这里的配置会作为“爬虫采集 + 热度/偏好分析 + 文章生成”的共同依据。支持直接修改 user_memory 记忆文件内容。</div>
             <div class="nav">
+                <a href="/">主页</a>
                 <a href="/query">文章查询</a>
                 <a href="/library">文章库</a>
                 <a href="/discover">内容搜索器</a>
@@ -1020,6 +1021,7 @@ DISCOVERY_TEMPLATE = '''
             <h1>内容搜索器 | 开发者分析</h1>
             <div class="subtitle">用于采集外部内容候选（标题+摘要+热度+偏好匹配），并对不同 persona 的偏好进行可视化与抽样复核。</div>
             <div class="nav">
+                <a href="/">主页</a>
                 <a href="/query">文章查询</a>
                 <a href="/library">文章库</a>
                 <a href="/discover">内容搜索器</a>
