@@ -2399,21 +2399,26 @@ QUERY_PAGE_TEMPLATE = '''
                 <div class="process-flow">
                     <div class="flow-step">
                         <div class="flow-number">1</div>
+                        <div class="flow-label">文章池(已审)</div>
+                        <div class="flow-value">{{ result.query_process.library_total }}篇</div>
+                    </div>
+                    <div class="flow-step">
+                        <div class="flow-number">2</div>
                         <div class="flow-label">意图识别</div>
                         <div class="flow-value">{{ result.intent.topic }}</div>
                     </div>
                     <div class="flow-step">
-                        <div class="flow-number">2</div>
+                        <div class="flow-number">3</div>
                         <div class="flow-label">召回候选</div>
                         <div class="flow-value">{{ result.query_process.recall_count }}篇</div>
                     </div>
                     <div class="flow-step">
-                        <div class="flow-number">3</div>
+                        <div class="flow-number">4</div>
                         <div class="flow-label">过滤Top</div>
                         <div class="flow-value">{{ result.query_process.filter_top }}篇</div>
                     </div>
                     <div class="flow-step">
-                        <div class="flow-number">4</div>
+                        <div class="flow-number">5</div>
                         <div class="flow-label">随机选择</div>
                         <div class="flow-value">1篇</div>
                     </div>
@@ -2422,10 +2427,13 @@ QUERY_PAGE_TEMPLATE = '''
                 <div class="recommendation">
                     <div class="rec-title">📄 {{ result.recommendation.title }}</div>
                     <div class="rec-meta">
-                        <span class="rec-score">匹配度: {{ "%.1f"|format(result.recommendation.match_score) }}</span>
+                        <span class="rec-score">匹配分(0-10): {{ "%.1f"|format(result.recommendation.match_score) }}</span>
                         <span>主题: {{ result.recommendation.topic }}</span>
                         <span>角度: {{ result.recommendation.angle_type }}</span>
                     </div>
+                    {% if result.recommendation.score_note %}
+                    <div style="margin-top: 6px; color: #999; font-size: 12px;">{{ result.recommendation.score_note }}</div>
+                    {% endif %}
                     <div class="rec-preview">{{ result.recommendation.content_preview }}</div>
                     
                     {% if result.push_mode == 'auto_draft' %}

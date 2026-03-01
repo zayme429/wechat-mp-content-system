@@ -9,6 +9,28 @@ from datetime import datetime
 
 class QueryEngine:
     """文章查询推荐引擎"""
+
+    def _count_library_pool(self) -> int:
+        """文章池总量（用于漏斗展示）。
+
+        用户要求：仅基于审核通过(reviewed_approved)的文章进行推荐。
+        """
+        try:
+            conn = sqlite3.connect(self.db_path)
+            cursor = conn.cursor()
+            cursor.execute(
+                """
+                SELECT COUNT(*)
+                FROM articles
+                WHERE status = 'reviewed_approved'
+                """
+            )
+            count = cursor.fetchone()[0] or 0
+            conn.close()
+            return int(count)
+        except Exception:
+            return 0
+
     
     def __init__(self, db_path: str = None, config: Dict = None):
         """初始化查询引擎"""
@@ -48,10 +70,13 @@ class QueryEngine:
             
             # 2. 召回
             recall_strategy = self.config.get("recall_strategy", "hybrid")
+
+            library_total = self._count_library_pool()
             candidates = self._recall_by_strategy(intent, recall_strategy)
             self.query_trace.append({
                 "step": "recall",
                 "strategy": recall_strategy,
+                "library_total": library_total,
                 "candidates_count": len(candidates)
             })
             
@@ -132,12 +157,11 @@ class QueryEngine:
         """主题精确匹配"""
         conn = sqlite3.connect(self.db_path)
         cursor = conn.cursor()
-        
+
         cursor.execute("""
             SELECT article_id, title, content, topic, angle_type, quality_score
-            FROM articles 
+            FROM articles
             WHERE status = 'reviewed_approved'
-              AND push_status = 'article_library'
               AND topic = ?
             ORDER BY quality_score DESC
             LIMIT 20
@@ -151,24 +175,23 @@ class QueryEngine:
         """关键词模糊匹配"""
         conn = sqlite3.connect(self.db_path)
         cursor = conn.cursor()
-        
+
         keywords = intent.get("keywords", [])
         if not keywords:
             keywords = [intent["topic"]]
-        
+
         like_conditions = []
         params = []
         for kw in keywords:
             like_conditions.append("(title LIKE ? OR content LIKE ?)")
             params.extend([f"%{kw}%", f"%{kw}%"])
-        
+
         where_clause = " OR ".join(like_conditions)
-        
+
         cursor.execute(f"""
             SELECT article_id, title, content, topic, angle_type, quality_score
-            FROM articles 
+            FROM articles
             WHERE status = 'reviewed_approved'
-              AND push_status = 'article_library'
               AND ({where_clause})
             ORDER BY quality_score DESC
             LIMIT 20
@@ -191,12 +214,12 @@ class QueryEngine:
         manager = EmbeddingManager(self.db_path)
         results = manager.search_by_vector(query_text, top_k=20)
         
-        # 过滤低相似度的
-        filtered = [r for r in results if r["vector_similarity"] >= 0.5]
+        # 过滤低相似度的（阈值降低到0.1以保留更多候选）
+        filtered = [r for r in results if r["vector_similarity"] >= 0.1]
         
         if not filtered and results:
-            # 如果没有超过阈值的，返回前3个
-            filtered = results[:3]
+            # 如果没有超过阈值的，返回前10个
+            filtered = results[:10]
         
         return filtered
     
@@ -245,12 +268,11 @@ class QueryEngine:
         """质量优先"""
         conn = sqlite3.connect(self.db_path)
         cursor = conn.cursor()
-        
+
         cursor.execute("""
             SELECT article_id, title, content, topic, angle_type, quality_score
-            FROM articles 
+            FROM articles
             WHERE status = 'reviewed_approved'
-              AND push_status = 'article_library'
               AND quality_score >= 8.0
             ORDER BY quality_score DESC
             LIMIT 20
@@ -334,7 +356,7 @@ class QueryEngine:
             
             for c in candidates:
                 if c["article_id"] == recommended_id:
-                    return c, [x for x in candidates if x["article_id"] != recommended_id][:2], reason
+                    return c, [x for x in candidates if x["article_id"] != recommended_id][:2], f"LLM: {reason}"
         
         raise Exception("LLM解析失败")
     
@@ -379,7 +401,8 @@ class QueryEngine:
             "status": "success",
             "intent": intent,
             "query_process": {
-                "recall_count": len([t for t in self.query_trace if t["step"] == "recall"]),
+                "library_total": next((t.get("library_total", 0) for t in self.query_trace if t["step"] == "recall"), 0),
+                "recall_count": next((t["candidates_count"] for t in self.query_trace if t["step"] == "recall"), 0),
                 "filter_top": len(alternatives) + 1,
                 "used_llm": any(t.get("step") == "filter" and "LLM" in str(t.get("recommend_reason", "")) for t in self.query_trace)
             },
@@ -389,6 +412,7 @@ class QueryEngine:
                 "content_preview": selected["content"][:200] + "...",
                 "match_score": selected.get("match_score", 0),
                 "match_reason": reason,
+                "score_note": "match_score=vector_similarity*10 (仅用于排序/筛选；不是推送内容)",
                 "topic": selected["topic"],
                 "angle_type": selected["angle_type"]
             },

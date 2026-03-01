@@ -13,21 +13,46 @@ logger = logging.getLogger(__name__)
 
 class ContentGenerator:
     def __init__(self):
-        # 从OpenClaw配置读取API key
-        self.api_key = self._load_api_key()
-        self.base_url = "https://api.moonshot.cn/v1"
-        self.model = "kimi-k2.5"
+        # 从OpenClaw配置读取API key/baseUrl（优先Claude，其次Kimi）
+        provider = self._load_provider()
+        self.api_key = provider.get('apiKey')
+
+        # 非 gateway 的大模型请求：按你的要求统一走 Kimi（Moonshot OpenAI 协议）
+        # 优先级：环境变量 > openclaw.json moonshot > 默认 moonshot
+        self.base_url = (
+            os.environ.get('KIMI_BASE_URL')
+            or os.environ.get('CLAUDE_BASE_URL')
+            or provider.get('baseUrl')
+            or 'https://api.moonshot.cn/v1'
+        )
+        self.model = os.environ.get('KIMI_MODEL') or os.environ.get('CLAUDE_MODEL') or 'moonshot-v1-8k'
         
-    def _load_api_key(self):
-        """从OpenClaw配置读取API key"""
+    def _load_provider(self):
+        """从环境变量 / OpenClaw 配置读取 provider 信息（apiKey/baseUrl）。
+
+        说明：本项目的 LLM 调用使用 OpenAI 兼容的 `/chat/completions`。
+        最稳定的方式是直接调用本机 OpenClaw Gateway（它会按 openclaw.json 的模型路由到云驿/Claude）。
+        """
+        # 优先环境变量（允许显式指定 Kimi/Moonshot）
+        api_key = os.environ.get('KIMI_API_KEY') or os.environ.get('MOONSHOT_API_KEY')
+        base_url = os.environ.get('KIMI_BASE_URL')
+        if api_key:
+            return {"apiKey": api_key, "baseUrl": base_url}
+
+        # 回退：从 OpenClaw 配置读取 moonshot provider
         try:
             config_path = Path.home() / '.openclaw' / 'openclaw.json'
             with open(config_path, 'r') as f:
                 config = json.load(f)
-            return config['models']['providers']['moonshot']['apiKey']
-        except:
-            # 尝试环境变量
-            return os.environ.get('MOONSHOT_API_KEY')
+
+            providers = config.get('models', {}).get('providers', {})
+            if 'moonshot' in providers:
+                p = providers['moonshot'] or {}
+                return {"apiKey": p.get('apiKey'), "baseUrl": p.get('baseUrl')}
+        except Exception:
+            pass
+
+        return {"apiKey": None, "baseUrl": None}
     
     def _call_llm(self, prompt, temperature=0.7):
         """调用LLM API"""
@@ -43,19 +68,29 @@ class ContentGenerator:
                     {'role': 'system', 'content': '你是一位资深的科技专栏作家，专注于AI时代的个人成长与职业发展。'},
                     {'role': 'user', 'content': prompt}
                 ],
-                'temperature': 1,  # kimi-k2.5 只支持 temperature=1
+                'temperature': temperature,
                 'max_tokens': 4000
             }
             
             logger.info("🤖 调用LLM生成内容...")
+            url = f'{self.base_url}/chat/completions'
             response = requests.post(
-                f'{self.base_url}/chat/completions',
+                url,
                 headers=headers,
                 json=data,
-                timeout=300
+                timeout=300,
             )
-            
-            result = response.json()
+
+            try:
+                result = response.json()
+            except Exception:
+                logger.error(
+                    "❌ API返回非JSON响应: %s %s %s",
+                    response.status_code,
+                    response.headers.get('content-type'),
+                    response.text[:500],
+                )
+                raise
             
             # 检查错误
             if 'error' in result:
@@ -63,9 +98,9 @@ class ContentGenerator:
                 raise Exception(f"API Error: {result['error']}")
             
             if 'choices' not in result:
-                logger.error(f"❌  unexpected response: {json.dumps(result, ensure_ascii=False)[:500]}")
+                logger.error(f"❌  unexpected response: {json.dumps(result, ensure_ascii=False)[:800]}")
                 raise KeyError("'choices' not in response")
-            
+
             content = result['choices'][0]['message']['content']
             logger.info("✅ LLM生成完成")
             return content

@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
 用户意图识别模块
-调用Kimi判断用户是想要查库还是生成新文章
+调用Claude判断用户是想要查库还是生成新文章
 """
 
 import os
@@ -12,30 +12,52 @@ from datetime import datetime
 
 class IntentRecognizer:
     """用户意图识别器"""
-    
+
     def __init__(self):
-        self.api_key = os.environ.get('MOONSHOT_API_KEY') or self._load_api_key()
-        self.api_base = "https://api.moonshot.cn/v1"
+        provider = self._load_provider()
+        self.api_key = provider.get('apiKey')
+        self.api_base = (
+            os.environ.get('KIMI_BASE_URL')
+            or os.environ.get('CLAUDE_BASE_URL')
+            or provider.get('baseUrl')
+            or 'https://api.moonshot.cn/v1'
+        )
+        self.model = os.environ.get('KIMI_MODEL') or os.environ.get('CLAUDE_MODEL') or 'moonshot-v1-8k'
     
-    def _load_api_key(self) -> str:
-        """从配置文件加载API Key"""
+    def _load_provider(self) -> Dict:
+        """从环境变量 / OpenClaw 配置读取 provider 信息（apiKey/baseUrl）。
+
+        这里同样优先走本机 OpenClaw Gateway（OpenAI 兼容 /chat/completions）。
+        """
+        api_key = os.environ.get('KIMI_API_KEY') or os.environ.get('MOONSHOT_API_KEY')
+        base_url = os.environ.get('KIMI_BASE_URL')
+        if api_key:
+            return {"apiKey": api_key, "baseUrl": base_url}
+
         try:
             config_path = '/root/.openclaw/openclaw.json'
             with open(config_path) as f:
                 config = json.load(f)
-                return config.get('models', {}).get('providers', {}).get('moonshot', {}).get('apiKey', '')
-        except:
-            return ''
+
+            providers = config.get('models', {}).get('providers', {})
+            if 'moonshot' in providers:
+                p = providers['moonshot'] or {}
+                return {"apiKey": p.get('apiKey', ''), "baseUrl": p.get('baseUrl', '')}
+        except Exception:
+            pass
+
+        return {"apiKey": '', "baseUrl": ''}
     
-    def _call_kimi(self, prompt: str, temperature: float = 0.3) -> str:
-        """调用Kimi API"""
+    def _call_claude(self, prompt: str, temperature: float = 0.3) -> str:
+        """调用Claude API"""
         try:
             import urllib.request
             
             data = json.dumps({
-                'model': 'moonshot-v1-8k',
+                'model': self.model,
                 'messages': [{'role': 'user', 'content': prompt}],
-                'temperature': temperature
+                'temperature': temperature,
+                'max_tokens': 1000
             }).encode()
             
             req = urllib.request.Request(
@@ -51,7 +73,7 @@ class IntentRecognizer:
                 result = json.loads(r.read())
                 return result['choices'][0]['message']['content']
         except Exception as e:
-            print(f"⚠️ Kimi调用失败: {e}")
+            print(f"⚠️ Claude调用失败: {e}")
             return ''
     
     def recognize(self, user_input: str, context: Dict = None) -> Dict:
@@ -108,7 +130,11 @@ class IntentRecognizer:
 
 只输出JSON，不要其他内容。"""
 
-        response = self._call_kimi(prompt)
+        response = self._call_claude(prompt)
+
+        # 若 API Key 缺失，直接回退规则结果
+        if not response:
+            return rule_result
         
         # 解析JSON
         try:
