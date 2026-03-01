@@ -22,7 +22,7 @@ def start_run(
         con.execute(
             """
             INSERT INTO discovery_runs(task_id, persona, planned_queries_json, log_path, status, pid, started_at, finished_at)
-            VALUES(?,?,?,?,?,?,?, ?,?)
+            VALUES(?,?,?,?,?,?,?,?)
             ON CONFLICT(task_id) DO UPDATE SET
               persona=excluded.persona,
               planned_queries_json=excluded.planned_queries_json,

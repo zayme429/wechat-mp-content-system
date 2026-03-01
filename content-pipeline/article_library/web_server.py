@@ -1968,8 +1968,13 @@ def discover_api_run():
         from content_discovery.runs import start_run
 
         start_run(task_id, persona, planned_queries, log_path, pid=(proc.pid if proc else None), db_path=DISCOVERY_DB_PATH)
-    except Exception:
-        pass
+    except Exception as e:
+        # Do not hide DB write errors; otherwise the UI shows missing runs.
+        try:
+            with open(log_path, 'a', encoding='utf-8') as f:
+                f.write(f"\nWARN start_run failed: {e}\n")
+        except Exception:
+            pass
 
     return jsonify({'ok': True, 'task_id': task_id, 'log_path': log_path, 'cmd': cmd, 'db_path': DISCOVERY_DB_PATH, 'planned_queries': planned_queries})
 
