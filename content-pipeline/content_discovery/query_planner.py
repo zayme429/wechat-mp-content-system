@@ -58,15 +58,42 @@ def plan_queries(persona: str, search_prompt: str, max_queries: int = 6) -> List
 
     # 3) fallback: heuristic queries by persona (avoid searching the meta prompt itself)
     if not out:
-        if persona == 'tech_enthusiast':
-            out = [
-                '工程 实践 复盘 踩坑 总结',
-                '性能 优化 实战 对比 数据',
-                '成本 优化 云 账单 复盘',
-                '架构 演进 取舍 代价 边界条件',
-                '技术 方案 评估 指标 对比',
-                '生产 故障 复盘 根因 解决',
+        sp = (search_prompt or '').lower()
+        ai_focus = any(
+            k in sp
+            for k in [
+                'ai',
+                'aigc',
+                'llm',
+                'agent',
+                'rag',
+                '大模型',
+                '人工智能',
+                '智能体',
+                '模型',
+                '推理',
             ]
+        )
+
+        if persona == 'tech_enthusiast':
+            if ai_focus:
+                out = [
+                    '大模型 应用 落地 复盘 踩坑',
+                    'LLM Agent 智能体 实战 架构',
+                    'RAG 检索 增强 方案 评估',
+                    '推理 成本 优化 延迟 吞吐',
+                    '提示词 工程 评估 指标 对比',
+                    'AI 工程化 监控 质量 回归',
+                ]
+            else:
+                out = [
+                    '工程 实践 复盘 踩坑 总结',
+                    '性能 优化 实战 对比 数据',
+                    '成本 优化 云 账单 复盘',
+                    '架构 演进 取舍 代价 边界条件',
+                    '技术 方案 评估 指标 对比',
+                    '生产 故障 复盘 根因 解决',
+                ]
         elif persona == 'jp_music_fan':
             out = [
                 'J-POP 新歌 安利 歌单',
