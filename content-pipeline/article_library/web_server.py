@@ -1403,7 +1403,6 @@ async function loadItems(){
     const url = it.url ? `<a href="${esc(it.url)}" target="_blank" rel="noreferrer" class="mono">link</a>` : '<span class="muted">-</span>';
     const title = esc(it.title || '');
     const snippet = esc(it.snippet || '');
-    const keep = (it.keep == null) ? 1 : Number(it.keep);
     const rating = (it.rating == null) ? 0 : Number(it.rating);
     const comment = it.comment || '';
 
@@ -1417,8 +1416,6 @@ async function loadItems(){
         <div style="font-weight:700;">${title}</div>
         <div class="small muted">${snippet}</div>
         <div class="small" style="margin-top:6px; display:flex; gap:8px; align-items:center; flex-wrap:wrap;">
-          <span class="pill" style="background:${keep? '#e8fff3':'#ffecec'}; color:${keep? '#0b7a3b':'#b42318'};">${keep? '保留':'不保留'}</span>
-          <button class="btn" data-action="keep" data-keep="${keep?0:1}" data-persona="${esc(it.persona||'')}" data-url="${esc(it.url||'')}">${keep? '移除':'保留'}</button>
           <button class="btn" data-action="rate" data-rating="1" data-persona="${esc(it.persona||'')}" data-url="${esc(it.url||'')}">👍</button>
           <button class="btn" data-action="rate" data-rating="-1" data-persona="${esc(it.persona||'')}" data-url="${esc(it.url||'')}">👎</button>
           <span class="small muted">当前:${rating>0?'好评':(rating<0?'差评':'未评')}</span>
@@ -1567,9 +1564,7 @@ if (!window.__discover_items_bound) {
     }
 
     let payload = {persona, url};
-    if (action === 'keep') {
-      payload.keep = b.getAttribute('data-keep');
-    } else if (action === 'rate') {
+    if (action === 'rate') {
       payload.rating = b.getAttribute('data-rating');
     } else if (action === 'save_comment') {
       const inp = rows.querySelector(`input[data-action="comment"][data-persona="${persona}"][data-url="${url}"]`);
@@ -2145,11 +2140,16 @@ def discover_api_run_delete():
     try:
         discovery_init_db(DISCOVERY_DB_PATH)
         with discovery_connect(DISCOVERY_DB_PATH) as con:
-            con.execute('UPDATE discovery_runs SET is_deleted=1 WHERE task_id=?', (task_id,))
+            # Hard-delete: remove run record + its candidates + feedback for those URLs
+            urls = [r['url'] for r in con.execute('SELECT url FROM content_candidates WHERE run_id=?', (task_id,)).fetchall()]
+            con.execute('DELETE FROM content_candidates WHERE run_id=?', (task_id,))
+            con.execute('DELETE FROM discovery_runs WHERE task_id=?', (task_id,))
+            if urls:
+                con.executemany('DELETE FROM candidate_feedback WHERE url=?', [(u,) for u in urls if u])
     except Exception as e:
         return jsonify({'ok': False, 'error': str(e)}), 500
 
-    return jsonify({'ok': True, 'task_id': task_id, 'is_deleted': 1})
+    return jsonify({'ok': True, 'task_id': task_id, 'deleted': True})
 
 
 @app.route('/discover/api/item_feedback', methods=['POST'])

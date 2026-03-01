@@ -84,17 +84,6 @@ def generate_conclusion(
     items = list_candidates(db_path, persona=persona, limit=max(200, top_k * 5))
     items = [it for it in items if it.get('title')]
 
-    def _keep(it):
-        v = it.get('keep')
-        if v is None:
-            return True
-        try:
-            return int(v) != 0
-        except Exception:
-            return True
-
-    items = [it for it in items if _keep(it)]
-
     # Prefer liked items as stronger evidence, but keep neutral ones too
     liked = [it for it in items if (it.get('rating') or 0) > 0]
     disliked = [it for it in items if (it.get('rating') or 0) < 0]

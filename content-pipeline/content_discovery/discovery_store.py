@@ -253,12 +253,9 @@ def list_candidates(
         where.append('run_id = ?')
         params.append(run_id)
 
-    # Filter out candidates from deleted runs (but keep candidates with NULL run_id)
-    where.append('(run_id IS NULL OR run_id NOT IN (SELECT task_id FROM discovery_runs WHERE is_deleted=1))')
-
     sql = (
         'SELECT c.*, '
-        'f.keep AS keep, f.rating AS rating, f.comment AS comment, f.updated_at AS feedback_updated_at '
+        'f.rating AS rating, f.comment AS comment, f.updated_at AS feedback_updated_at '
         'FROM content_candidates c '
         'LEFT JOIN candidate_feedback f ON f.persona=c.persona AND f.url=c.url '
         f"WHERE {' AND '.join(where)} "
