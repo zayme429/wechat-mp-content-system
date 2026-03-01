@@ -9,8 +9,23 @@ from pathlib import Path
 import sys
 import json
 import sqlite3
+import os
 
 sys.path.insert(0, '/root/.openclaw/workspace/content-pipeline')
+
+# Best-effort: load Tavily key from content-pipeline secrets into env for discovery/search tooling.
+# Avoid printing secrets; only set env if missing.
+try:
+    if not os.environ.get('TAVILY_API_KEY'):
+        secrets_path = '/root/.openclaw/workspace/content-pipeline/config/secrets.json'
+        if os.path.exists(secrets_path):
+            with open(secrets_path, 'r', encoding='utf-8') as f:
+                _secrets = json.load(f)
+            _tk = (_secrets.get('tavily') or {}).get('api_key')
+            if _tk:
+                os.environ['TAVILY_API_KEY'] = str(_tk)
+except Exception:
+    pass
 
 from article_library.library import ArticleLibrary
 from article_library.user_manager import UserPreferenceManager
