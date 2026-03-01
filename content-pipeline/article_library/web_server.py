@@ -1105,6 +1105,17 @@ DISCOVERY_TEMPLATE = '''
                 <button class="btn btn-primary" onclick="loadItems()">刷新列表</button>
                 <button class="btn" onclick="toggleImport()">导入 JSONL</button>
                 <button class="btn" onclick="runCollect()">运行采集（Tavily）</button>
+                <button class="btn" onclick="togglePrompt()">编辑搜索 Prompt</button>
+            </div>
+
+            <div class="row2" id="prompt_box" style="display:none;">
+                <div class="small muted">搜索 Prompt：用于让 LLM 先规划多条查询再搜索（不是单个关键词）。</div>
+                <textarea id="search_prompt" class="mono" placeholder="先选择 persona，再加载/编辑 prompt..."></textarea>
+                <div class="actions">
+                    <button class="btn btn-primary" onclick="savePrompt()">保存 Prompt</button>
+                    <button class="btn" onclick="loadPrompt()">重新加载</button>
+                    <button class="btn" onclick="togglePrompt()">收起</button>
+                </div>
             </div>
 
             <div class="row2" id="import_box" style="display:none;">
@@ -1155,6 +1166,50 @@ async function loadStats() {
 function toggleImport(){
   const el = document.getElementById('import_box');
   el.style.display = (el.style.display === 'none') ? 'block' : 'none';
+}
+
+function togglePrompt(){
+  const el = document.getElementById('prompt_box');
+  el.style.display = (el.style.display === 'none') ? 'block' : 'none';
+  if (el.style.display === 'block') {
+    loadPrompt();
+  }
+}
+
+async function loadPrompt(){
+  const persona = document.getElementById('persona').value;
+  if (!persona) {
+    document.getElementById('search_prompt').value = '';
+    alert('请先选择 persona');
+    return;
+  }
+  const r = await fetch('/discover/api/prompt?persona=' + encodeURIComponent(persona));
+  const j = await r.json();
+  if (!j.ok) {
+    alert('加载失败：' + (j.error || 'unknown'));
+    return;
+  }
+  document.getElementById('search_prompt').value = j.prompt_text || '';
+}
+
+async function savePrompt(){
+  const persona = document.getElementById('persona').value;
+  if (!persona) {
+    alert('请先选择 persona');
+    return;
+  }
+  const prompt_text = document.getElementById('search_prompt').value;
+  const r = await fetch('/discover/api/prompt', {
+    method: 'POST',
+    headers: {'Content-Type':'application/json'},
+    body: JSON.stringify({persona, prompt_text})
+  });
+  const j = await r.json();
+  if (!j.ok) {
+    alert('保存失败：' + (j.error || 'unknown'));
+    return;
+  }
+  alert('已保存：' + j.path);
 }
 
 async function importJsonl(){
@@ -1714,6 +1769,37 @@ def discover_api_post_conclusion():
         return jsonify({'ok': True, 'persona': persona, 'conclusion_text': r.get('conclusion_text','')})
     except Exception as e:
         return jsonify({'ok': False, 'error': str(e)}), 500
+
+
+@app.route('/discover/api/prompt', methods=['GET'])
+def discover_api_get_prompt():
+    persona = (request.args.get('persona') or '').strip()
+    if not persona:
+        return jsonify({'ok': False, 'error': 'missing persona'}), 400
+    path = f"/root/.openclaw/workspace/content-pipeline/user_memory/{persona}_search_prompt.md"
+    try:
+        with open(path, 'r', encoding='utf-8') as f:
+            txt = f.read()
+    except Exception:
+        txt = ''
+    return jsonify({'ok': True, 'persona': persona, 'path': path, 'prompt_text': txt})
+
+
+@app.route('/discover/api/prompt', methods=['POST'])
+def discover_api_post_prompt():
+    data = request.get_json(silent=True) or {}
+    persona = (data.get('persona') or '').strip()
+    prompt_text = data.get('prompt_text') or ''
+    if not persona:
+        return jsonify({'ok': False, 'error': 'missing persona'}), 400
+
+    path = f"/root/.openclaw/workspace/content-pipeline/user_memory/{persona}_search_prompt.md"
+    try:
+        _write_text(path, prompt_text)
+    except Exception as e:
+        return jsonify({'ok': False, 'error': str(e)}), 500
+
+    return jsonify({'ok': True, 'persona': persona, 'path': path})
 
 
 # 审核页面模板
