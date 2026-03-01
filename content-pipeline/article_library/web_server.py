@@ -36,6 +36,7 @@ from content_discovery.discovery_store import (
     list_candidates as discovery_list_candidates,
     stats as discovery_stats,
 )
+from content_discovery.conclusions import generate_conclusion, get_conclusion
 
 app = Flask(__name__)
 app.secret_key = 'your-secret-key-here'  # 用于 flash 消息
@@ -1055,6 +1056,14 @@ DISCOVERY_TEMPLATE = '''
                 <div class="kpi"><div class="v" id="kpi_tech">-</div><div class="t">tech_enthusiast</div></div>
                 <div class="kpi"><div class="v" id="kpi_jp">-</div><div class="t">jp_music_fan</div></div>
             </div>
+            <div class="row2" style="margin-top:12px;">
+                <div class="small muted">结论分析：基于当前 persona 的高热度/高匹配候选，归纳“应该怎么写”。</div>
+                <div class="actions">
+                    <button class="btn" onclick="runConclusion()">生成/更新结论（persona）</button>
+                </div>
+                <textarea id="conclusion" class="mono" style="min-height:180px;" placeholder="先跑采集，再生成结论..." readonly></textarea>
+                <div class="small muted" id="conclusion_meta">-</div>
+            </div>
         </div>
 
         <div class="panel">
@@ -1164,6 +1173,35 @@ async function runCollect(){
   alert(`已启动采集任务：${j.task_id}`);
 }
 
+async function loadConclusion(){
+  const persona = document.getElementById('persona').value;
+  if (!persona) {
+    document.getElementById('conclusion').value = '';
+    document.getElementById('conclusion_meta').textContent = '先选择 persona（tech_enthusiast / jp_music_fan）';
+    return;
+  }
+  const r = await fetch('/discover/api/conclusion?persona=' + encodeURIComponent(persona));
+  const j = await r.json();
+  document.getElementById('conclusion').value = (j.conclusion_text || '').trim();
+  document.getElementById('conclusion_meta').textContent = j.generated_at ? ('generated_at=' + j.generated_at + ' | top_k=' + (j.top_k || '-')) : '暂无结论';
+}
+
+async function runConclusion(){
+  const persona = document.getElementById('persona').value || 'tech_enthusiast';
+  const r = await fetch('/discover/api/conclusion', {
+    method: 'POST',
+    headers: {'Content-Type':'application/json'},
+    body: JSON.stringify({persona})
+  });
+  const j = await r.json();
+  if (!j.ok) {
+    alert('生成失败：' + (j.error || 'unknown'));
+    return;
+  }
+  await loadConclusion();
+  alert('已更新结论');
+}
+
 function esc(s){
   return (s||'').replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;');
 }
@@ -1211,7 +1249,15 @@ async function loadItems(){
   }
 }
 
-loadStats().then(loadItems);
+document.getElementById('persona').addEventListener('change', async () => {
+  await loadItems();
+  await loadConclusion();
+});
+
+loadStats().then(async () => {
+  await loadItems();
+  await loadConclusion();
+});
 </script>
 </body>
 </html>
@@ -1622,6 +1668,33 @@ def discover_api_run():
         subprocess.Popen(cmd, stdout=f, stderr=f, env=env, cwd='/root/.openclaw/workspace/content-pipeline')
 
     return jsonify({'ok': True, 'task_id': task_id, 'log_path': log_path, 'cmd': cmd, 'db_path': DISCOVERY_DB_PATH})
+
+
+@app.route('/discover/api/conclusion', methods=['GET'])
+def discover_api_get_conclusion():
+    persona = (request.args.get('persona') or '').strip()
+    if not persona:
+        return jsonify({'ok': False, 'error': 'missing persona'}), 400
+    c = get_conclusion(persona, db_path=DISCOVERY_DB_PATH)
+    if not c:
+        return jsonify({'ok': True, 'persona': persona, 'conclusion_text': '', 'generated_at': None, 'top_k': 0})
+    top_k = 0
+    try:
+        top_k = int((c.get('evidence') or {}).get('top_k') or 0)
+    except Exception:
+        top_k = 0
+    return jsonify({'ok': True, 'persona': persona, 'conclusion_text': c.get('conclusion_text',''), 'generated_at': c.get('generated_at'), 'top_k': top_k})
+
+
+@app.route('/discover/api/conclusion', methods=['POST'])
+def discover_api_post_conclusion():
+    data = request.get_json(silent=True) or {}
+    persona = (data.get('persona') or '').strip() or 'tech_enthusiast'
+    try:
+        r = generate_conclusion(persona, db_path=DISCOVERY_DB_PATH, top_k=20)
+        return jsonify({'ok': True, 'persona': persona, 'conclusion_text': r.get('conclusion_text','')})
+    except Exception as e:
+        return jsonify({'ok': False, 'error': str(e)}), 500
 
 
 # 审核页面模板

@@ -53,6 +53,17 @@ def init_db(db_path: str = DEFAULT_DB_PATH) -> None:
         con.execute('CREATE INDEX IF NOT EXISTS idx_candidates_fit ON content_candidates(fit_score)')
         con.execute('CREATE UNIQUE INDEX IF NOT EXISTS idx_candidates_url ON content_candidates(url)')
 
+        con.execute(
+            """
+            CREATE TABLE IF NOT EXISTS persona_conclusions (
+              persona TEXT PRIMARY KEY,
+              conclusion_text TEXT NOT NULL,
+              evidence_json TEXT,
+              generated_at INTEGER NOT NULL
+            );
+            """
+        )
+
 
 def upsert_candidate(db_path: str, c: Dict[str, Any]) -> None:
     init_db(db_path)
