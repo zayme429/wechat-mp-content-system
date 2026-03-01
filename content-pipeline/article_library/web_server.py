@@ -2028,7 +2028,14 @@ def discover_api_run_cancel():
     run = discovery_get_run(task_id, db_path=DISCOVERY_DB_PATH) or {}
     pid = run.get('pid')
     if not pid:
-        return jsonify({'ok': False, 'error': 'missing pid (old run?)'}), 400
+        # For older runs that didn't record pid, we still allow "cancel" as a logical state change.
+        try:
+            from content_discovery.runs import finish_run
+
+            finish_run(task_id, status='cancelled', db_path=DISCOVERY_DB_PATH)
+        except Exception:
+            pass
+        return jsonify({'ok': True, 'task_id': task_id, 'pid': None, 'status': 'cancelled', 'note': 'pid missing; marked cancelled only'})
 
     # Try terminate gracefully then force kill
     try:
@@ -2139,7 +2146,13 @@ def discover_api_run_status():
             finish_run(task_id, status='finished', db_path=DISCOVERY_DB_PATH)
         except Exception:
             pass
-    elif 'Failed to plan queries from prompt' in all_text or 'No queries provided and search prompt file missing/empty' in all_text:
+    elif (
+        'Failed to plan queries from prompt' in all_text
+        or 'No queries provided and search prompt file missing/empty' in all_text
+        or 'Invalid request: Your request exceeded model token limit' in all_text
+        or '❌ LLM调用失败' in all_text
+        or 'Traceback (most recent call last)' in all_text
+    ):
         status = 'failed'
         try:
             from content_discovery.runs import finish_run
