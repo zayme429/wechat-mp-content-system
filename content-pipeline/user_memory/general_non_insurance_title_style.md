@@ -12,3 +12,4 @@ Rules:
 
 Output:
 - Return ONLY the title, no quotes, no markdown.
+- Do NOT prefix with "标题:" / "标题：".

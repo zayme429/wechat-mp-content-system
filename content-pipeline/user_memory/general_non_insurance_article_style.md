@@ -8,5 +8,8 @@ Baseline writing standard:
 - Avoid emotional exaggeration and empty motivational phrases.
 - Provide actionable steps, examples, and boundaries.
 
+Additional rule:
+- First line must be the title only (no "标题：" prefix, no Markdown).
+
 Output:
 - Markdown with 3-6 section headings.
