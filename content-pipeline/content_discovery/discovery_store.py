@@ -235,22 +235,22 @@ def list_candidates(
     params: List[Any] = []
 
     if persona:
-        where.append('persona = ?')
+        where.append('c.persona = ?')
         params.append(persona)
     if q:
-        where.append('(title LIKE ? OR snippet LIKE ? OR url LIKE ?)')
+        where.append('(c.title LIKE ? OR c.snippet LIKE ? OR c.url LIKE ?)')
         params.extend([f'%{q}%', f'%{q}%', f'%{q}%'])
     if min_heat is not None:
-        where.append('(heat_score IS NOT NULL AND heat_score >= ?)')
+        where.append('(c.heat_score IS NOT NULL AND c.heat_score >= ?)')
         params.append(float(min_heat))
     if min_fit is not None:
-        where.append('(fit_score IS NOT NULL AND fit_score >= ?)')
+        where.append('(c.fit_score IS NOT NULL AND c.fit_score >= ?)')
         params.append(float(min_fit))
     if min_quality is not None:
-        where.append('(quality_score IS NOT NULL AND quality_score >= ?)')
+        where.append('(c.quality_score IS NOT NULL AND c.quality_score >= ?)')
         params.append(float(min_quality))
     if run_id:
-        where.append('run_id = ?')
+        where.append('c.run_id = ?')
         params.append(run_id)
 
     sql = (
