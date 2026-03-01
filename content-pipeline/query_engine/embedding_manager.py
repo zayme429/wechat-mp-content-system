@@ -171,19 +171,38 @@ class EmbeddingManager:
 
         return {"total": len(article_ids), "success": success}
     
-    def search_by_vector(self, query_text: str, top_k: int = 20) -> List[Dict]:
+    def search_by_vector(
+        self,
+        query_text: str,
+        top_k: int = 20,
+        statuses: List[str] = None,
+        push_statuses: List[str] = None,
+    ) -> List[Dict]:
         """基于向量相似度搜索文章"""
         query_embedding = self.generate_embedding(query_text)
-        
+
+        if statuses is None:
+            statuses = ["reviewed_approved"]
+
         conn = sqlite3.connect(self.db_path)
         cursor = conn.cursor()
-        
-        cursor.execute("""
+
+        status_q = ",".join(["?"] * len(statuses))
+        where = f"embedding IS NOT NULL AND embedding != '' AND status IN ({status_q})"
+        params = list(statuses)
+        if push_statuses:
+            push_q = ",".join(["?"] * len(push_statuses))
+            where += f" AND push_status IN ({push_q})"
+            params.extend(push_statuses)
+
+        cursor.execute(
+            f"""
             SELECT article_id, title, content, topic, angle_type, quality_score, embedding
-            FROM articles 
-            WHERE embedding IS NOT NULL AND embedding != ''
-              AND status = 'reviewed_approved'
-        """)
+            FROM articles
+            WHERE {where}
+            """,
+            params,
+        )
         
         results = []
         for row in cursor.fetchall():

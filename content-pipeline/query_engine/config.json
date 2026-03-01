@@ -190,6 +190,10 @@
     "recall_strategy": "semantic_vector",
     "filter_strategy": "top_n",
     "push_mode": "confirm",
+    "source": {
+      "statuses": ["reviewed_approved"],
+      "push_statuses": null
+    },
     "display": {
       "show_process": true,
       "show_candidates": true,

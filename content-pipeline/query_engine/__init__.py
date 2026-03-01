@@ -10,20 +10,37 @@ from datetime import datetime
 class QueryEngine:
     """文章查询推荐引擎"""
 
-    def _count_library_pool(self) -> int:
-        """文章池总量（用于漏斗展示）。
+    def _get_source_filters(self) -> Tuple[List[str], List[str]]:
+        """获取召回来源过滤条件（文章状态/推送状态）。"""
+        source = self.config.get("source") or {}
+        statuses = source.get("statuses") or ["reviewed_approved"]
+        push_statuses = source.get("push_statuses")
+        # push_statuses=None 表示不限制推送状态
+        if push_statuses is None:
+            return list(statuses), []
+        return list(statuses), list(push_statuses)
 
-        用户要求：仅基于审核通过(reviewed_approved)的文章进行推荐。
-        """
+    def _count_library_pool(self) -> int:
+        """文章池总量（用于漏斗展示）。"""
         try:
             conn = sqlite3.connect(self.db_path)
             cursor = conn.cursor()
+            statuses, push_statuses = self._get_source_filters()
+            status_q = ",".join(["?"] * len(statuses))
+            where = f"status IN ({status_q})"
+            params = list(statuses)
+            if push_statuses:
+                push_q = ",".join(["?"] * len(push_statuses))
+                where += f" AND push_status IN ({push_q})"
+                params.extend(push_statuses)
+
             cursor.execute(
-                """
+                f"""
                 SELECT COUNT(*)
                 FROM articles
-                WHERE status = 'reviewed_approved'
-                """
+                WHERE {where}
+                """,
+                params,
             )
             count = cursor.fetchone()[0] or 0
             conn.close()
@@ -158,14 +175,29 @@ class QueryEngine:
         conn = sqlite3.connect(self.db_path)
         cursor = conn.cursor()
 
-        cursor.execute("""
+        statuses, push_statuses = self._get_source_filters()
+        status_q = ",".join(["?"] * len(statuses))
+        params = list(statuses)
+        push_clause = ""
+        if push_statuses:
+            push_q = ",".join(["?"] * len(push_statuses))
+            push_clause = f"AND push_status IN ({push_q})"
+            params.extend(push_statuses)
+
+        params.append(intent["topic"])
+
+        cursor.execute(
+            f"""
             SELECT article_id, title, content, topic, angle_type, quality_score
             FROM articles
-            WHERE status = 'reviewed_approved'
+            WHERE status IN ({status_q})
+              {push_clause}
               AND topic = ?
             ORDER BY quality_score DESC
             LIMIT 20
-        """, (intent["topic"],))
+            """,
+            params,
+        )
         
         candidates = self._format_candidates(cursor.fetchall())
         conn.close()
@@ -188,14 +220,29 @@ class QueryEngine:
 
         where_clause = " OR ".join(like_conditions)
 
-        cursor.execute(f"""
+        statuses, push_statuses = self._get_source_filters()
+        status_q = ",".join(["?"] * len(statuses))
+        full_params = list(statuses)
+        push_clause = ""
+        if push_statuses:
+            push_q = ",".join(["?"] * len(push_statuses))
+            push_clause = f"AND push_status IN ({push_q})"
+            full_params.extend(push_statuses)
+
+        full_params.extend(params)
+
+        cursor.execute(
+            f"""
             SELECT article_id, title, content, topic, angle_type, quality_score
             FROM articles
-            WHERE status = 'reviewed_approved'
+            WHERE status IN ({status_q})
+              {push_clause}
               AND ({where_clause})
             ORDER BY quality_score DESC
             LIMIT 20
-        """, params)
+            """,
+            full_params,
+        )
         
         candidates = self._format_candidates(cursor.fetchall())
         conn.close()
@@ -211,8 +258,9 @@ class QueryEngine:
         query_text = f"{intent['original_query']} {intent['topic']} {' '.join(intent.get('keywords', []))}"
         
         # 向量搜索
+        statuses, push_statuses = self._get_source_filters()
         manager = EmbeddingManager(self.db_path)
-        results = manager.search_by_vector(query_text, top_k=20)
+        results = manager.search_by_vector(query_text, top_k=20, statuses=statuses, push_statuses=push_statuses)
         
         # 过滤低相似度的（阈值降低到0.1以保留更多候选）
         filtered = [r for r in results if r["vector_similarity"] >= 0.1]
@@ -269,14 +317,27 @@ class QueryEngine:
         conn = sqlite3.connect(self.db_path)
         cursor = conn.cursor()
 
-        cursor.execute("""
+        statuses, push_statuses = self._get_source_filters()
+        status_q = ",".join(["?"] * len(statuses))
+        params = list(statuses)
+        push_clause = ""
+        if push_statuses:
+            push_q = ",".join(["?"] * len(push_statuses))
+            push_clause = f"AND push_status IN ({push_q})"
+            params.extend(push_statuses)
+
+        cursor.execute(
+            f"""
             SELECT article_id, title, content, topic, angle_type, quality_score
             FROM articles
-            WHERE status = 'reviewed_approved'
+            WHERE status IN ({status_q})
+              {push_clause}
               AND quality_score >= 8.0
             ORDER BY quality_score DESC
             LIMIT 20
-        """)
+            """,
+            params,
+        )
         
         candidates = self._format_candidates(cursor.fetchall())
         conn.close()

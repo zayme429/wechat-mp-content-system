@@ -2368,6 +2368,7 @@ QUERY_PAGE_TEMPLATE = '''
                             <option value="">默认召回策略</option>
                             <option value="topic_exact">主题精确匹配</option>
                             <option value="keyword_fuzzy">关键词模糊</option>
+                            <option value="semantic_vector">语义向量</option>
                             <option value="hybrid">混合策略</option>
                             <option value="quality_first">质量优先</option>
                         </select>
@@ -2377,6 +2378,18 @@ QUERY_PAGE_TEMPLATE = '''
                             <option value="threshold">阈值过滤</option>
                             <option value="weighted_random">加权随机</option>
                             <option value="diversity">多样性保证</option>
+                        </select>
+                    </div>
+                    <div style="margin-top: 10px; display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                        <select name="source_status" style="padding: 8px; border: 1px solid #ddd; border-radius: 4px; font-size: 13px;">
+                            <option value="">默认文章状态(仅已审)</option>
+                            <option value="reviewed_approved">仅已审(reviewed_approved)</option>
+                            <option value="all">全部状态(已审+候选+导入)</option>
+                        </select>
+                        <select name="source_push_status" style="padding: 8px; border: 1px solid #ddd; border-radius: 4px; font-size: 13px;">
+                            <option value="">默认推送状态(不限)</option>
+                            <option value="article_library">仅文章库(article_library)</option>
+                            <option value="all">全部(article_library+draft_box)</option>
                         </select>
                     </div>
                     <div style="margin-top: 10px;">
@@ -2506,13 +2519,30 @@ def query_page():
         recall_strategy = request.form.get('recall_strategy')
         filter_strategy = request.form.get('filter_strategy')
         push_mode = request.form.get('push_mode')
-        
+        source_status = request.form.get('source_status')
+        source_push_status = request.form.get('source_push_status')
+
         if recall_strategy:
             custom_config['recall_strategy'] = recall_strategy
         if filter_strategy:
             custom_config['filter_strategy'] = filter_strategy
         if push_mode:
             custom_config['push_mode'] = push_mode
+
+        # 召回来源过滤（状态/推送状态）
+        source_cfg = {}
+        if source_status == 'all':
+            source_cfg['statuses'] = ['reviewed_approved', 'candidate', 'imported']
+        elif source_status == 'reviewed_approved':
+            source_cfg['statuses'] = ['reviewed_approved']
+
+        if source_push_status == 'all':
+            source_cfg['push_statuses'] = ['article_library', 'draft_box']
+        elif source_push_status == 'article_library':
+            source_cfg['push_statuses'] = ['article_library']
+
+        if source_cfg:
+            custom_config['source'] = source_cfg
         
         if query:
             engine = QueryEngine()

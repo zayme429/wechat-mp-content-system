@@ -82,7 +82,8 @@ class QueryConfig:
             "recall_strategy": self.user_config.get("recall_strategy", default.get("recall_strategy")),
             "filter_strategy": self.user_config.get("filter_strategy", default.get("filter_strategy")),
             "push_mode": self.user_config.get("push_mode", default.get("push_mode")),
-            "display": {**default.get("display", {}), **self.user_config.get("display", {})}
+            "display": {**default.get("display", {}), **self.user_config.get("display", {})},
+            "source": {**default.get("source", {}), **self.user_config.get("source", {})},
         }
         return effective
     
