@@ -144,9 +144,10 @@ def main() -> int:
     if args.user_id == 'insurance_agent':
         raise SystemExit('Refusing to touch insurance_agent')
 
-    con = sqlite3.connect(LIB_DB, timeout=30)
+    con = sqlite3.connect(LIB_DB, timeout=60)
     con.row_factory = sqlite3.Row
-    con.execute('PRAGMA busy_timeout=30000')
+    con.execute('PRAGMA busy_timeout=60000')
+    con.execute('PRAGMA journal_mode=WAL')
     cur = con.cursor()
 
     targets = []
@@ -223,7 +224,16 @@ def main() -> int:
             print('SKIP empty title', aid)
             continue
 
-        cur.execute('update articles set title=? where article_id=?', (title, aid))
+        for wattempt in range(1, 6):
+            try:
+                cur.execute('update articles set title=? where article_id=?', (title, aid))
+                break
+            except sqlite3.OperationalError as e:
+                if 'locked' in str(e):
+                    time.sleep(0.6 * wattempt)
+                    continue
+                raise
+
         update_markdown_title(row['file_path'], title)
         updated += 1
         print('UPDATED', aid, 'user', user_id, '->', title)
