@@ -1459,36 +1459,7 @@ async function loadRuns(){
     `;
     rows.appendChild(tr);
 
-    for (const b of tr.querySelectorAll('button[data-task]')) {
-      b.addEventListener('click', async () => {
-        const taskId = b.getAttribute('data-task') || '';
-        const action = b.getAttribute('data-action') || 'view';
-        if (action === 'cancel') {
-          if (!confirm('确定要终止这个采集任务吗？')) return;
-          const r = await fetch('/discover/api/run_cancel', {method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({task_id: taskId})});
-          const j2 = await r.json();
-          if (!j2.ok) {
-            alert('终止失败：' + (j2.error || 'unknown'));
-            return;
-          }
-          await loadRuns();
-          return;
-        }
-        // immediate UI feedback + persist selection
-        setSelectedRun(taskId);
-        document.getElementById('conclusion_meta').textContent = `task=${taskId} status=loading...`;
-        try {
-          await loadRuns();
-          await loadItems();
-        } catch (e) {}
-        const box = document.getElementById('conclusion');
-        if (box && box.scrollIntoView) {
-          box.scrollIntoView({behavior: 'smooth', block: 'start'});
-          try { box.focus(); } catch (e) {}
-        }
-        pollRun(taskId);
-      });
-    }
+    // event delegation (bound once below) handles clicks
   }
 }
 
@@ -1500,6 +1471,46 @@ document.getElementById('persona').addEventListener('change', async () => {
   if (sel) pollRun(sel);
   await loadItems();
 });
+
+// Bind run action buttons once via event delegation (more reliable on mobile/in-app browsers)
+if (!window.__discover_runs_bound) {
+  window.__discover_runs_bound = true;
+  const table = document.getElementById('runs_rows');
+  table.addEventListener('click', async (ev) => {
+    const b = ev.target && ev.target.closest ? ev.target.closest('button[data-task]') : null;
+    if (!b) return;
+    const taskId = b.getAttribute('data-task') || '';
+    const action = b.getAttribute('data-action') || 'view';
+    if (!taskId) return;
+
+    if (action === 'cancel') {
+      if (!confirm('确定要终止这个采集任务吗？')) return;
+      const r = await fetch('/discover/api/run_cancel', {method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({task_id: taskId})});
+      const j2 = await r.json();
+      if (!j2.ok) {
+        alert('终止失败：' + (j2.error || 'unknown'));
+        return;
+      }
+      await loadRuns();
+      return;
+    }
+
+    // view
+    setSelectedRun(taskId);
+    const m = document.getElementById('conclusion_meta');
+    if (m) m.textContent = `task=${taskId} status=loading...`;
+    try {
+      await loadRuns();
+      await loadItems();
+    } catch (e) {}
+    const box = document.getElementById('conclusion');
+    if (box && box.scrollIntoView) {
+      box.scrollIntoView({behavior: 'smooth', block: 'start'});
+      try { box.focus(); } catch (e) {}
+    }
+    pollRun(taskId);
+  });
+}
 
 loadStats().then(async () => {
   await loadRuns();
