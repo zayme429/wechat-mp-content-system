@@ -187,11 +187,18 @@ class SmartArticleService:
         # 关联到用户（用于文章库的用户筛选）
         if user_id and article_ids:
             try:
-                from article_library.user_manager import UserPreferenceManager
+                import sqlite3
+                from pathlib import Path
 
-                um = UserPreferenceManager()
-                for aid in article_ids:
-                    um.associate_article(user_id, aid)
+                db_path = Path('/root/.openclaw/workspace/content-pipeline') / 'user_preferences.db'
+                with sqlite3.connect(str(db_path)) as conn:
+                    cur = conn.cursor()
+                    for aid in article_ids:
+                        cur.execute(
+                            'INSERT OR IGNORE INTO user_articles (user_id, article_id) VALUES (?, ?)',
+                            (user_id, aid),
+                        )
+                    conn.commit()
             except Exception:
                 pass
         
