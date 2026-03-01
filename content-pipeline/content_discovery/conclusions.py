@@ -24,6 +24,8 @@ def _persona_desc(persona: str) -> str:
         )
     if persona == 'tech_enthusiast':
         return '专业能力强、技术迷，反感虚有其表；偏好有实在内容、边界条件、取舍代价、复盘对比、可执行细节的文章。'
+    if persona == 'insurance_agent':
+        return '保险代理人/保险顾问：偏好真实案例、场景化沟通、客户经营与转介绍、产品方案对比、合规边界提醒、可复用话术与SOP。'
     return persona
 
 

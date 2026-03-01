@@ -1081,6 +1081,7 @@ DISCOVERY_TEMPLATE = '''
         <div class="panel">
             <div class="kpis" id="kpis">
                 <div class="kpi"><div class="v" id="kpi_total">-</div><div class="t">候选总数</div></div>
+                <div class="kpi"><div class="v" id="kpi_ins">-</div><div class="t">insurance_agent</div></div>
                 <div class="kpi"><div class="v" id="kpi_tech">-</div><div class="t">tech_enthusiast</div></div>
                 <div class="kpi"><div class="v" id="kpi_jp">-</div><div class="t">jp_music_fan</div></div>
             </div>
@@ -1127,6 +1128,7 @@ DISCOVERY_TEMPLATE = '''
                     <label>Persona</label>
                     <select id="persona">
                         <option value="">(all)</option>
+                        <option value="insurance_agent">insurance_agent</option>
                         <option value="tech_enthusiast">tech_enthusiast</option>
                         <option value="jp_music_fan">jp_music_fan</option>
                     </select>
@@ -1202,11 +1204,13 @@ async function loadStats() {
   const r = await fetch('/discover/api/stats');
   const j = await r.json();
   document.getElementById('kpi_total').textContent = j.total ?? '-';
-  let tech = 0, jp = 0;
+  let ins = 0, tech = 0, jp = 0;
   (j.by_persona || []).forEach(x => {
+    if (x.persona === 'insurance_agent') ins = x.c;
     if (x.persona === 'tech_enthusiast') tech = x.c;
     if (x.persona === 'jp_music_fan') jp = x.c;
   });
+  document.getElementById('kpi_ins').textContent = ins;
   document.getElementById('kpi_tech').textContent = tech;
   document.getElementById('kpi_jp').textContent = jp;
 }
