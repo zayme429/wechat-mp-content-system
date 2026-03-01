@@ -274,8 +274,13 @@ class DiverseArticleGenerator:
                         "请输出一个标题。"
                     )
                     title = self.generator._call_llm(prompt, temperature=0.6).strip()
-                    # 简单清理
+                    # 简单清理：去掉常见前缀/Markdown
                     title = title.strip().strip('"').strip("'")
+                    for prefix in ("标题：", "标题:", "**标题：", "**标题:"):
+                        if title.startswith(prefix):
+                            title = title[len(prefix):].strip()
+                    if title.startswith("**") and title.endswith("**") and len(title) > 4:
+                        title = title[2:-2].strip()
                     if 5 <= len(title) <= 80:
                         return title
             except Exception:
