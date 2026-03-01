@@ -196,7 +196,18 @@ class DiverseArticleGenerator:
         if self._style_instructions:
             style_text = f"\n\n【用户风格记忆（必须遵守）】\n{self._style_instructions}\n"
 
-        prompt = f"""你是一位资深科技专栏作家。请以下面的角度撰写一篇关于「{topic}」的文章：
+        title_pref_text = ""
+        if self.user_id:
+            try:
+                from article_library.title_style_manager import load_title_style
+
+                ts = load_title_style(self.user_id)
+                if ts and ts.instructions:
+                    title_pref_text = f"\n\n【用户标题偏好（通用+专用，必须遵守）】\n{ts.instructions}\n"
+            except Exception:
+                title_pref_text = ""
+
+        prompt = f"""你是一位资深内容创作者。请以下面的角度撰写一篇关于「{topic}」的文章：
 
 【写作角度】{angle['name']}
 【角度说明】{angle['desc']}
@@ -212,8 +223,8 @@ class DiverseArticleGenerator:
 4. 避免：贩卖焦虑、陈词滥调、简单罗列、过度营销
 5. 必须从这个特定角度切入，不要写成通用文章
 6. 第一行必须是「标题」且只包含标题本身（不要加“标题：”/引号/Markdown加粗）
-7. 标题要有吸引力，体现角度特色
-{style_text}
+7. 标题要有吸引力，符合用户标题偏好，并且避免批量同质化（不要都用同一种标点结构，比如不要全是“X：Y”）
+{title_pref_text}{style_text}
 
 请直接输出完整文章内容（包含标题）。"""
         
