@@ -37,6 +37,7 @@ from content_discovery.discovery_store import (
     stats as discovery_stats,
 )
 from content_discovery.conclusions import generate_conclusion, get_conclusion
+from content_discovery.runs import get_run as discovery_get_run, list_runs as discovery_list_runs
 
 app = Flask(__name__)
 app.secret_key = 'your-secret-key-here'  # 用于 flash 消息
@@ -1069,12 +1070,38 @@ DISCOVERY_TEMPLATE = '''
                 <div class="kpi"><div class="v" id="kpi_jp">-</div><div class="t">jp_music_fan</div></div>
             </div>
             <div class="row2" style="margin-top:12px;">
-                <div class="small muted">结论分析：基于当前 persona 的高热度/高匹配候选，归纳“应该怎么写”。</div>
+                <div class="small muted">采集进度与日志（全局保存：刷新也能从历史 runs 里选中查看）</div>
+                <div class="actions">
+                    <button class="btn" onclick="loadRuns()">刷新 runs</button>
+                </div>
+                <div class="small muted" id="run_meta">-</div>
+                <div style="overflow:auto; border:1px solid #e5e7eb; border-radius:12px;">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>task_id</th>
+                                <th>persona</th>
+                                <th>status</th>
+                                <th>started</th>
+                                <th>items</th>
+                                <th>queries</th>
+                                <th>action</th>
+                            </tr>
+                        </thead>
+                        <tbody id="runs_rows">
+                            <tr><td colspan="7" class="muted">暂无 runs</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+                <textarea id="conclusion" class="mono" style="min-height:180px;" placeholder="这里显示选中 run 的实时日志 tail..." readonly></textarea>
+                <div class="small muted" id="conclusion_meta">-</div>
+
+                <div class="small muted" style="margin-top:10px;">结论分析：基于当前 persona 的高热度/高匹配候选，归纳“应该怎么写”。</div>
                 <div class="actions">
                     <button class="btn" onclick="runConclusion()">生成/更新结论（persona）</button>
                 </div>
-                <textarea id="conclusion" class="mono" style="min-height:180px;" placeholder="先跑采集，再生成结论..." readonly></textarea>
-                <div class="small muted" id="conclusion_meta">-</div>
+                <textarea id="conclusion_text" class="mono" style="min-height:160px;" placeholder="先跑采集，再生成结论..." readonly></textarea>
+                <div class="small muted" id="conclusion_text_meta">-</div>
             </div>
         </div>
 
@@ -1251,8 +1278,19 @@ async function runCollect(){
   pollRun(j.task_id);
 }
 
+function setSelectedRun(taskId){
+  if (!taskId) return;
+  localStorage.setItem('discover_selected_run', taskId);
+}
+
+function getSelectedRun(){
+  return localStorage.getItem('discover_selected_run') || '';
+}
+
 async function pollRun(taskId){
-  for (let i=0;i<180;i++){
+  if (!taskId) return;
+  setSelectedRun(taskId);
+  for (let i=0;i<240;i++){
     const r = await fetch('/discover/api/run_status?task_id=' + encodeURIComponent(taskId));
     const j = await r.json();
     if (j.ok){
@@ -1262,8 +1300,12 @@ async function pollRun(taskId){
       const exp = (j.expected == null) ? '-' : j.expected;
       const prog = (j.progress == null) ? '-' : Math.round(j.progress * 100) + '%';
       document.getElementById('conclusion_meta').textContent = `task=${taskId} status=${j.status} progress=${prog} items=${j.items_seen}/${exp} queries=${j.query_done}/${j.query_started}`;
+
+      // auto-filter items to selected run
+      await loadItems();
+
       if (j.status && j.status !== 'running'){
-        await loadItems();
+        await loadRuns();
         return;
       }
     }
@@ -1274,14 +1316,14 @@ async function pollRun(taskId){
 async function loadConclusion(){
   const persona = document.getElementById('persona').value;
   if (!persona) {
-    document.getElementById('conclusion').value = '';
-    document.getElementById('conclusion_meta').textContent = '先选择 persona（tech_enthusiast / jp_music_fan）';
+    document.getElementById('conclusion_text').value = '';
+    document.getElementById('conclusion_text_meta').textContent = '先选择 persona（tech_enthusiast / jp_music_fan）';
     return;
   }
   const r = await fetch('/discover/api/conclusion?persona=' + encodeURIComponent(persona));
   const j = await r.json();
-  document.getElementById('conclusion').value = (j.conclusion_text || '').trim();
-  document.getElementById('conclusion_meta').textContent = j.generated_at ? ('generated_at=' + j.generated_at + ' | top_k=' + (j.top_k || '-')) : '暂无结论';
+  document.getElementById('conclusion_text').value = (j.conclusion_text || '').trim();
+  document.getElementById('conclusion_text_meta').textContent = j.generated_at ? ('generated_at=' + j.generated_at + ' | top_k=' + (j.top_k || '-')) : '暂无结论';
 }
 
 async function runConclusion(){
@@ -1310,15 +1352,17 @@ async function loadItems(){
   const min_heat = document.getElementById('min_heat').value;
   const min_fit = document.getElementById('min_fit').value;
   const min_quality = document.getElementById('min_quality').value;
+  const run_id = getSelectedRun();
   const params = new URLSearchParams();
   if (persona) params.set('persona', persona);
   if (q) params.set('q', q);
   if (min_heat) params.set('min_heat', min_heat);
   if (min_fit) params.set('min_fit', min_fit);
   if (min_quality) params.set('min_quality', min_quality);
+  if (run_id) params.set('run_id', run_id);
   const r = await fetch('/discover/api/items?' + params.toString());
   const j = await r.json();
-  document.getElementById('meta').textContent = `返回 ${j.items.length} 条 | 按 heat*fit 排序 | db=${j.db_path}`;
+  document.getElementById('meta').textContent = `返回 ${j.items.length} 条 | 按 heat*fit 排序 | run=${run_id || '(all)'} | db=${j.db_path}`;
 
   const rows = document.getElementById('rows');
   rows.innerHTML = '';
@@ -1351,14 +1395,54 @@ async function loadItems(){
   }
 }
 
+async function loadRuns(){
+  const persona = document.getElementById('persona').value;
+  const params = new URLSearchParams();
+  if (persona) params.set('persona', persona);
+  const r = await fetch('/discover/api/runs?' + params.toString());
+  const j = await r.json();
+  const rows = document.getElementById('runs_rows');
+  rows.innerHTML = '';
+  if (!j.ok || !j.runs || !j.runs.length) {
+    rows.innerHTML = '<tr><td colspan="7" class="muted">暂无 runs</td></tr>';
+    document.getElementById('run_meta').textContent = 'runs=0';
+    return;
+  }
+
+  document.getElementById('run_meta').textContent = `runs=${j.runs.length} | selected=${getSelectedRun() || '(none)'}`;
+
+  for (const run of j.runs) {
+    const tr = document.createElement('tr');
+    const qn = (run.planned_queries || []).length;
+    const started = run.started_at ? new Date(run.started_at * 1000).toLocaleString() : '-';
+    const sel = (getSelectedRun() === run.task_id) ? ' (selected)' : '';
+    tr.innerHTML = `
+      <td class="mono">${esc(run.task_id || '')}${sel}</td>
+      <td><span class="pill">${esc(run.persona || '')}</span></td>
+      <td>${esc(run.status || '')}</td>
+      <td class="small muted">${esc(started)}</td>
+      <td class="small muted">-</td>
+      <td class="small muted">${qn}</td>
+      <td><button class="btn" onclick="pollRun('${esc(run.task_id || '')}')">查看</button></td>
+    `;
+    rows.appendChild(tr);
+  }
+}
+
 document.getElementById('persona').addEventListener('change', async () => {
-  await loadItems();
+  await loadRuns();
   await loadConclusion();
+  const sel = getSelectedRun();
+  if (sel) pollRun(sel);
+  await loadItems();
 });
 
 loadStats().then(async () => {
-  await loadItems();
+  await loadRuns();
   await loadConclusion();
+  const sel = getSelectedRun();
+  if (sel) pollRun(sel);
+  await loadItems();
 });
 </script>
 </body>
@@ -1711,6 +1795,8 @@ def discover_api_items():
     persona = request.args.get('persona') or None
     q = request.args.get('q') or None
 
+    run_id = request.args.get('run_id') or None
+
     min_heat = request.args.get('min_heat')
     min_fit = request.args.get('min_fit')
     min_quality = request.args.get('min_quality')
@@ -1735,6 +1821,7 @@ def discover_api_items():
         min_heat=min_heat_v,
         min_fit=min_fit_v,
         min_quality=min_quality_v,
+        run_id=run_id,
         limit=200,
     )
     return jsonify({'db_path': DISCOVERY_DB_PATH, 'items': items})
@@ -1869,11 +1956,35 @@ def discover_api_post_prompt():
     return jsonify({'ok': True, 'persona': persona, 'path': path})
 
 
+@app.route('/discover/api/runs', methods=['GET'])
+def discover_api_runs():
+    persona = request.args.get('persona') or None
+    runs = discovery_list_runs(db_path=DISCOVERY_DB_PATH, persona=persona, limit=30)
+    # keep it small
+    slim = []
+    for r in runs:
+        slim.append(
+            {
+                'task_id': r.get('task_id'),
+                'persona': r.get('persona'),
+                'status': r.get('status'),
+                'started_at': r.get('started_at'),
+                'finished_at': r.get('finished_at'),
+                'planned_queries': r.get('planned_queries') or [],
+                'log_path': r.get('log_path'),
+            }
+        )
+    return jsonify({'ok': True, 'runs': slim})
+
+
 @app.route('/discover/api/run_status', methods=['GET'])
 def discover_api_run_status():
     task_id = (request.args.get('task_id') or '').strip()
     if not task_id:
         return jsonify({'ok': False, 'error': 'missing task_id'}), 400
+
+    run = discovery_get_run(task_id, db_path=DISCOVERY_DB_PATH) or {}
+    log_path = run.get('log_path') or f"/root/.openclaw/workspace/content-pipeline/content_discovery/run_{task_id}.log"
 
     # compute inserted count by run_id
     inserted = 0
@@ -1887,11 +1998,9 @@ def discover_api_run_status():
     except Exception:
         inserted = 0
 
-    planned_queries = []
+    planned_queries = run.get('planned_queries') or []
     max_results = None
     # parse a little metadata from log tail/full file (best-effort)
-
-    log_path = f"/root/.openclaw/workspace/content-pipeline/content_discovery/run_{task_id}.log"
     tail = ''
     all_text = ''
     try:
@@ -1903,8 +2012,8 @@ def discover_api_run_status():
         tail = ''
         all_text = ''
 
-    # parse planned queries
-    if all_text:
+    # parse planned queries (if not already in runs table)
+    if all_text and not planned_queries:
         if 'PLANNED_QUERIES' in all_text:
             part = all_text.split('PLANNED_QUERIES', 1)[1]
             for line in part.splitlines():
@@ -1912,7 +2021,9 @@ def discover_api_run_status():
                     planned_queries.append(line[2:].strip())
                 elif line.strip() == '':
                     break
-        # parse max_results
+
+    # parse max_results
+    if all_text:
         for line in all_text.splitlines():
             if line.startswith('RUN_START') and 'max_results=' in line:
                 try:
@@ -1947,6 +2058,7 @@ def discover_api_run_status():
     return jsonify({
         'ok': True,
         'task_id': task_id,
+        'persona': run.get('persona'),
         'status': status,
         'inserted': inserted,
         'log_path': log_path,
@@ -1957,6 +2069,8 @@ def discover_api_run_status():
         'items_seen': item_lines,
         'expected': expected,
         'progress': progress,
+        'started_at': run.get('started_at'),
+        'finished_at': run.get('finished_at'),
     })
 
 

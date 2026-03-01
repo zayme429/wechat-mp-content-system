@@ -65,6 +65,34 @@ def get_run(task_id: str, db_path: str = DEFAULT_DB_PATH) -> Optional[Dict[str, 
     return d
 
 
+def list_runs(
+    db_path: str = DEFAULT_DB_PATH,
+    persona: Optional[str] = None,
+    limit: int = 20,
+) -> List[Dict[str, Any]]:
+    init_db(db_path)
+    sql = 'SELECT * FROM discovery_runs '
+    params: List[Any] = []
+    if persona:
+        sql += 'WHERE persona=? '
+        params.append(persona)
+    sql += 'ORDER BY started_at DESC LIMIT ?'
+    params.append(int(limit))
+
+    with connect(db_path) as con:
+        rows = con.execute(sql, params).fetchall()
+
+    out: List[Dict[str, Any]] = []
+    for row in rows:
+        d = dict(row)
+        try:
+            d['planned_queries'] = json.loads(d.get('planned_queries_json') or '[]')
+        except Exception:
+            d['planned_queries'] = []
+        out.append(d)
+    return out
+
+
 def latest_run(persona: str, db_path: str = DEFAULT_DB_PATH) -> Optional[Dict[str, Any]]:
     init_db(db_path)
     with connect(db_path) as con:
