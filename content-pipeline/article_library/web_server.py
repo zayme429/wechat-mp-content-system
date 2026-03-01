@@ -1252,16 +1252,16 @@ async function runCollect(){
 }
 
 async function pollRun(taskId){
-  for (let i=0;i<60;i++){
+  for (let i=0;i<180;i++){
     const r = await fetch('/discover/api/run_status?task_id=' + encodeURIComponent(taskId));
     const j = await r.json();
     if (j.ok){
       if (j.tail){
         document.getElementById('conclusion').value = (j.tail || '').trim();
       }
-      if (j.inserted != null){
-        document.getElementById('conclusion_meta').textContent = `task=${taskId} status=${j.status} inserted=${j.inserted}`;
-      }
+      const exp = (j.expected == null) ? '-' : j.expected;
+      const prog = (j.progress == null) ? '-' : Math.round(j.progress * 100) + '%';
+      document.getElementById('conclusion_meta').textContent = `task=${taskId} status=${j.status} progress=${prog} items=${j.items_seen}/${exp} queries=${j.query_done}/${j.query_started}`;
       if (j.status && j.status !== 'running'){
         await loadItems();
         return;
@@ -1887,18 +1887,51 @@ def discover_api_run_status():
     except Exception:
         inserted = 0
 
+    planned_queries = []
+    max_results = None
+    # parse a little metadata from log tail/full file (best-effort)
+
     log_path = f"/root/.openclaw/workspace/content-pipeline/content_discovery/run_{task_id}.log"
     tail = ''
+    all_text = ''
     try:
         with open(log_path, 'r', encoding='utf-8') as f:
-            lines = f.readlines()[-40:]
-            tail = ''.join(lines)
+            all_text = f.read()
+        lines = all_text.splitlines(True)
+        tail = ''.join(lines[-80:])
     except Exception:
         tail = ''
+        all_text = ''
+
+    # parse planned queries
+    if all_text:
+        if 'PLANNED_QUERIES' in all_text:
+            part = all_text.split('PLANNED_QUERIES', 1)[1]
+            for line in part.splitlines():
+                if line.startswith('- '):
+                    planned_queries.append(line[2:].strip())
+                elif line.strip() == '':
+                    break
+        # parse max_results
+        for line in all_text.splitlines():
+            if line.startswith('RUN_START') and 'max_results=' in line:
+                try:
+                    max_results = int(line.split('max_results=', 1)[1].strip())
+                except Exception:
+                    max_results = None
+                break
+
+    # progress estimation
+    query_started = all_text.count('QUERY_START')
+    query_done = all_text.count('QUERY_DONE')
+    item_lines = all_text.count('ITEM ')
+
+    expected = None
+    if planned_queries and max_results:
+        expected = len(planned_queries) * int(max_results)
 
     status = 'running'
-    # naive: if log ends with DONE, mark finished
-    if 'DONE total' in tail:
+    if 'RUN_DONE' in all_text:
         status = 'finished'
         try:
             from content_discovery.runs import finish_run
@@ -1907,7 +1940,24 @@ def discover_api_run_status():
         except Exception:
             pass
 
-    return jsonify({'ok': True, 'task_id': task_id, 'status': status, 'inserted': inserted, 'log_path': log_path, 'tail': tail})
+    progress = None
+    if expected:
+        progress = max(0.0, min(1.0, float(item_lines) / float(expected)))
+
+    return jsonify({
+        'ok': True,
+        'task_id': task_id,
+        'status': status,
+        'inserted': inserted,
+        'log_path': log_path,
+        'tail': tail,
+        'planned_queries': planned_queries,
+        'query_started': query_started,
+        'query_done': query_done,
+        'items_seen': item_lines,
+        'expected': expected,
+        'progress': progress,
+    })
 
 
 # 审核页面模板

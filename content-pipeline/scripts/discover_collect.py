@@ -55,8 +55,11 @@ def main() -> int:
         raise SystemExit('Missing TAVILY_API_KEY in environment')
 
     total = 0
-    for q in queries:
+    print('RUN_START', 'persona='+persona, 'queries='+str(len(queries)), 'max_results='+str(args.max_results), flush=True)
+    for qi, q in enumerate(queries, 1):
+        print('QUERY_START', f'{qi}/{len(queries)}', q, flush=True)
         results = tavily_search(q, max_results=args.max_results)
+        print('QUERY_RESULTS', f'{qi}/{len(queries)}', 'returned='+str(len(results)), flush=True)
         for idx, r in enumerate(results, 1):
             title = (r.get('title') or '').strip()
             url = (r.get('url') or '').strip()
@@ -90,10 +93,12 @@ def main() -> int:
 
             upsert_candidate(args.db_path, cand)
             total += 1
-            print('UPSERT', persona, fit['fit_score'], fit.get('quality_score', 0), int(heat['heat_score']), title[:60])
+            print('ITEM', f'{qi}/{len(queries)}', f'{idx}/{len(results)}', 'UPSERT', persona, fit['fit_score'], fit.get('quality_score', 0), int(heat['heat_score']), title[:60], flush=True)
             time.sleep(max(0.0, args.sleep))
 
-    print('DONE total', total, 'db', args.db_path)
+        print('QUERY_DONE', f'{qi}/{len(queries)}', q, flush=True)
+
+    print('RUN_DONE', 'total='+str(total), 'db='+args.db_path, flush=True)
     return 0
 
 
