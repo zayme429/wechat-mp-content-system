@@ -14,19 +14,21 @@ def start_run(
     persona: str,
     planned_queries: List[str],
     log_path: str,
+    pid: int | None = None,
     db_path: str = DEFAULT_DB_PATH,
 ) -> None:
     init_db(db_path)
     with connect(db_path) as con:
         con.execute(
             """
-            INSERT INTO discovery_runs(task_id, persona, planned_queries_json, log_path, status, started_at, finished_at)
-            VALUES(?,?,?,?,?,?,?)
+            INSERT INTO discovery_runs(task_id, persona, planned_queries_json, log_path, status, pid, started_at, finished_at)
+            VALUES(?,?,?,?,?,?,?, ?,?)
             ON CONFLICT(task_id) DO UPDATE SET
               persona=excluded.persona,
               planned_queries_json=excluded.planned_queries_json,
               log_path=excluded.log_path,
               status=excluded.status,
+              pid=excluded.pid,
               started_at=excluded.started_at,
               finished_at=excluded.finished_at
             """,
@@ -36,6 +38,7 @@ def start_run(
                 json.dumps(planned_queries or [], ensure_ascii=False),
                 log_path,
                 'running',
+                int(pid) if pid else None,
                 int(time.time()),
                 None,
             ),

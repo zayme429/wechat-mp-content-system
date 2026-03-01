@@ -1431,6 +1431,7 @@ async function loadRuns(){
     const qn = (run.planned_queries || []).length;
     const started = run.started_at ? new Date(run.started_at * 1000).toLocaleString() : '-';
     const sel = (getSelectedRun() === run.task_id) ? ' (selected)' : '';
+    const isRunning = (run.status === 'running');
     tr.innerHTML = `
       <td class="mono">${esc(run.task_id || '')}${sel}</td>
       <td><span class="pill">${esc(run.persona || '')}</span></td>
@@ -1438,12 +1439,30 @@ async function loadRuns(){
       <td class="small muted">${esc(started)}</td>
       <td class="small muted">-</td>
       <td class="small muted">${qn}</td>
-      <td><button class="btn" data-task="${esc(run.task_id || '')}">查看</button></td>
+      <td>
+        <button class="btn" data-task="${esc(run.task_id || '')}" data-action="view">查看</button>
+        ${isRunning ? `<button class="btn" data-task="${esc(run.task_id || '')}" data-action="cancel">终止</button>` : ''}
+      </td>
     `;
     rows.appendChild(tr);
-    const btn = tr.querySelector('button[data-task]');
-    if (btn) {
-      btn.addEventListener('click', () => pollRun(run.task_id || ''));
+
+    for (const b of tr.querySelectorAll('button[data-task]')) {
+      b.addEventListener('click', async () => {
+        const taskId = b.getAttribute('data-task') || '';
+        const action = b.getAttribute('data-action') || 'view';
+        if (action === 'cancel') {
+          if (!confirm('确定要终止这个采集任务吗？')) return;
+          const r = await fetch('/discover/api/run_cancel', {method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify({task_id: taskId})});
+          const j2 = await r.json();
+          if (!j2.ok) {
+            alert('终止失败：' + (j2.error || 'unknown'));
+            return;
+          }
+          await loadRuns();
+          return;
+        }
+        pollRun(taskId);
+      });
     }
   }
 }
@@ -1900,18 +1919,19 @@ def discover_api_run():
     if not env.get('TAVILY_API_KEY'):
         return jsonify({'ok': False, 'error': 'Missing TAVILY_API_KEY'}), 400
 
+    proc = None
     with open(log_path, 'w', encoding='utf-8') as f:
         if planned_queries:
             f.write('PLANNED_QUERIES\n')
             for q in planned_queries:
                 f.write(f"- {q}\n")
             f.write('\n')
-        subprocess.Popen(cmd, stdout=f, stderr=f, env=env, cwd='/root/.openclaw/workspace/content-pipeline')
+        proc = subprocess.Popen(cmd, stdout=f, stderr=f, env=env, cwd='/root/.openclaw/workspace/content-pipeline')
 
     try:
         from content_discovery.runs import start_run
 
-        start_run(task_id, persona, planned_queries, log_path, db_path=DISCOVERY_DB_PATH)
+        start_run(task_id, persona, planned_queries, log_path, pid=(proc.pid if proc else None), db_path=DISCOVERY_DB_PATH)
     except Exception:
         pass
 
@@ -1988,6 +2008,7 @@ def discover_api_runs():
                 'task_id': r.get('task_id'),
                 'persona': r.get('persona'),
                 'status': r.get('status'),
+                'pid': r.get('pid'),
                 'started_at': r.get('started_at'),
                 'finished_at': r.get('finished_at'),
                 'planned_queries': r.get('planned_queries') or [],
@@ -1995,6 +2016,54 @@ def discover_api_runs():
             }
         )
     return jsonify({'ok': True, 'runs': slim})
+
+
+@app.route('/discover/api/run_cancel', methods=['POST'])
+def discover_api_run_cancel():
+    data = request.get_json(silent=True) or {}
+    task_id = (data.get('task_id') or '').strip()
+    if not task_id:
+        return jsonify({'ok': False, 'error': 'missing task_id'}), 400
+
+    run = discovery_get_run(task_id, db_path=DISCOVERY_DB_PATH) or {}
+    pid = run.get('pid')
+    if not pid:
+        return jsonify({'ok': False, 'error': 'missing pid (old run?)'}), 400
+
+    # Try terminate gracefully then force kill
+    try:
+        import signal
+
+        os.kill(int(pid), signal.SIGTERM)
+    except Exception:
+        pass
+
+    # Wait a moment
+    import time as _t
+
+    _t.sleep(0.8)
+    still_running = True
+    try:
+        os.kill(int(pid), 0)
+    except Exception:
+        still_running = False
+
+    if still_running:
+        try:
+            import signal
+
+            os.kill(int(pid), signal.SIGKILL)
+        except Exception:
+            pass
+
+    try:
+        from content_discovery.runs import finish_run
+
+        finish_run(task_id, status='cancelled', db_path=DISCOVERY_DB_PATH)
+    except Exception:
+        pass
+
+    return jsonify({'ok': True, 'task_id': task_id, 'pid': pid, 'status': 'cancelled'})
 
 
 @app.route('/discover/api/run_status', methods=['GET'])

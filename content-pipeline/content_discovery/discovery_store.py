@@ -92,11 +92,24 @@ def init_db(db_path: str = DEFAULT_DB_PATH) -> None:
               planned_queries_json TEXT,
               log_path TEXT,
               status TEXT,
+              pid INTEGER,
               started_at INTEGER NOT NULL,
               finished_at INTEGER
             );
             """
         )
+        # Forward-compatible schema upgrades for discovery_runs
+        try:
+            rows = con.execute('PRAGMA table_info(discovery_runs)').fetchall()
+            run_cols = {r['name'] for r in rows}
+        except Exception:
+            run_cols = set()
+        if 'pid' not in run_cols:
+            try:
+                con.execute('ALTER TABLE discovery_runs ADD COLUMN pid INTEGER')
+            except Exception:
+                pass
+
         con.execute('CREATE INDEX IF NOT EXISTS idx_runs_persona_started ON discovery_runs(persona, started_at)')
 
         con.execute(
