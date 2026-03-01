@@ -10,22 +10,39 @@ from datetime import datetime
 class QueryEngine:
     """文章查询推荐引擎"""
 
-    def _get_source_filters(self) -> Tuple[List[str], List[str]]:
-        """获取召回来源过滤条件（文章状态/推送状态）。"""
+    def _get_source_filters(self) -> Tuple[Optional[str], List[str], List[str]]:
+        """获取召回来源过滤条件（用户/文章状态/推送状态）。"""
         source = self.config.get("source") or {}
+        user_id = source.get("user_id")
         statuses = source.get("statuses") or ["reviewed_approved"]
         push_statuses = source.get("push_statuses")
         # push_statuses=None 表示不限制推送状态
         if push_statuses is None:
-            return list(statuses), []
-        return list(statuses), list(push_statuses)
+            return user_id, list(statuses), []
+        return user_id, list(statuses), list(push_statuses)
+
+    def _get_user_article_ids(self, user_id: Optional[str]) -> List[str]:
+        if not user_id:
+            return []
+        try:
+            import sys
+            sys.path.insert(0, '/root/.openclaw/workspace/content-pipeline')
+            from article_library.user_manager import UserPreferenceManager
+
+            um = UserPreferenceManager()
+            with sqlite3.connect(um.db_path) as conn:
+                cursor = conn.cursor()
+                cursor.execute('SELECT article_id FROM user_articles WHERE user_id = ?', (user_id,))
+                return [row[0] for row in cursor.fetchall()]
+        except Exception:
+            return []
 
     def _count_library_pool(self) -> int:
         """文章池总量（用于漏斗展示）。"""
         try:
             conn = sqlite3.connect(self.db_path)
             cursor = conn.cursor()
-            statuses, push_statuses = self._get_source_filters()
+            user_id, statuses, push_statuses = self._get_source_filters()
             status_q = ",".join(["?"] * len(statuses))
             where = f"status IN ({status_q})"
             params = list(statuses)
@@ -33,6 +50,12 @@ class QueryEngine:
                 push_q = ",".join(["?"] * len(push_statuses))
                 where += f" AND push_status IN ({push_q})"
                 params.extend(push_statuses)
+
+            user_article_ids = self._get_user_article_ids(user_id)
+            if user_article_ids:
+                user_q = ",".join(["?"] * len(user_article_ids))
+                where += f" AND article_id IN ({user_q})"
+                params.extend(user_article_ids)
 
             cursor.execute(
                 f"""
@@ -175,7 +198,7 @@ class QueryEngine:
         conn = sqlite3.connect(self.db_path)
         cursor = conn.cursor()
 
-        statuses, push_statuses = self._get_source_filters()
+        user_id, statuses, push_statuses = self._get_source_filters()
         status_q = ",".join(["?"] * len(statuses))
         params = list(statuses)
         push_clause = ""
@@ -183,6 +206,13 @@ class QueryEngine:
             push_q = ",".join(["?"] * len(push_statuses))
             push_clause = f"AND push_status IN ({push_q})"
             params.extend(push_statuses)
+
+        user_article_ids = self._get_user_article_ids(user_id)
+        user_clause = ""
+        if user_article_ids:
+            user_q = ",".join(["?"] * len(user_article_ids))
+            user_clause = f"AND article_id IN ({user_q})"
+            params.extend(user_article_ids)
 
         params.append(intent["topic"])
 
@@ -192,6 +222,7 @@ class QueryEngine:
             FROM articles
             WHERE status IN ({status_q})
               {push_clause}
+              {user_clause}
               AND topic = ?
             ORDER BY quality_score DESC
             LIMIT 20
@@ -220,7 +251,7 @@ class QueryEngine:
 
         where_clause = " OR ".join(like_conditions)
 
-        statuses, push_statuses = self._get_source_filters()
+        user_id, statuses, push_statuses = self._get_source_filters()
         status_q = ",".join(["?"] * len(statuses))
         full_params = list(statuses)
         push_clause = ""
@@ -228,6 +259,13 @@ class QueryEngine:
             push_q = ",".join(["?"] * len(push_statuses))
             push_clause = f"AND push_status IN ({push_q})"
             full_params.extend(push_statuses)
+
+        user_article_ids = self._get_user_article_ids(user_id)
+        user_clause = ""
+        if user_article_ids:
+            user_q = ",".join(["?"] * len(user_article_ids))
+            user_clause = f"AND article_id IN ({user_q})"
+            full_params.extend(user_article_ids)
 
         full_params.extend(params)
 
@@ -237,6 +275,7 @@ class QueryEngine:
             FROM articles
             WHERE status IN ({status_q})
               {push_clause}
+              {user_clause}
               AND ({where_clause})
             ORDER BY quality_score DESC
             LIMIT 20
@@ -258,9 +297,16 @@ class QueryEngine:
         query_text = f"{intent['original_query']} {intent['topic']} {' '.join(intent.get('keywords', []))}"
         
         # 向量搜索
-        statuses, push_statuses = self._get_source_filters()
+        user_id, statuses, push_statuses = self._get_source_filters()
+        user_article_ids = self._get_user_article_ids(user_id)
         manager = EmbeddingManager(self.db_path)
-        results = manager.search_by_vector(query_text, top_k=20, statuses=statuses, push_statuses=push_statuses)
+        results = manager.search_by_vector(
+            query_text,
+            top_k=20,
+            statuses=statuses,
+            push_statuses=push_statuses,
+            article_ids=user_article_ids,
+        )
         
         # 过滤低相似度的（阈值降低到0.1以保留更多候选）
         filtered = [r for r in results if r["vector_similarity"] >= 0.1]
@@ -317,7 +363,7 @@ class QueryEngine:
         conn = sqlite3.connect(self.db_path)
         cursor = conn.cursor()
 
-        statuses, push_statuses = self._get_source_filters()
+        user_id, statuses, push_statuses = self._get_source_filters()
         status_q = ",".join(["?"] * len(statuses))
         params = list(statuses)
         push_clause = ""
@@ -326,12 +372,20 @@ class QueryEngine:
             push_clause = f"AND push_status IN ({push_q})"
             params.extend(push_statuses)
 
+        user_article_ids = self._get_user_article_ids(user_id)
+        user_clause = ""
+        if user_article_ids:
+            user_q = ",".join(["?"] * len(user_article_ids))
+            user_clause = f"AND article_id IN ({user_q})"
+            params.extend(user_article_ids)
+
         cursor.execute(
             f"""
             SELECT article_id, title, content, topic, angle_type, quality_score
             FROM articles
             WHERE status IN ({status_q})
               {push_clause}
+              {user_clause}
               AND quality_score >= 8.0
             ORDER BY quality_score DESC
             LIMIT 20

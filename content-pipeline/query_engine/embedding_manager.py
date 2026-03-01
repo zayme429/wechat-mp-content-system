@@ -177,6 +177,7 @@ class EmbeddingManager:
         top_k: int = 20,
         statuses: List[str] = None,
         push_statuses: List[str] = None,
+        article_ids: List[str] = None,
     ) -> List[Dict]:
         """基于向量相似度搜索文章"""
         query_embedding = self.generate_embedding(query_text)
@@ -194,6 +195,11 @@ class EmbeddingManager:
             push_q = ",".join(["?"] * len(push_statuses))
             where += f" AND push_status IN ({push_q})"
             params.extend(push_statuses)
+
+        if article_ids:
+            user_q = ",".join(["?"] * len(article_ids))
+            where += f" AND article_id IN ({user_q})"
+            params.extend(article_ids)
 
         cursor.execute(
             f"""

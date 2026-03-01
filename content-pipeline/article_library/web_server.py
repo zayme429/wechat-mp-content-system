@@ -2353,6 +2353,14 @@ QUERY_PAGE_TEMPLATE = '''
         
         <div class="query-box">
             <form method="POST" action="/query">
+                <div style="margin-bottom: 12px; display: flex; gap: 10px; align-items: center;">
+                    <label style="font-size: 13px; color: #555; min-width: 70px;">用户</label>
+                    <select name="user_id" style="flex: 1; padding: 10px; border: 1px solid #ddd; border-radius: 6px; font-size: 13px;">
+                        {% for u in all_users %}
+                        <option value="{{ u.user_id }}" {% if current_user and current_user.user_id == u.user_id %}selected{% endif %}>{{ u.name }} ({{ u.user_id }})</option>
+                        {% endfor %}
+                    </select>
+                </div>
                 <input type="text" name="query" class="query-input" 
                        placeholder="例如：客户经营技巧、如何获得转介绍、社群营销方法..."
                        value="{{ query }}" required>
@@ -2508,12 +2516,18 @@ def query_page():
     from query_engine import QueryEngine
     from query_engine.config_manager import get_config
     
+    # 获取当前用户（沿用文章库的用户体系）
+    current_user_id = request.values.get('user_id') or request.args.get('user') or DEFAULT_USER_ID
+    current_user = user_manager.get_user_profile(current_user_id)
+    all_users = user_manager.list_users()
+
     query = ''
     result = None
     custom_config = {}
     
     if request.method == 'POST':
         query = request.form.get('query', '')
+        current_user_id = request.form.get('user_id') or current_user_id
         
         # 获取自定义配置
         recall_strategy = request.form.get('recall_strategy')
@@ -2541,12 +2555,15 @@ def query_page():
         elif source_push_status == 'article_library':
             source_cfg['push_statuses'] = ['article_library']
 
+        if current_user_id:
+            source_cfg['user_id'] = current_user_id
+
         if source_cfg:
             custom_config['source'] = source_cfg
         
         if query:
             engine = QueryEngine()
-            result = engine.query(query, custom_config=custom_config if custom_config else None)
+            result = engine.query(query, user_id=current_user_id, custom_config=custom_config if custom_config else None)
             
             # 处理自动推送模式
             if result.get('push_mode') == 'auto_draft' and result.get('status') == 'success':
@@ -2554,7 +2571,14 @@ def query_page():
                 push_result = engine.push_to_wechat(article_id)
                 result['auto_push_result'] = push_result
     
-    return render_template_string(QUERY_PAGE_TEMPLATE, query=query, result=result, custom_config=custom_config)
+    return render_template_string(
+        QUERY_PAGE_TEMPLATE,
+        query=query,
+        result=result,
+        custom_config=custom_config,
+        current_user=current_user,
+        all_users=all_users,
+    )
 
 
 @app.route('/api/query', methods=['POST'])

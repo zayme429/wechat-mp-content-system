@@ -191,6 +191,7 @@
     "filter_strategy": "top_n",
     "push_mode": "confirm",
     "source": {
+      "user_id": null,
       "statuses": ["reviewed_approved"],
       "push_statuses": null
     },
