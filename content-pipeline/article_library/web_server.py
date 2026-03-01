@@ -40,6 +40,19 @@ from content_discovery.conclusions import generate_conclusion, get_conclusion
 from content_discovery.runs import get_run as discovery_get_run, list_runs as discovery_list_runs
 
 app = Flask(__name__)
+
+
+@app.after_request
+def _no_cache_discover(resp):
+    try:
+        p = request.path or ''
+    except Exception:
+        p = ''
+    if p.startswith('/discover'):
+        resp.headers['Cache-Control'] = 'no-store, no-cache, must-revalidate, max-age=0'
+        resp.headers['Pragma'] = 'no-cache'
+        resp.headers['Expires'] = '0'
+    return resp
 app.secret_key = 'your-secret-key-here'  # 用于 flash 消息
 
 # 添加自定义过滤器
@@ -1461,6 +1474,8 @@ async function loadRuns(){
           await loadRuns();
           return;
         }
+        // immediate UI feedback
+        document.getElementById('conclusion_meta').textContent = `task=${taskId} status=loading...`;
         pollRun(taskId);
       });
     }
