@@ -237,30 +237,49 @@ articles = generate_insurance_articles("保险客户经营", count=5)
 
 ### 必需配置（推送到公众号草稿箱）
 
-| 配置项 | 说明 | 获取方式 |
-|-------|------|---------|
-| `WECHAT_APP_ID` | 微信公众号AppID | 公众号后台 → 开发 → 基本配置 |
-| `WECHAT_APP_SECRET` | 微信公众号AppSecret | 同上 |
+| 配置项 | 说明 |
+|-------|------|
+| `WECHAT_APP_ID` | 微信公众号AppID |
+| `WECHAT_APP_SECRET` | 微信公众号AppSecret |
+
+获取指南：微信公众号后台 → `设置与开发` → `基本配置` → AppID/AppSecret。
 
 ### 常用可选配置（按需开）
 
-| 配置项 | 说明 | 建议配置方式 |
-|-------|------|-------------|
-| `ANTHROPIC_API_KEY` | Claude（LLM 生成/分析） | `.env` / 环境变量 |
-| `OPENAI_API_KEY` | Embedding（向量召回，OpenAI兼容；可对接硅基流动） | `.env` / 环境变量 / `content-pipeline/config/secrets.local.json` |
-| `OPENAI_BASE_URL` | Embedding base_url（例：`https://api.siliconflow.cn/v1`） | `.env` / 环境变量 / `content-pipeline/config/secrets.local.json` |
-| `EMBEDDING_MODEL` | Embedding 模型名（硅基示例：`Qwen/Qwen3-Embedding-8B`） | `.env` / 环境变量 / `content-pipeline/config/secrets.local.json` |
-| `EMBEDDING_DIM` | 仅 `text-embedding-3-*` 需要（其它模型可忽略） | `.env` / 环境变量 / `content-pipeline/config/secrets.local.json` |
-| `KIMI_API_KEY` | Kimi/Moonshot（内容生成，OpenAI兼容） | `.env` / 环境变量 / `content-pipeline/config/secrets.local.json` |
-| `KIMI_BASE_URL` | 生成服务的 base_url（可填你的 GPT Gateway） | `.env` / 环境变量 |
-| `KIMI_MODEL` | 生成模型名（默认 `kimi-k2.5`） | `.env` / 环境变量 |
-| `TAVILY_API_KEY` | Tavily（内容发现/检索） | `.env` / `content-pipeline/config/secrets.local.json` |
-| `SENDCLAW_API_KEY` | SendClaw（审核邮件） | `.env` / `content-pipeline/config/secrets.local.json` |
-| `SMTP_USER` / `SMTP_PASS` | SMTP 发信（审核通知等） | `content-pipeline/config/secrets.local.json` |
-| `FLASK_PORT` | 服务端口 | `.env` / 环境变量 |
-| `FLASK_HOST` | 监听地址 | `.env` / 环境变量 |
+| 配置项 | 说明 |
+|-------|------|
+| `OPENAI_API_KEY` | Embedding（向量召回，OpenAI兼容；可对接硅基流动） |
+| `OPENAI_BASE_URL` | Embedding base_url（例：`https://api.siliconflow.cn/v1`） |
+| `EMBEDDING_MODEL` | Embedding 模型名（硅基示例：`Qwen/Qwen3-Embedding-8B`） |
+| `EMBEDDING_DIM` | 仅 `text-embedding-3-*` 需要（其它模型可忽略） |
+| `KIMI_API_KEY` | Kimi/Moonshot（内容生成，OpenAI兼容） |
+| `KIMI_BASE_URL` | 生成服务的 base_url（可填你的 GPT Gateway） |
+| `KIMI_MODEL` | 生成模型名（默认 `kimi-k2.5`） |
+| `TAVILY_API_KEY` | Tavily（内容发现/检索） |
+| `SENDCLAW_API_KEY` | SendClaw（审核邮件） |
+| `SMTP_USER` / `SMTP_PASS` | SMTP 发信（审核通知等） |
+| `FLASK_PORT` | 服务端口 |
+| `FLASK_HOST` | 监听地址 |
 
-说明：仓库中不会提交真实 key；`content-pipeline/config/secrets.json` 已改成占位符。
+获取指南（按 key 对应）
+- `OPENAI_API_KEY` / `OPENAI_BASE_URL` / `EMBEDDING_MODEL`
+  - OpenAI 官方：`OPENAI_BASE_URL=https://api.openai.com/v1`，key 在 OpenAI 控制台创建
+  - 硅基流动（OpenAI兼容）：`OPENAI_BASE_URL=https://api.siliconflow.cn/v1`，key 在硅基流动控制台创建；模型名用其 OpenAI `models.list` 返回的 embedding 模型 ID（示例：`Qwen/Qwen3-Embedding-8B`）
+- `KIMI_API_KEY` / `KIMI_BASE_URL` / `KIMI_MODEL`
+  - Moonshot(Kimi) 官方：`KIMI_BASE_URL=https://api.moonshot.cn/v1`，key 在 Moonshot 控制台创建
+  - 也可替换为你自己的 GPT Gateway（只要 OpenAI 兼容）
+- `TAVILY_API_KEY`
+  - Tavily 官网控制台创建 API key
+- `SENDCLAW_API_KEY`
+  - SendClaw 控制台创建 API key（用于审核邮件收件箱轮询/解析）
+- `SMTP_USER` / `SMTP_PASS`
+  - 你的邮箱服务商（如 163/Gmail/Outlook）SMTP 账号 + 授权码/应用专用密码（不是网页登录密码）
+
+建议配置方式
+- 推荐：`.env`（`cp .env.example .env`）
+- 或者：`content-pipeline/config/secrets.local.json`（服务器本地真实 key，不进 git）
+
+说明：仓库中不会提交真实 key；`content-pipeline/config/secrets.json` 仅保留占位符。
 
 ### 配置文件
 
