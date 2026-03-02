@@ -415,25 +415,28 @@ class QueryEngine:
     
     def _filter_by_strategy(self, candidates: List[Dict], strategy: str, 
                             intent: Dict, query: str) -> Tuple[Dict, List[Dict], str]:
-        """筛选策略"""
-        if len(candidates) >= 2:
-            # 尝试用LLM分析
+        """筛选策略
+
+        注意：为了保证可控的时延，只有在明确指定策略为 llm/auto 时才会调用LLM复筛。
+        其它策略全部走纯规则筛选（例如 top_n=Top3随机）。
+        """
+        if strategy in ("llm", "auto") and len(candidates) >= 2:
             try:
                 return self._filter_by_llm(candidates, intent, query)
             except Exception as e:
                 print(f"LLM分析失败: {e}")
-        
+
         # 规则筛选
         if strategy == "threshold":
             selected, alternatives = self._filter_threshold(candidates)
-        elif strategy == "top_n":
+        elif strategy in ("top_n", "top3_random"):
             selected, alternatives = self._filter_top_n(candidates)
         elif strategy == "weighted_random":
             selected, alternatives = self._filter_weighted_random(candidates)
         else:
             selected, alternatives = self._filter_top_n(candidates)
-        
-        reason = f"匹配度得分：{selected.get('match_score', 0):.1f}，主题'{intent['topic']}'"
+
+        reason = f"规则筛选：Top3随机（match_score={selected.get('match_score', 0):.1f}，主题'{intent['topic']}')"
         return selected, alternatives, reason
     
     def _filter_by_llm(self, candidates: List[Dict], intent: Dict, query: str) -> Tuple[Dict, List[Dict], str]:
