@@ -3,8 +3,8 @@
 # 每天早上8点生成内容并发送审核邮件
 
 # 设置环境变量
-export WECHAT_APP_ID=wx5c6f2e9b5734ddd5
-export WECHAT_APP_SECRET=baf071b9ca8e805992a26111c552b9f9
+export WECHAT_APP_ID=your-app-id
+export WECHAT_APP_SECRET=your-app-secret
 export PATH="/usr/local/bin:/usr/bin:$PATH"
 
 # 日志文件

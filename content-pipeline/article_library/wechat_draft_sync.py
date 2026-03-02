@@ -9,8 +9,10 @@ import sqlite3
 import sys
 from datetime import datetime
 from typing import List, Dict
+from pathlib import Path
 
-sys.path.insert(0, '/root/.openclaw/workspace/content-pipeline')
+BASE_DIR = Path(__file__).resolve().parents[1]
+sys.path.insert(0, str(BASE_DIR))
 
 class WechatDraftSync:
     """微信草稿箱同步器"""
@@ -155,11 +157,11 @@ class WechatDraftSync:
 def sync_draft_status():
     """同步草稿箱状态（便捷函数）"""
     import os
-    
-    app_id = os.environ.get('WECHAT_APP_ID', 'wx5c6f2e9b5734ddd5')
-    app_secret = os.environ.get('WECHAT_APP_SECRET', 'baf071b9ca8e805992a26111c552b9f9')
-    db_path = '/root/.openclaw/workspace/content-pipeline/article_library/library.db'
-    
+
+    app_id = os.environ.get('WECHAT_APP_ID', '')
+    app_secret = os.environ.get('WECHAT_APP_SECRET', '')
+    db_path = str(Path(__file__).resolve().parent / 'library.db')
+
     syncer = WechatDraftSync(app_id, app_secret, db_path)
     return syncer.sync_draft_status()
 
@@ -167,11 +169,11 @@ def sync_draft_status():
 def get_draft_report():
     """获取草稿箱报告（便捷函数）"""
     import os
-    
-    app_id = os.environ.get('WECHAT_APP_ID', 'wx5c6f2e9b5734ddd5')
-    app_secret = os.environ.get('WECHAT_APP_SECRET', 'baf071b9ca8e805992a26111c552b9f9')
-    db_path = '/root/.openclaw/workspace/content-pipeline/article_library/library.db'
-    
+
+    app_id = os.environ.get('WECHAT_APP_ID', '')
+    app_secret = os.environ.get('WECHAT_APP_SECRET', '')
+    db_path = str(Path(__file__).resolve().parent / 'library.db')
+
     syncer = WechatDraftSync(app_id, app_secret, db_path)
     return syncer.get_draft_status_report()
 

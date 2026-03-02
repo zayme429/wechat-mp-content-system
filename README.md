@@ -49,16 +49,24 @@ cd wechat-mp-content-system
 pip install -r requirements.txt
 ```
 
-### 3. 配置环境变量
+### 3. 配置环境变量 / 密钥
 
 ```bash
-# 方式1：直接设置
-export WECHAT_APP_ID="your-app-id"
-export WECHAT_APP_SECRET="your-app-secret"
-
-# 方式2：使用.env文件
+# 方式1：使用 .env（推荐）
 cp .env.example .env
 # 编辑 .env 文件填入你的配置
+
+# 方式2：直接设置环境变量
+export WECHAT_APP_ID="your-app-id"
+export WECHAT_APP_SECRET="your-app-secret"
+```
+
+另外，部分能力会读取 `content-pipeline/config/secrets.json`（用于本地开发/迁移时快速落地）。
+你可以直接复制示例文件：
+
+```bash
+cp content-pipeline/config/secrets.example.json content-pipeline/config/secrets.json
+# 编辑 content-pipeline/config/secrets.json 填入你的 key
 ```
 
 **获取微信配置**：
@@ -227,20 +235,26 @@ articles = generate_insurance_articles("保险客户经营", count=5)
 
 ## ⚙️ 配置说明
 
-### 必需配置
+### 必需配置（推送到公众号草稿箱）
 
 | 配置项 | 说明 | 获取方式 |
 |-------|------|---------|
 | `WECHAT_APP_ID` | 微信公众号AppID | 公众号后台 → 开发 → 基本配置 |
 | `WECHAT_APP_SECRET` | 微信公众号AppSecret | 同上 |
 
-### 可选配置
+### 常用可选配置（按需开）
 
-| 配置项 | 说明 | 默认值 |
-|-------|------|--------|
-| `KIMI_API_KEY` | Kimi API密钥（内容生成） | 空 |
-| `FLASK_PORT` | 服务端口 | 8080 |
-| `FLASK_HOST` | 监听地址 | 0.0.0.0 |
+| 配置项 | 说明 | 建议配置方式 |
+|-------|------|-------------|
+| `ANTHROPIC_API_KEY` | Claude（LLM 生成/分析） | `.env` / 环境变量 |
+| `OPENAI_API_KEY` | Embedding（向量召回） | `.env` / 环境变量 |
+| `TAVILY_API_KEY` | Tavily（内容发现/检索） | `.env` / `content-pipeline/config/secrets.json` |
+| `SENDCLAW_API_KEY` | SendClaw（审核邮件） | `.env` / `content-pipeline/config/secrets.json` |
+| `SMTP_USER` / `SMTP_PASS` | SMTP 发信（审核通知等） | `.env` / `content-pipeline/config/secrets.json` |
+| `FLASK_PORT` | 服务端口 | `.env` / 环境变量 |
+| `FLASK_HOST` | 监听地址 | `.env` / 环境变量 |
+
+说明：仓库中不会提交真实 key；`content-pipeline/config/secrets.json` 已改成占位符。
 
 ### 配置文件
 

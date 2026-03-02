@@ -165,7 +165,7 @@ class ContentPipeline:
                 capture_output=True,
                 text=True,
                 timeout=120,
-                env={**os.environ, 'WECHAT_APP_ID': 'wx5c6f2e9b5734ddd5', 'WECHAT_APP_SECRET': 'baf071b9ca8e805992a26111c552b9f9'}
+                env={**os.environ}
             )
             
             if '上传成功' in result.stdout or 'media_id' in result.stdout:
