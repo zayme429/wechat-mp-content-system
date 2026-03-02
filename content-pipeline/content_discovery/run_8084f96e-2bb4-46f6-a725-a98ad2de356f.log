@@ -1,0 +1,64 @@
+PLANNED_QUERIES
+- LLM落地复盘 生产踩坑 上线教训
+- RAG召回优化 评估实战 质量提升
+- AI Agent选型对比 成本权衡 架构决策
+- 大模型性能优化 延迟降低 缓存策略
+- Prompt工程实践 工具调用 调试技巧
+- vibe coding落地 工作流自动化 0到1搭建
+
+RUN_START persona=tech_enthusiast queries=6 max_results=6
+QUERY_START 1/6 RAG召回优化 实战复盘
+QUERY_RESULTS 1/6 returned=6
+ITEM 1/6 1/6 UPSERT tech_enthusiast 0 0 85 RAG优化实战：从理论到落地场景 - 知乎专栏
+ITEM 1/6 2/6 UPSERT tech_enthusiast 72 68 79 做智慧客服RAG的实战复盘：从检索拉垮到精准匹配
+ITEM 1/6 3/6 UPSERT tech_enthusiast 0 0 73 【蒸汽求职分享】拿下IBM AI岗：RAG工程化实战复盘 - 搜狐
+ITEM 1/6 4/6 UPSERT tech_enthusiast 0 0 68 趣味解读RAG 高效召回秘籍之索引扩展：核心原理+实战案例 ... - 博客园
+ITEM 1/6 5/6 UPSERT tech_enthusiast 76 71 61 Rag知识库命中率优化研究复盘原创 - CSDN博客
+ITEM 1/6 6/6 UPSERT tech_enthusiast 0 0 53 一文详谈20多种RAG优化方法 - 53AI
+QUERY_DONE 1/6 RAG召回优化 实战复盘
+QUERY_START 2/6 LLM Agent 落地踩坑
+QUERY_RESULTS 2/6 returned=6
+ITEM 2/6 1/6 UPSERT tech_enthusiast 0 0 84 为什么单靠LLM 做不出真正聪明的Agent？决策模型才是核心竞争力
+ITEM 2/6 2/6 UPSERT tech_enthusiast 0 0 74 近兩年LLM（大型語言模型）選型的坑，幾乎都踩過。 要做AI Agent
+ITEM 2/6 3/6 UPSERT tech_enthusiast 0 0 68 10 万文档RAG 落地实战：从Demo 到生产，我踩过的所有坑
+ITEM 2/6 4/6 UPSERT tech_enthusiast 75 68 64 初探：从0开始的AI-Agent开发踩坑实录-腾讯新闻 - QQ
+ITEM 2/6 5/6 UPSERT tech_enthusiast 75 70 59 初探：从0开始的AI-Agent开发踩坑实录
+ITEM 2/6 6/6 UPSERT tech_enthusiast 0 0 49 从“功能跑不通”到“落地可用”，我的AI-Agent开发踩坑实录（附避坑 ...
+QUERY_DONE 2/6 LLM Agent 落地踩坑
+QUERY_START 3/6 提示词工程 效果评估
+QUERY_RESULTS 3/6 returned=6
+ITEM 3/6 1/6 UPSERT tech_enthusiast 0 0 97 提示词工程教程（六）：评估提示词的有效性原创 - CSDN博客
+ITEM 3/6 2/6 UPSERT tech_enthusiast 0 0 93 无需标注即可Prompt Engineering：3种评估Prompt效果的无监督方法
+ITEM 3/6 3/6 UPSERT tech_enthusiast 0 0 89 如何评估提示词编写者的交付质量？ - 飞书文档
+ITEM 3/6 4/6 UPSERT tech_enthusiast 72 68 85 04 提示词工程-提示词评估
+ITEM 3/6 5/6 UPSERT tech_enthusiast 72 76 81 高效提示词（prompt）工程指南 - 知乎专栏
+ITEM 3/6 6/6 UPSERT tech_enthusiast 0 0 77 Prompt Engineering 提示词工程最佳实践系列：如何评估提示的效果
+QUERY_DONE 3/6 提示词工程 效果评估
+QUERY_START 4/6 AI应用架构 选型对比
+QUERY_RESULTS 4/6 returned=6
+ITEM 4/6 1/6 UPSERT tech_enthusiast 72 68 97 框架解析：主流AI应用架构的对比与选型指南 - CSDN博客
+ITEM 4/6 2/6 UPSERT tech_enthusiast 0 0 93 AI Agent 框架大盘点：十大主流框架深度对比与选型指南
+ITEM 4/6 3/6 UPSERT tech_enthusiast 0 0 89 六大智能体平台深度对比：从技术架构到行业落地，一篇讲透选型关键
+ITEM 4/6 4/6 UPSERT tech_enthusiast 0 0 85 AI大模型应用开发技术架构和技术选型- 努力--坚持- 博客园
+ITEM 4/6 5/6 UPSERT tech_enthusiast 88 90 81 四大主流AI Agent框架选型梳理
+ITEM 4/6 6/6 UPSERT tech_enthusiast 0 0 77 如何选择AI Agent框架？五种主流AI Agent框架对比 - 袋鼠云
+QUERY_DONE 4/6 AI应用架构 选型对比
+QUERY_START 5/6 大模型成本 降本实践
+QUERY_RESULTS 5/6 returned=6
+ITEM 5/6 1/6 UPSERT tech_enthusiast 0 0 97 采用大模型：提升性能、降低成本（降本增效）
+ITEM 5/6 2/6 UPSERT tech_enthusiast 0 0 93 “烧钱”的大模型如何为企业“降本增效”助力？腾讯的实践经验来了 - InfoQ
+ITEM 5/6 3/6 UPSERT tech_enthusiast 0 0 89 大模型推理性能优化与成本控制实战 - CSDN博客
+ITEM 5/6 4/6 UPSERT tech_enthusiast 42 58 85 企业如何使用AI大模型实现降本增效？目前有何落地实践？
+ITEM 5/6 5/6 UPSERT tech_enthusiast 0 0 81 AI应用省钱攻略--降低模型成本的七大策略 - 火山引擎
+ITEM 5/6 6/6 UPSERT tech_enthusiast 0 0 77 相信大模型成本会下降，才是业内最大的幻觉 - 智源社区
+QUERY_DONE 5/6 大模型成本 降本实践
+QUERY_START 6/6 工作流自动化 上线总结
+QUERY_RESULTS 6/6 returned=6
+ITEM 6/6 1/6 UPSERT tech_enthusiast 0 0 97 低成本工作流指南：SOP与自动化工作流- Zoho低代码
+ITEM 6/6 2/6 UPSERT tech_enthusiast 25 35 93 Notion AI教程--轻松驾驭，实现工作流自动化！ - 知乎专栏
+ITEM 6/6 3/6 UPSERT tech_enthusiast 42 48 89 【自动化教程】5分钟上手n8n：开启工作流自动化新时代
+ITEM 6/6 4/6 UPSERT tech_enthusiast 0 0 85 AI 驱动工作流- 自动化项目分析与线上问题修复
+ITEM 6/6 5/6 UPSERT tech_enthusiast 0 0 81 从需求到上线：开发者最值得用的AI 工作流工具全阶段指南 - 稀土掘金
+ITEM 6/6 6/6 UPSERT tech_enthusiast 0 0 77 如何用n8n 精简业务流程：2026 企业自定义工作流自动化实战指南
+QUERY_DONE 6/6 工作流自动化 上线总结
+RUN_DONE total=36 db=/root/.openclaw/workspace/content-pipeline/content_discovery/discovery.db

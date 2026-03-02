@@ -1,0 +1,64 @@
+PLANNED_QUERIES
+- RAG 落地复盘 踩坑 召回率
+- LLM Agent 工程化 工具调用 内存管理
+- 大模型 选型对比 成本评估 A/B测试
+- AI应用 性能优化 延迟 吞吐 降本
+- Prompt工程 迭代调试 评估指标 上线
+- Vibe Coding 工作流 0到1 复盘
+
+RUN_START persona=tech_enthusiast queries=6 max_results=6
+QUERY_START 1/6 RAG 落地复盘 踩坑 召回率
+QUERY_RESULTS 1/6 returned=6
+ITEM 1/6 1/6 UPSERT tech_enthusiast 0 0 81 RAG多向量库召回踩坑实录！深度复盘我们遇到的5大核心问题
+ITEM 1/6 2/6 UPSERT tech_enthusiast 72 68 75 企业级RAG落地终极指南：从30%到90%准确率的完整复盘
+ITEM 1/6 3/6 UPSERT tech_enthusiast 72 68 70 从检索到生成，RAG效果评估全链路拆解，面试应答这样说才加分
+ITEM 1/6 4/6 UPSERT tech_enthusiast 0 0 62 【揭秘】3个神奇trick让RAG准确率从60%飙升到92% - CSDN博客
+ITEM 1/6 5/6 UPSERT tech_enthusiast 0 0 57 真实LLM应用开发面试复盘！RAG+Agent高频考题的避坑指南与满分 ...
+ITEM 1/6 6/6 UPSERT tech_enthusiast 0 0 53 趣味解读RAG 高效召回秘籍之索引扩展：核心原理+实战案例 ... - 博客园
+QUERY_DONE 1/6 RAG 落地复盘 踩坑 召回率
+QUERY_START 2/6 LLM 选型对比 成本 延迟 A/B
+QUERY_RESULTS 2/6 returned=6
+ITEM 2/6 1/6 UPSERT tech_enthusiast 0 0 97 2025六大LLM推理框架终极对决：性能/场景/成本全维度评测
+ITEM 2/6 2/6 UPSERT tech_enthusiast 0 0 93 【收藏学习】大模型VS小模型：SLM与LLM选型全攻略
+ITEM 2/6 3/6 UPSERT tech_enthusiast 0 0 89 大语言模型（LLM）推理延迟估算
+ITEM 2/6 4/6 UPSERT tech_enthusiast 0 0 85 59_实时性模型：选择低延迟LLM - 腾讯云
+ITEM 2/6 5/6 UPSERT tech_enthusiast 65 60 81 LLMOps的未来展望：大型语言模型运维的发展走向
+ITEM 2/6 6/6 UPSERT tech_enthusiast 0 0 76 选择合适的大型语言模型：Llama、Mistral 和DeepSeek
+QUERY_DONE 2/6 LLM 选型对比 成本 延迟 A/B
+QUERY_START 3/6 Agent 工程化 记忆 实战 工作流
+QUERY_RESULTS 3/6 returned=6
+ITEM 3/6 1/6 UPSERT tech_enthusiast 0 0 97 智能体Agent与工作流构建实战指南：从选型决策到高效实施
+ITEM 3/6 2/6 UPSERT tech_enthusiast 68 62 93 Agent工作流记忆- 让AI助手更聪明地完成复杂任务原创 - CSDN博客
+ITEM 3/6 3/6 UPSERT tech_enthusiast 0 0 89 AI Agent完整开发流程：从零到一的实战指南与最佳实践 - BetterYeah
+ITEM 3/6 4/6 UPSERT tech_enthusiast 0 0 85 别做AI Agent，先用简单工作流 - 腾讯云
+ITEM 3/6 5/6 UPSERT tech_enthusiast 92 88 81 Agentic AI基础设施实践经验系列（一）：Agent应用开发与落地实践 ...
+ITEM 3/6 6/6 UPSERT tech_enthusiast 0 0 77 01｜登台远望：Claude Code 底层技术全景导览
+QUERY_DONE 3/6 Agent 工程化 记忆 实战 工作流
+QUERY_START 4/6 大模型 推理优化 降本 吞吐 缓存
+QUERY_RESULTS 4/6 returned=6
+ITEM 4/6 1/6 UPSERT tech_enthusiast 78 75 97 企业大模型推理优化，别再瞎优化了：这份系统性指南助你降本增效
+ITEM 4/6 2/6 UPSERT tech_enthusiast 0 0 93 大模型框架性能优化策略：延迟、吞吐量与成本权衡 - 稀土掘金
+ITEM 4/6 3/6 UPSERT tech_enthusiast 88 83 89 【光电智造】万字长文！大模型(LLM)推理优化技术总结（非常详细）
+ITEM 4/6 4/6 UPSERT tech_enthusiast 0 0 85 大模型推理优化技术全面解析，12种核心技术助你提速降本增效！ 原创
+ITEM 4/6 5/6 UPSERT tech_enthusiast 0 0 81 大模型百倍推理加速之KV cache篇 - 知乎专栏
+ITEM 4/6 6/6 UPSERT tech_enthusiast 0 0 77 关键技术详解｜腾讯一念LLM 分布式推理优化实践 - InfoQ
+QUERY_DONE 4/6 大模型 推理优化 降本 吞吐 缓存
+QUERY_START 5/6 AI应用 观测调试 数据迭代 指标回归
+QUERY_RESULTS 5/6 returned=6
+ITEM 5/6 1/6 UPSERT tech_enthusiast 0 0 66 亚马逊SageMaker AI - 迭代训练
+ITEM 5/6 2/6 UPSERT tech_enthusiast 0 0 43 线性回归组件参考与使用-人工智能平台PAI-阿里云 - 文档
+ITEM 5/6 3/6 UPSERT tech_enthusiast 88 86 29 回归评价指标综述 - NVIDIA 开发者
+ITEM 5/6 4/6 UPSERT tech_enthusiast 0 0 24 AutoML 回归- Azure Machine Learning
+ITEM 5/6 5/6 UPSERT tech_enthusiast 0 0 19 Vertex AI 中的模型评估
+ITEM 5/6 6/6 UPSERT tech_enthusiast 0 0 14 大数据算法应用的测试发展之路（二） - InfoQ
+QUERY_DONE 5/6 AI应用 观测调试 数据迭代 指标回归
+QUERY_START 6/6 从0到1 上线 失败复盘 业务场景
+QUERY_RESULTS 6/6 returned=6
+ITEM 6/6 1/6 UPSERT tech_enthusiast 0 0 79 3年时间从0到1，一款运营&数据平台的失败复盘
+ITEM 6/6 2/6 UPSERT tech_enthusiast 0 0 65 我用3 年踩过的电商系统坑：从需求调研到上线运维全复盘原创
+ITEM 6/6 3/6 UPSERT tech_enthusiast 0 0 60 产品项目复盘（方法论+案例）作者： 赤叶清风- 明志德道
+ITEM 6/6 4/6 UPSERT tech_enthusiast 0 0 53 复盘：一款产品从0到1的全过程
+ITEM 6/6 5/6 UPSERT tech_enthusiast 0 0 45 实战复盘：从0到1如何构建定制化的数据系统？
+ITEM 6/6 6/6 UPSERT tech_enthusiast 0 0 40 产品运营新人对逆境成长的思考：一款失败社区产品的复盘（二）
+QUERY_DONE 6/6 从0到1 上线 失败复盘 业务场景
+RUN_DONE total=36 db=/root/.openclaw/workspace/content-pipeline/content_discovery/discovery.db

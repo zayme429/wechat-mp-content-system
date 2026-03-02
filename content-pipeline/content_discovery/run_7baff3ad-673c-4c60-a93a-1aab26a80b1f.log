@@ -1,0 +1,64 @@
+PLANNED_QUERIES
+- LLM Agent 落地踩坑 复盘总结
+- RAG 召回优化 实战 方案对比
+- 大模型推理成本 降本 性能优化
+- AI 应用上线 0到1 指标回归
+- Prompt工程 评估指标 A/B测试
+- vibe coding 工程化 实践 边界
+
+RUN_START persona=tech_enthusiast queries=6 max_results=6
+QUERY_START 1/6 RAG落地踩坑 召回率优化实战
+QUERY_RESULTS 1/6 returned=6
+ITEM 1/6 1/6 UPSERT tech_enthusiast 0 0 97 RAG多向量库召回踩坑实录！深度复盘我们遇到的5大核心问题
+ITEM 1/6 2/6 UPSERT tech_enthusiast 0 0 93 亲测有效！RAG 检索总踩坑？用对查询优化，召回率 ... - CSDN博客
+ITEM 1/6 3/6 UPSERT tech_enthusiast 0 0 89 10 万文档RAG 落地实战：从Demo 到生产，我踩过的所有坑
+ITEM 1/6 4/6 UPSERT tech_enthusiast 0 0 85 ​​RAG实战陷阱大揭秘：文档处理、召回、生成三大环节的深坑与避 ...
+ITEM 1/6 5/6 UPSERT tech_enthusiast 0 0 81 RAG召回率一向不高，這個方法值得注意 - Facebook
+ITEM 1/6 6/6 UPSERT tech_enthusiast 0 0 77 RAG 青铜升级：知识库召回率优化实战攻略 - SegmentFault 思否
+QUERY_DONE 1/6 RAG落地踩坑 召回率优化实战
+QUERY_START 2/6 LLM Agent选型对比 成本效益评估
+QUERY_RESULTS 2/6 returned=6
+ITEM 2/6 1/6 UPSERT tech_enthusiast 0 0 60 [PDF] 寻新投资方向（三） AI Agent，大模型时代重要落地方向
+ITEM 2/6 2/6 UPSERT tech_enthusiast 0 0 51 LLM agent 专题（2）Agent 落地现状：大厂都爱“提示词+ ... - 知乎专栏
+ITEM 2/6 3/6 UPSERT tech_enthusiast 0 0 47 20个企业级案例揭示Agent落地真相：闭源模型吃掉85% - 36氪
+ITEM 2/6 4/6 UPSERT tech_enthusiast 72 68 39 Agentic LLMs：下一代LLM 智能体在规划、记忆 - 博客园
+ITEM 2/6 5/6 UPSERT tech_enthusiast 0 0 35 LLM 应用评估综合指南（多轮对话系统、RAG、AI Agent）-CSDN博客
+ITEM 2/6 6/6 UPSERT tech_enthusiast 0 0 28 2025年，AI Agent干货资料、论文综述都在这了 - 火山引擎
+QUERY_DONE 2/6 LLM Agent选型对比 成本效益评估
+QUERY_START 3/6 Prompt工程复盘 A/B测试数据
+QUERY_RESULTS 3/6 returned=6
+ITEM 3/6 1/6 UPSERT tech_enthusiast 0 0 97 项目复盘：如何避开从0~1构建AB Test过程中的坑（下） - 产品经理
+ITEM 3/6 2/6 UPSERT tech_enthusiast 76 71 93 Prompt 效果评估方法全解析：定量指标体系× 定性行为分析的工程实践
+ITEM 3/6 3/6 UPSERT tech_enthusiast 0 0 89 生产级Prompt自动化推理评估A/B实验结果的工程实践 - 腾讯
+ITEM 3/6 4/6 UPSERT tech_enthusiast 0 0 85 Prompt 测试与调优实战：从AB 实验到Prompt Injection 防御原创
+ITEM 3/6 5/6 UPSERT tech_enthusiast 0 0 81 [数据分析]A/B测试实战：一个产品UI优化的完整案例复盘 - 腾讯云
+ITEM 3/6 6/6 UPSERT tech_enthusiast 0 0 77 微軟官方親自出教程，拿捏「Prompt工程」高階玩法 - 數據分析那些事
+QUERY_DONE 3/6 Prompt工程复盘 A/B测试数据
+QUERY_START 4/6 AI应用上线失败 技术债总结
+QUERY_RESULTS 4/6 returned=6
+ITEM 4/6 1/6 UPSERT tech_enthusiast 0 0 75 论文分享：AI 系统中不易察觉的技术债 - 知乎专栏
+ITEM 4/6 2/6 UPSERT tech_enthusiast 0 0 59 氛围编程陷阱：为什么AI生成代码正在制造大量"伪开发者" - 腾讯云
+ITEM 4/6 3/6 UPSERT tech_enthusiast 58 60 55 AI 技术债评估在企业软件架构现代化演进路径规划 - CSDN博客
+ITEM 4/6 4/6 UPSERT tech_enthusiast 0 0 50 如何解决技术债 - 阿里云开发者社区
+ITEM 4/6 5/6 UPSERT tech_enthusiast 68 58 42 【AI工程论文解读】02-聊聊机器学习系统中的技术债 - 知乎专栏
+ITEM 4/6 6/6 UPSERT tech_enthusiast 0 0 30 使用这些AI工作流来减少您的技术债务 - 稀土掘金
+QUERY_DONE 4/6 AI应用上线失败 技术债总结
+QUERY_START 5/6 大模型缓存策略 延迟优化实践
+QUERY_RESULTS 5/6 returned=6
+ITEM 5/6 1/6 UPSERT tech_enthusiast 72 75 97 大模型框架性能优化策略：延迟、吞吐量与成本权衡 - 知乎专栏
+ITEM 5/6 2/6 UPSERT tech_enthusiast 0 0 93 大模型推理的“最后一公里”，实时缓存策略设计 - 腾讯云
+ITEM 5/6 3/6 UPSERT tech_enthusiast 0 0 89 深入理解Prompt Caching：降低延迟与成本的高效策略- 详解 - 博客园
+ITEM 5/6 4/6 UPSERT tech_enthusiast 72 78 85 延迟优化全攻略：从组件到架构的实战指南
+ITEM 5/6 5/6 UPSERT tech_enthusiast 0 0 81 LLM 推理优化探微(3) ：如何有效控制KV 缓存的内存占用 - 飞书文档
+ITEM 5/6 6/6 UPSERT tech_enthusiast 0 0 77 大模型推理优化实践：KV cache复用与投机采样 - 阿里云开发者社区
+QUERY_DONE 5/6 大模型缓存策略 延迟优化实践
+QUERY_START 6/6 RAG数据迭代 质量评估体系
+QUERY_RESULTS 6/6 returned=6
+ITEM 6/6 1/6 UPSERT tech_enthusiast 0 0 76 如何评估RAG 应用的质量？最典型的方法论和评估工具都在这里了
+ITEM 6/6 2/6 UPSERT tech_enthusiast 0 0 71 Awesome-RAG-Evaluation/README_cn.md at main - GitHub
+ITEM 6/6 3/6 UPSERT tech_enthusiast 0 0 55 【RAG】检索增强生成的评估·综述 - 腾讯云
+ITEM 6/6 4/6 UPSERT tech_enthusiast 72 78 51 RAG效果怎么评？一套可落地的科学评估体系来了！ - 实践- yangykaifa
+ITEM 6/6 5/6 UPSERT tech_enthusiast 0 0 46 【基础理论】【评测】RAG（检索增强生成）评估 - 知乎专栏
+ITEM 6/6 6/6 UPSERT tech_enthusiast 0 0 40 RAG性能提升策略和评估方法（产品视角） - 飞书文档
+QUERY_DONE 6/6 RAG数据迭代 质量评估体系
+RUN_DONE total=36 db=/root/.openclaw/workspace/content-pipeline/content_discovery/discovery.db

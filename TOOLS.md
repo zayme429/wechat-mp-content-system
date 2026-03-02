@@ -41,8 +41,8 @@ Skills are shared. Your setup is yours. Keeping them apart means you can update 
 
 **API Credentials:**
 ```bash
-export WECHAT_APP_ID=wx5c6f2e9b5734ddd5
-export WECHAT_APP_SECRET=baf071b9ca8e805992a26111c552b9f9
+export WECHAT_APP_ID=your-app-id
+export WECHAT_APP_SECRET=your-app-secret
 ```
 
 **配置说明:**

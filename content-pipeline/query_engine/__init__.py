@@ -26,7 +26,9 @@ class QueryEngine:
             return []
         try:
             import sys
-            sys.path.insert(0, '/root/.openclaw/workspace/content-pipeline')
+            from pathlib import Path
+            base_dir = Path(__file__).resolve().parents[1]
+            sys.path.insert(0, str(base_dir))
             from article_library.user_manager import UserPreferenceManager
 
             um = UserPreferenceManager()
@@ -290,7 +292,9 @@ class QueryEngine:
     def _recall_semantic_vector(self, intent: Dict) -> List[Dict]:
         """语义向量召回"""
         import sys
-        sys.path.insert(0, '/root/.openclaw/workspace/content-pipeline')
+        from pathlib import Path
+        base_dir = Path(__file__).resolve().parents[1]
+        sys.path.insert(0, str(base_dir))
         from query_engine.embedding_manager import EmbeddingManager
         
         # 构建查询文本
@@ -442,8 +446,10 @@ class QueryEngine:
     def _filter_by_llm(self, candidates: List[Dict], intent: Dict, query: str) -> Tuple[Dict, List[Dict], str]:
         """LLM分析候选"""
         import sys
-        sys.path.insert(0, '/root/.openclaw/workspace/content-pipeline')
-        sys.path.insert(0, '/root/.openclaw/workspace/content-pipeline/src')
+        from pathlib import Path
+        base_dir = Path(__file__).resolve().parents[1]
+        sys.path.insert(0, str(base_dir))
+        sys.path.insert(0, str(base_dir / 'src'))
         from query_engine.prompt_manager import get_prompt_manager
         from generator.content_generator import ContentGenerator
         import json
@@ -541,7 +547,9 @@ class QueryEngine:
     def push_to_wechat(self, article_id: str) -> Dict:
         """推送到微信"""
         import sys
-        sys.path.insert(0, '/root/.openclaw/workspace/content-pipeline/article_library')
+        from pathlib import Path
+        base_dir = Path(__file__).resolve().parents[1]
+        sys.path.insert(0, str(base_dir / 'article_library'))
         from web_server import push_to_wechat_draft
         
         success, message = push_to_wechat_draft(article_id)

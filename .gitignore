@@ -1,24 +1,5 @@
-# Bytecode / caches
-__pycache__/
-*.py[cod]
-
-# Logs
-*.log
-*.out
-
-# Local databases / state
-*.db
-*.sqlite
-*.sqlite3
-
-# Local outputs
-content-pipeline/output/
-content-pipeline/content_discovery/run_*.log
-content-pipeline/content_discovery/*.bak*
-
-# Local backups
-openclaw.*-backup.json
-openclaw.current-backup.json
+# Secrets
+.env
 
 # OS / editor
 .DS_Store

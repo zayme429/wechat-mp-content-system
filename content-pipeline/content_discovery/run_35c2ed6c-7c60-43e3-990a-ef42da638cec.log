@@ -1,0 +1,64 @@
+PLANNED_QUERIES
+- RAG 落地复盘 召回率 优化方案
+- Agent 工程化 踩坑 记忆设计 上下文
+- LLM 提示词 评估对比 效果数据
+- AI应用 成本优化 推理延迟 权衡
+- 大模型 上线实战 架构演进 指标
+- RAG 方案选型 评测指标 向量数据库对比
+
+RUN_START persona=tech_enthusiast queries=6 max_results=6
+QUERY_START 1/6 LLM 落地复盘 踩坑 生产环境
+QUERY_RESULTS 1/6 returned=6
+ITEM 1/6 1/6 UPSERT tech_enthusiast 0 0 79 「LLM企业实战08」实战复盘：大模型企业落地的经验、教训与未来 ...
+ITEM 1/6 2/6 UPSERT tech_enthusiast 92 88 71 为什么只有5%的AI Agent落地成功？ - 虎嗅
+ITEM 1/6 3/6 UPSERT tech_enthusiast 0 0 60 多模态大模型落地总结：从Qwen3-VL 微调到vLLM 推理优化(8×H100 ...
+ITEM 1/6 4/6 UPSERT tech_enthusiast 0 0 52 再也不靠人肉找合同“坑”：智能合同风险审查全流程落地实录_博客
+ITEM 1/6 5/6 UPSERT tech_enthusiast 0 0 46 完整教程：一种面向服务LLM应用系统的显式世界模型架构原理 - 博客园
+ITEM 1/6 6/6 UPSERT tech_enthusiast 0 0 36 LLM应用开发实践笔记 - 知乎专栏
+QUERY_DONE 1/6 LLM 落地复盘 踩坑 生产环境
+QUERY_START 2/6 RAG 评估 召回率 优化实战
+QUERY_RESULTS 2/6 returned=6
+ITEM 2/6 1/6 UPSERT tech_enthusiast 62 65 97 RAG 青铜升级：知识库召回率优化实战攻略原创 - CSDN博客
+ITEM 2/6 2/6 UPSERT tech_enthusiast 62 55 93 RAG知识库召回率优化：从理论到实践的深度解析
+ITEM 2/6 3/6 UPSERT tech_enthusiast 78 72 89 RAGAS框架详解：6大指标带你科学优化RAG - YouTube
+ITEM 2/6 4/6 UPSERT tech_enthusiast 0 0 85 第七章：RAG 系统评估：量化效果，驱动优化
+ITEM 2/6 5/6 UPSERT tech_enthusiast 0 0 81 强化RAG 应用：生成式AI 返回准确率提升的高效策略与实践 - 53AI
+ITEM 2/6 6/6 UPSERT tech_enthusiast 0 0 77 RAG 系统召回优化实战：百万文档中提升检索速度与精度的4 大方案
+QUERY_DONE 2/6 RAG 评估 召回率 优化实战
+QUERY_START 3/6 Agent 工作流 架构选型 对比
+QUERY_RESULTS 3/6 returned=6
+ITEM 3/6 1/6 UPSERT tech_enthusiast 65 70 88 看不懂算我输！一文讲透Agent vs Workflow 的本质差异与选型心法
+ITEM 3/6 2/6 UPSERT tech_enthusiast 72 65 78 Agent 和workflow 的区别在哪，如何选型？ | 人人都是产品经理
+ITEM 3/6 3/6 UPSERT tech_enthusiast 0 0 74 智能体工作流实施指南2025：Agent vs Workflow企业选型完整方案
+ITEM 3/6 4/6 UPSERT tech_enthusiast 0 0 67 8大主流AI Agent 框架测评！企业&开发者选型不踩坑- 文章 - 火山引擎
+ITEM 3/6 5/6 UPSERT tech_enthusiast 0 0 62 开源AI Agent 与工作流平台全景对比分析 - Jimmy Song
+ITEM 3/6 6/6 UPSERT tech_enthusiast 0 0 55 AI Agent 框架大盘点：十大主流框架深度对比与选型指南
+QUERY_DONE 3/6 Agent 工作流 架构选型 对比
+QUERY_START 4/6 大模型 推理成本 降本 延迟优化
+QUERY_RESULTS 4/6 returned=6
+ITEM 4/6 1/6 UPSERT tech_enthusiast 68 63 97 突破大模型推理瓶颈：CoD如何降本增效？ - 知乎专栏
+ITEM 4/6 2/6 UPSERT tech_enthusiast 78 72 93 大模型推理成本控制：DeepSeek 对比不同优化方案的性价比_人工智能
+ITEM 4/6 3/6 UPSERT tech_enthusiast 35 25 89 大模型推理优化实战：降低企业AI 部署成本的关键技术图谱原创
+ITEM 4/6 4/6 UPSERT tech_enthusiast 68 62 85 惊曝DeepSeek降本秘诀：2招极致优化推理部署，算力聚焦内部AGI ...
+ITEM 4/6 5/6 UPSERT tech_enthusiast 0 0 81 大模型推理业务的降本增效部署与优化策略 - 阿里云开发者社区
+ITEM 4/6 6/6 UPSERT tech_enthusiast 58 60 77 豆包又把算力成本“打了下来” 但压力才刚刚开始 - 财联社
+QUERY_DONE 4/6 大模型 推理成本 降本 延迟优化
+QUERY_START 5/6 Prompt 工程 迭代 数据观测 调试
+QUERY_RESULTS 5/6 returned=6
+ITEM 5/6 1/6 UPSERT tech_enthusiast 0 0 97 高效提示词（prompt）工程指南 - 知乎专栏
+ITEM 5/6 2/6 UPSERT tech_enthusiast 0 0 93 《ChatGPT Prompt Engineering for Developers》 学习笔记 - GitHub
+ITEM 5/6 3/6 UPSERT tech_enthusiast 0 0 89 What Is Prompt Engineering? | Oracle 中国
+ITEM 5/6 4/6 UPSERT tech_enthusiast 0 0 85 五步驯服Agent Prompt！从痛苦调试到精准输出，收藏这篇就够了原创
+ITEM 5/6 5/6 UPSERT tech_enthusiast 42 58 79 纯干货！最全Prompt工程方法总结，与ChatGPT、GPT-4等LLMs的 ...
+ITEM 5/6 6/6 UPSERT tech_enthusiast 0 0 70 一文探秘LLM应用开发(21)-Prompt(提示工程技术、重要性与挑战) - 文章
+QUERY_DONE 5/6 Prompt 工程 迭代 数据观测 调试
+QUERY_START 6/6 AI应用 0到1 上线 指标回归 失败案例
+QUERY_RESULTS 6/6 returned=6
+ITEM 6/6 1/6 UPSERT tech_enthusiast 78 80 71 95% 企业AI 落地失败当下，另外5% 的CIO 在谈什么？ - 知乎专栏
+ITEM 6/6 2/6 UPSERT tech_enthusiast 78 72 67 在ModelEngine 上从0 到1 搭建智能体：一套能落地的实践方案原创
+ITEM 6/6 3/6 UPSERT tech_enthusiast 0 0 42 构建AI 智能体应用（四）：验证与测量 - ApFramework
+ITEM 6/6 4/6 UPSERT tech_enthusiast 78 82 35 智能体来了从0 到1 ：核心挑战，是非技术性的认知与场景重构 - 阿里云
+ITEM 6/6 5/6 UPSERT tech_enthusiast 0 0 27 从“单点模型”到“系统工程”：AI产品的全流程实战地图
+ITEM 6/6 6/6 UPSERT tech_enthusiast 78 72 22 建构AI Agent 应用——生产环境中的监控无论你是产品负责人、机器 ...
+QUERY_DONE 6/6 AI应用 0到1 上线 指标回归 失败案例
+RUN_DONE total=36 db=/root/.openclaw/workspace/content-pipeline/content_discovery/discovery.db

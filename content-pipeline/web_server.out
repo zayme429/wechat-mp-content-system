@@ -1,0 +1,423 @@
+🚀 启动文章管理库 Web 服务
+📚 管理地址: http://0.0.0.0:8080/library
+🔍 查询地址: http://0.0.0.0:8080/query
+⚙️  配置地址: http://0.0.0.0:8080/query/config
+ * Serving Flask app 'web_server'
+ * Debug mode: on
+[31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
+ * Running on all addresses (0.0.0.0)
+ * Running on http://127.0.0.1:8080
+ * Running on http://172.16.74.251:8080
+[33mPress CTRL+C to quit[0m
+ * Restarting with stat
+ * Debugger is active!
+ * Debugger PIN: 579-280-314
+127.0.0.1 - - [02/Mar/2026 01:17:31] "POST /discover/api/run HTTP/1.1" 200 -
+127.0.0.1 - - [02/Mar/2026 01:17:38] "GET /discover/api/run_status?task_id=ed84ab9f-e8e9-4d28-a047-717e44df8d31 HTTP/1.1" 200 -
+127.0.0.1 - - [02/Mar/2026 01:17:39] "GET /discover/api/run_status?task_id=ed84ab9f-e8e9-4d28-a047-717e44df8d31 HTTP/1.1" 200 -
+127.0.0.1 - - [02/Mar/2026 01:17:40] "GET /discover/api/run_status?task_id=ed84ab9f-e8e9-4d28-a047-717e44df8d31 HTTP/1.1" 200 -
+127.0.0.1 - - [02/Mar/2026 01:17:41] "GET /discover/api/run_status?task_id=ed84ab9f-e8e9-4d28-a047-717e44df8d31 HTTP/1.1" 200 -
+127.0.0.1 - - [02/Mar/2026 01:17:42] "GET /discover/api/run_status?task_id=ed84ab9f-e8e9-4d28-a047-717e44df8d31 HTTP/1.1" 200 -
+127.0.0.1 - - [02/Mar/2026 01:18:06] "GET /discover/api/run_status?task_id=ed84ab9f-e8e9-4d28-a047-717e44df8d31 HTTP/1.1" 200 -
+127.0.0.1 - - [02/Mar/2026 01:18:07] "GET /discover/api/run_status?task_id=ed84ab9f-e8e9-4d28-a047-717e44df8d31 HTTP/1.1" 200 -
+127.0.0.1 - - [02/Mar/2026 01:18:08] "GET /discover/api/run_status?task_id=ed84ab9f-e8e9-4d28-a047-717e44df8d31 HTTP/1.1" 200 -
+127.0.0.1 - - [02/Mar/2026 01:18:09] "GET /discover/api/run_status?task_id=ed84ab9f-e8e9-4d28-a047-717e44df8d31 HTTP/1.1" 200 -
+127.0.0.1 - - [02/Mar/2026 01:18:10] "GET /discover/api/run_status?task_id=ed84ab9f-e8e9-4d28-a047-717e44df8d31 HTTP/1.1" 200 -
+127.0.0.1 - - [02/Mar/2026 01:18:11] "GET /discover/api/run_status?task_id=ed84ab9f-e8e9-4d28-a047-717e44df8d31 HTTP/1.1" 200 -
+127.0.0.1 - - [02/Mar/2026 01:18:12] "GET /discover/api/run_status?task_id=ed84ab9f-e8e9-4d28-a047-717e44df8d31 HTTP/1.1" 200 -
+127.0.0.1 - - [02/Mar/2026 01:18:13] "GET /discover/api/run_status?task_id=ed84ab9f-e8e9-4d28-a047-717e44df8d31 HTTP/1.1" 200 -
+127.0.0.1 - - [02/Mar/2026 01:18:14] "GET /discover/api/run_status?task_id=ed84ab9f-e8e9-4d28-a047-717e44df8d31 HTTP/1.1" 200 -
+127.0.0.1 - - [02/Mar/2026 01:18:15] "GET /discover/api/run_status?task_id=ed84ab9f-e8e9-4d28-a047-717e44df8d31 HTTP/1.1" 200 -
+127.0.0.1 - - [02/Mar/2026 01:18:29] "GET /discover/api/run_status?task_id=ed84ab9f-e8e9-4d28-a047-717e44df8d31 HTTP/1.1" 200 -
+103.149.244.196 - - [02/Mar/2026 01:19:14] "GET /discover?v=12 HTTP/1.1" 200 -
+103.149.244.196 - - [02/Mar/2026 01:19:15] "GET /discover/api/stats HTTP/1.1" 200 -
+103.149.244.196 - - [02/Mar/2026 01:19:15] "GET /discover/api/runs HTTP/1.1" 200 -
+103.149.244.196 - - [02/Mar/2026 01:19:16] "GET /discover/api/run_status?task_id=ccf4e008-00cf-4f0b-aa1f-17c84c97c982 HTTP/1.1" 200 -
+103.149.244.196 - - [02/Mar/2026 01:19:16] "GET /discover/api/items?run_id=ccf4e008-00cf-4f0b-aa1f-17c84c97c982 HTTP/1.1" 200 -
+103.149.244.196 - - [02/Mar/2026 01:19:16] "GET /discover/api/items?run_id=ccf4e008-00cf-4f0b-aa1f-17c84c97c982 HTTP/1.1" 200 -
+103.149.244.196 - - [02/Mar/2026 01:19:17] "GET /discover/api/runs HTTP/1.1" 200 -
+204.76.203.30 - - [02/Mar/2026 02:14:14] "[33mGET http://ip-api.com/json/ HTTP/1.1[0m" 404 -
+45.156.87.91 - - [02/Mar/2026 02:19:31] "[33mGET /login HTTP/1.1[0m" 404 -
+204.76.203.30 - - [02/Mar/2026 03:51:13] "[33mGET http://ip-api.com/json/ HTTP/1.1[0m" 404 -
+162.142.125.203 - - [02/Mar/2026 04:12:50] "GET / HTTP/1.1" 200 -
+162.142.125.203 - - [02/Mar/2026 04:12:53] code 400, message Bad request version ('\x8d£T\x96â£ón<XÃa\x1a\x96wÇÇ±!I»')
+162.142.125.203 - - [02/Mar/2026 04:12:53] "[35m[1m\x16\x03\x01\x00î\x01\x00\x00ê\x03\x03òèuÙÊ¥§\x1b+¥\x13\x1cxN°¹W­ â4©<\x86\x19\x98ü\x8e\x8aN\x15\x19 \x8d£T\x96â£ón<XÃa\x1a\x96wÇÇ±!I»\x1f[0m" HTTPStatus.BAD_REQUEST -
+162.142.125.203 - - [02/Mar/2026 04:12:54] "GET / HTTP/1.1" 200 -
+162.142.125.203 - - [02/Mar/2026 04:12:55] code 505, message Invalid HTTP version (2.0)
+162.142.125.203 - - [02/Mar/2026 04:12:55] "[35m[1mPRI * HTTP/2.0[0m" HTTPStatus.HTTP_VERSION_NOT_SUPPORTED -
+162.142.125.203 - - [02/Mar/2026 04:12:56] "[33mGET /favicon.ico HTTP/1.1[0m" 404 -
+162.142.125.203 - - [02/Mar/2026 04:13:01] code 400, message Bad request version ('À\x14À')
+162.142.125.203 - - [02/Mar/2026 04:13:01] "[35m[1m\x16\x03\x01\x00î\x01\x00\x00ê\x03\x03gu\x07\x1e\x1b­?àÍè³°ö«Ñ3ÅÆÞ³ÚlÀ³\x048ORÛI×l (gÌb³òçe\x9bq\x87hGp6F\x0cþ\x89Ø\x803å¬½ÅÕyf£ø¿\x00&Ì¨Ì©À/À0À+À,À\x13À\x09À\x14À[0m" HTTPStatus.BAD_REQUEST -
+162.142.125.203 - - [02/Mar/2026 04:13:02] "[33mGET /security.txt HTTP/1.1[0m" 404 -
+172.236.228.193 - - [02/Mar/2026 04:16:34] "GET / HTTP/1.1" 200 -
+34.158.168.101 - - [02/Mar/2026 04:29:57] "[33mGET /.env HTTP/1.1[0m" 404 -
+34.158.168.101 - - [02/Mar/2026 04:29:57] code 400, message Bad request syntax ('\x16\x03\x01\x05¨\x01\x00\x05¤\x03\x03æà¯Àç¯Û\x8bscÈ³cÅR')
+34.158.168.101 - - [02/Mar/2026 04:29:57] "[35m[1m\x16\x03\x01\x05¨\x01\x00\x05¤\x03\x03æà¯Àç¯Û\x8bscÈ³cÅR[0m" HTTPStatus.BAD_REQUEST -
+34.158.168.101 - - [02/Mar/2026 04:29:58] code 400, message Bad request syntax ('\x16\x03\x01\x05¨\x01\x00\x05¤\x03\x03\x99Ð\x84')
+34.158.168.101 - - [02/Mar/2026 04:29:58] "[35m[1m\x16\x03\x01\x05¨\x01\x00\x05¤\x03\x03\x99Ð\x84[0m" HTTPStatus.BAD_REQUEST -
+172.236.228.198 - - [02/Mar/2026 04:33:17] "GET / HTTP/1.1" 200 -
+198.235.24.232 - - [02/Mar/2026 04:42:54] "GET / HTTP/1.0" 200 -
+90.151.171.108 - - [02/Mar/2026 05:48:45] "[33mCONNECT fingerprints.bablosoft.com:443 HTTP/1.1[0m" 404 -
+90.151.171.108 - - [02/Mar/2026 05:48:45] "[33mGET http://fingerprints.bablosoft.com/ip?Z75365434852Q1 HTTP/1.1[0m" 404 -
+90.151.171.108 - - [02/Mar/2026 05:48:50] code 400, message Bad HTTP/0.9 request type ('\x04\x01\x00P¢\x13©')
+90.151.171.108 - - [02/Mar/2026 05:48:50] "[35m[1m\x04\x01\x00P¢\x13©\x0b0\x00[0m" HTTPStatus.BAD_REQUEST -
+90.151.171.108 - - [02/Mar/2026 05:48:55] code 400, message Bad request syntax ('\x05\x01\x00')
+90.151.171.108 - - [02/Mar/2026 05:48:55] "[35m[1m\x05\x01\x00[0m" HTTPStatus.BAD_REQUEST -
+81.29.142.100 - - [02/Mar/2026 07:11:17] code 400, message Bad request version ('À\x13À')
+81.29.142.100 - - [02/Mar/2026 07:11:17] "[35m[1m\x16\x03\x01\x05â\x01\x00\x05Þ\x03\x03GF\\ì\x9cA*®xöj9^m\x19ùh2\x0c0³Ù\x12³\x04\x0b{m²öÈà Ã,\x0c\x94\x93 ¯\x90\x0fi_³°tôÇ`ý/K^%Q\x10\\v\x18ñÒ\x9b\x8dØ\x002À+À/À,À0Ì©Ì¨À\x09À\x13À[0m" HTTPStatus.BAD_REQUEST -
+34.203.227.71 - - [02/Mar/2026 07:22:34] "GET / HTTP/1.1" 200 -
+34.158.168.101 - - [02/Mar/2026 07:54:17] "[33mGET /.env HTTP/1.1[0m" 404 -
+34.158.168.101 - - [02/Mar/2026 07:54:18] code 400, message Bad request version ('À\x13À')
+34.158.168.101 - - [02/Mar/2026 07:54:18] "[35m[1m\x16\x03\x01\x05¨\x01\x00\x05¤\x03\x03¹ÅE3)Íî\x93¶\x0eJ\x99úä6þ\x8a\x7f\x92>Cñ+ÿ\x87:Z\x1c\x1f\x1a&- 6\x92ôÚ´Âæ\x09\x0eâ\x98\x8a&ZöüÞ¿3XØ)\x91º2ea>B¬â­\x00\x1aÀ+À/À,À0Ì©Ì¨À\x09À\x13À[0m" HTTPStatus.BAD_REQUEST -
+34.158.168.101 - - [02/Mar/2026 07:54:19] code 400, message Bad request version ('À\x13À')
+34.158.168.101 - - [02/Mar/2026 07:54:19] "[35m[1m\x16\x03\x01\x05¨\x01\x00\x05¤\x03\x03ô'æÎ\x17ÅÑÈSìö4\x85-S¼Þ\x9d,¾Ô\x8bfÿÉ\x0c»)G\x81 m ¥^Ä¨±naA\x8eûüSMÃ\x12\x0bµ®;äu\x03\x88Ó2"©Y>Sy\x11\x00\x1aÀ+À/À,À0Ì©Ì¨À\x09À\x13À[0m" HTTPStatus.BAD_REQUEST -
+193.142.146.230 - - [02/Mar/2026 07:56:45] "[33mGET /login HTTP/1.1[0m" 404 -
+112.97.84.68 - - [02/Mar/2026 08:03:09] "GET /discover?v=12 HTTP/1.1" 200 -
+112.97.84.68 - - [02/Mar/2026 08:03:09] "GET /discover/api/stats HTTP/1.1" 200 -
+112.97.84.68 - - [02/Mar/2026 08:03:09] "GET /discover/api/runs HTTP/1.1" 200 -
+112.97.84.68 - - [02/Mar/2026 08:03:10] "GET /discover/api/items?run_id=ccf4e008-00cf-4f0b-aa1f-17c84c97c982 HTTP/1.1" 200 -
+112.97.84.68 - - [02/Mar/2026 08:03:10] "GET /discover/api/run_status?task_id=ccf4e008-00cf-4f0b-aa1f-17c84c97c982 HTTP/1.1" 200 -
+112.97.84.68 - - [02/Mar/2026 08:03:10] "GET /discover/api/items?run_id=ccf4e008-00cf-4f0b-aa1f-17c84c97c982 HTTP/1.1" 200 -
+112.97.84.68 - - [02/Mar/2026 08:03:10] "GET /discover/api/runs HTTP/1.1" 200 -
+112.97.84.68 - - [02/Mar/2026 08:03:12] "GET /library HTTP/1.1" 200 -
+112.97.84.68 - - [02/Mar/2026 08:03:21] "GET /library?user=insurance_agent&q=&topic=&status=reviewed_approved&push_status=&sort=newest HTTP/1.1" 200 -
+112.97.84.68 - - [02/Mar/2026 08:03:39] "[32mGET /admin/sync-drafts HTTP/1.1[0m" 302 -
+112.97.84.68 - - [02/Mar/2026 08:03:42] "GET /library?user=insurance_agent&q=&topic=&status=reviewed_approved&push_status=&sort=newest HTTP/1.1" 200 -
+112.97.84.68 - - [02/Mar/2026 08:03:43] "[32mGET /admin/sync-drafts HTTP/1.1[0m" 302 -
+112.97.84.68 - - [02/Mar/2026 08:05:15] "GET /discover HTTP/1.1" 200 -
+112.97.84.68 - - [02/Mar/2026 08:05:15] "GET /discover/api/stats HTTP/1.1" 200 -
+112.97.84.68 - - [02/Mar/2026 08:05:16] "GET /discover/api/runs HTTP/1.1" 200 -
+112.97.84.68 - - [02/Mar/2026 08:05:16] "GET /discover/api/run_status?task_id=ccf4e008-00cf-4f0b-aa1f-17c84c97c982 HTTP/1.1" 200 -
+112.97.84.68 - - [02/Mar/2026 08:05:16] "GET /discover/api/items?run_id=ccf4e008-00cf-4f0b-aa1f-17c84c97c982 HTTP/1.1" 200 -
+112.97.84.68 - - [02/Mar/2026 08:05:16] "GET /discover/api/items?run_id=ccf4e008-00cf-4f0b-aa1f-17c84c97c982 HTTP/1.1" 200 -
+112.97.84.68 - - [02/Mar/2026 08:05:17] "GET /discover/api/runs HTTP/1.1" 200 -
+112.97.84.68 - - [02/Mar/2026 08:05:25] "GET /discover/api/runs HTTP/1.1" 200 -
+112.97.84.68 - - [02/Mar/2026 08:05:32] "GET /discover/api/runs HTTP/1.1" 200 -
+112.97.84.68 - - [02/Mar/2026 08:05:32] "GET /discover/api/items?run_id=ed84ab9f-e8e9-4d28-a047-717e44df8d31 HTTP/1.1" 200 -
+112.97.84.68 - - [02/Mar/2026 08:05:33] "GET /discover/api/run_status?task_id=ed84ab9f-e8e9-4d28-a047-717e44df8d31 HTTP/1.1" 200 -
+112.97.84.68 - - [02/Mar/2026 08:05:33] "GET /discover/api/items?run_id=ed84ab9f-e8e9-4d28-a047-717e44df8d31 HTTP/1.1" 200 -
+112.97.84.68 - - [02/Mar/2026 08:05:34] "GET /discover/api/runs HTTP/1.1" 200 -
+112.97.84.68 - - [02/Mar/2026 08:15:11] "GET /discover?v=12 HTTP/1.1" 200 -
+112.97.84.68 - - [02/Mar/2026 08:15:11] "GET /discover/api/stats HTTP/1.1" 200 -
+112.97.84.68 - - [02/Mar/2026 08:15:11] "GET /discover/api/runs HTTP/1.1" 200 -
+112.97.84.68 - - [02/Mar/2026 08:15:12] "GET /discover/api/items?run_id=ed84ab9f-e8e9-4d28-a047-717e44df8d31 HTTP/1.1" 200 -
+112.97.84.68 - - [02/Mar/2026 08:15:12] "GET /discover/api/run_status?task_id=ed84ab9f-e8e9-4d28-a047-717e44df8d31 HTTP/1.1" 200 -
+112.97.84.68 - - [02/Mar/2026 08:15:12] "GET /discover/api/items?run_id=ed84ab9f-e8e9-4d28-a047-717e44df8d31 HTTP/1.1" 200 -
+112.97.84.68 - - [02/Mar/2026 08:15:13] "GET /discover/api/runs HTTP/1.1" 200 -
+ * Detected change in '/root/.openclaw/workspace/content-pipeline/query_engine/__init__.py', reloading
+🚀 启动文章管理库 Web 服务
+📚 管理地址: http://0.0.0.0:8080/library
+🔍 查询地址: http://0.0.0.0:8080/query
+⚙️  配置地址: http://0.0.0.0:8080/query/config
+🔄 开始同步草稿箱状态...
+📋 发现 17 篇草稿箱状态的文章需要检查
+
+  检查: 从不信任到成交，转介绍客户经营的情感账户...
+    Media ID: qgcPUbwEc2J16mibATvC...
+    状态: ✓ 仍在草稿箱
+
+  检查: 缘故客户长期信任，靠的是这七个小动作...
+    Media ID: qgcPUbwEc2J16mibATvC...
+    状态: ✗ 草稿已删除，回退到文章库
+
+  检查: 缘故客户说'你靠谱'，我这样跟进...
+    Media ID: qgcPUbwEc2J16mibATvC...
+    状态: ✓ 仍在草稿箱
+
+  检查: 高端客户说'太贵了'，我这样跟进...
+    Media ID: qgcPUbwEc2J16mibATvC...
+    状态: ✓ 仍在草稿箱
+
+  检查: 从犹豫到成交，沉默客户经营的长期主义...
+    Media ID: qgcPUbwEc2J16mibATvC...
+    状态: ✓ 仍在草稿箱
+
+  检查: 三年回访沉默客户，我总结了这十点...
+    Media ID: qgcPUbwEc2J16mibATvC...
+    状态: ✓ 仍在草稿箱
+
+  检查: 硬推销不如情感连接，缘故客户经营的真相...
+    Media ID: qgcPUbwEc2J16mibATvC...
+    状态: ✓ 仍在草稿箱
+
+  检查: 客户不回复，保险代理人这样服务最有效...
+    Media ID: qgcPUbwEc2J16mibATvC...
+    状态: ✓ 仍在草稿箱
+
+  检查: 客户生日时，我这样跟进沉默客户...
+    Media ID: qgcPUbwEc2J16mibATvC...
+    状态: ✓ 仍在草稿箱
+
+  检查: 客户不回复，保险代理人这样跟进最有效...
+    Media ID: qgcPUbwEc2J16mibATvC...
+    状态: ✓ 仍在草稿箱
+
+  检查: 从陌生到成交，转介绍客户经营的细节经营...
+    Media ID: qgcPUbwEc2J16mibATvC...
+    状态: ✓ 仍在草稿箱
+
+  检查: 老客户高度认可，靠的是这三个沟通方式...
+    Media ID: qgcPUbwEc2J16mibATvC...
+    状态: ✓ 仍在草稿箱
+
+  检查: 老客户持续转介绍，靠的是这三个服务细节...
+    Media ID: qgcPUbwEc2J16mibATvC...
+    状态: ✓ 仍在草稿箱
+
+  检查: 五年深耕高端客户，我收获了高度认可...
+    Media ID: qgcPUbwEc2J16mibATvC...
+    状态: ✓ 仍在草稿箱
+
+  检查: 十个沉默客户让我明白：服务先于销售...
+    Media ID: qgcPUbwEc2J16mibATvC...
+    状态: ✓ 仍在草稿箱
+
+  检查: 从犹豫到信任，高端客户经营的细节经营...
+    Media ID: qgcPUbwEc2J16mibATvC...
+🔄 开始同步草稿箱状态...
+📋 发现 16 篇草稿箱状态的文章需要检查
+
+  检查: 从不信任到成交，转介绍客户经营的情感账户...
+    Media ID: qgcPUbwEc2J16mibATvC...
+    状态: ✓ 仍在草稿箱
+
+  检查: 节日问候时，七步服务缘故客户...
+    Media ID: qgcPUbwEc2J16mibATvC...
+    状态: ✓ 仍在草稿箱
+
+✅ 同步完成:
+  检查: 17 篇
+  存在: 16 篇
+  回退: 1 篇 (草稿被删除)
+  失败: 0 篇
+    状态: ✓ 仍在草稿箱
+
+  检查: 缘故客户说'你靠谱'，我这样跟进...
+    Media ID: qgcPUbwEc2J16mibATvC...
+    状态: ✓ 仍在草稿箱
+
+  检查: 高端客户说'太贵了'，我这样跟进...
+    Media ID: qgcPUbwEc2J16mibATvC...
+    状态: ✓ 仍在草稿箱
+
+  检查: 从犹豫到成交，沉默客户经营的长期主义...
+    Media ID: qgcPUbwEc2J16mibATvC...
+    状态: ✓ 仍在草稿箱
+
+  检查: 三年回访沉默客户，我总结了这十点...
+    Media ID: qgcPUbwEc2J16mibATvC...
+    状态: ✓ 仍在草稿箱
+
+  检查: 硬推销不如情感连接，缘故客户经营的真相...
+    Media ID: qgcPUbwEc2J16mibATvC...
+    状态: ✓ 仍在草稿箱
+
+  检查: 客户不回复，保险代理人这样服务最有效...
+    Media ID: qgcPUbwEc2J16mibATvC...
+    状态: ✓ 仍在草稿箱
+
+  检查: 客户生日时，我这样跟进沉默客户...
+    Media ID: qgcPUbwEc2J16mibATvC...
+    状态: ✓ 仍在草稿箱
+
+  检查: 客户不回复，保险代理人这样跟进最有效...
+    Media ID: qgcPUbwEc2J16mibATvC...
+    状态: ✓ 仍在草稿箱
+
+  检查: 从陌生到成交，转介绍客户经营的细节经营...
+    Media ID: qgcPUbwEc2J16mibATvC...
+    状态: ✓ 仍在草稿箱
+
+  检查: 老客户高度认可，靠的是这三个沟通方式...
+    Media ID: qgcPUbwEc2J16mibATvC...
+    状态: ✓ 仍在草稿箱
+
+  检查: 老客户持续转介绍，靠的是这三个服务细节...
+    Media ID: qgcPUbwEc2J16mibATvC...
+    状态: ✓ 仍在草稿箱
+
+  检查: 五年深耕高端客户，我收获了高度认可...
+    Media ID: qgcPUbwEc2J16mibATvC...
+    状态: ✓ 仍在草稿箱
+
+  检查: 十个沉默客户让我明白：服务先于销售...
+    Media ID: qgcPUbwEc2J16mibATvC...
+    状态: ✓ 仍在草稿箱
+
+  检查: 从犹豫到信任，高端客户经营的细节经营...
+    Media ID: qgcPUbwEc2J16mibATvC...
+    状态: ✓ 仍在草稿箱
+
+  检查: 节日问候时，七步服务缘故客户...
+    Media ID: qgcPUbwEc2J16mibATvC...
+    状态: ✓ 仍在草稿箱
+
+✅ 同步完成:
+  检查: 16 篇
+  存在: 16 篇
+  回退: 0 篇 (草稿被删除)
+  失败: 0 篇
+ * Restarting with stat
+ * Debugger is active!
+ * Debugger PIN: 579-280-314
+112.97.84.68 - - [02/Mar/2026 08:30:43] "GET /discover?v=12 HTTP/1.1" 200 -
+112.97.84.68 - - [02/Mar/2026 08:30:43] "GET /discover/api/stats HTTP/1.1" 200 -
+112.97.84.68 - - [02/Mar/2026 08:30:44] "GET /discover/api/runs HTTP/1.1" 200 -
+112.97.84.68 - - [02/Mar/2026 08:30:44] "GET /discover/api/items?run_id=ed84ab9f-e8e9-4d28-a047-717e44df8d31 HTTP/1.1" 200 -
+112.97.84.68 - - [02/Mar/2026 08:30:44] "GET /discover/api/run_status?task_id=ed84ab9f-e8e9-4d28-a047-717e44df8d31 HTTP/1.1" 200 -
+112.97.84.68 - - [02/Mar/2026 08:30:44] "GET /discover/api/items?run_id=ed84ab9f-e8e9-4d28-a047-717e44df8d31 HTTP/1.1" 200 -
+112.97.84.68 - - [02/Mar/2026 08:30:45] "GET /discover/api/runs HTTP/1.1" 200 -
+112.97.84.68 - - [02/Mar/2026 08:30:46] "GET /library HTTP/1.1" 200 -
+112.97.84.68 - - [02/Mar/2026 08:30:53] "GET /library?user=insurance_agent&q=&topic=&status=reviewed_approved&push_status=&sort=newest HTTP/1.1" 200 -
+ * Detected change in '/root/.openclaw/workspace/content-pipeline/article_cli.py', reloading
+🚀 启动文章管理库 Web 服务
+📚 管理地址: http://0.0.0.0:8080/library
+🔍 查询地址: http://0.0.0.0:8080/query
+⚙️  配置地址: http://0.0.0.0:8080/query/config
+ * Restarting with stat
+ * Debugger is active!
+ * Debugger PIN: 579-280-314
+ * Detected change in '/root/.openclaw/workspace/content-pipeline/query_engine/__init__.py', reloading
+🚀 启动文章管理库 Web 服务
+📚 管理地址: http://0.0.0.0:8080/library
+🔍 查询地址: http://0.0.0.0:8080/query
+⚙️  配置地址: http://0.0.0.0:8080/query/config
+ * Restarting with stat
+ * Debugger is active!
+ * Debugger PIN: 579-280-314
+ * Detected change in '/root/.openclaw/workspace/content-pipeline/query_engine/__init__.py', reloading
+🚀 启动文章管理库 Web 服务
+📚 管理地址: http://0.0.0.0:8080/library
+🔍 查询地址: http://0.0.0.0:8080/query
+⚙️  配置地址: http://0.0.0.0:8080/query/config
+ * Restarting with stat
+ * Debugger is active!
+ * Debugger PIN: 579-280-314
+ * Detected change in '/root/.openclaw/workspace/content-pipeline/query_engine/__init__.py', reloading
+🚀 启动文章管理库 Web 服务
+📚 管理地址: http://0.0.0.0:8080/library
+🔍 查询地址: http://0.0.0.0:8080/query
+⚙️  配置地址: http://0.0.0.0:8080/query/config
+ * Restarting with stat
+ * Debugger is active!
+ * Debugger PIN: 579-280-314
+ * Detected change in '/root/.openclaw/workspace/content-pipeline/query_engine/__init__.py', reloading
+🚀 启动文章管理库 Web 服务
+📚 管理地址: http://0.0.0.0:8080/library
+🔍 查询地址: http://0.0.0.0:8080/query
+⚙️  配置地址: http://0.0.0.0:8080/query/config
+ * Restarting with stat
+ * Debugger is active!
+ * Debugger PIN: 579-280-314
+ * Detected change in '/root/.openclaw/workspace/content-pipeline/pipeline.py', reloading
+🚀 启动文章管理库 Web 服务
+📚 管理地址: http://0.0.0.0:8080/library
+🔍 查询地址: http://0.0.0.0:8080/query
+⚙️  配置地址: http://0.0.0.0:8080/query/config
+ * Restarting with stat
+ * Debugger is active!
+ * Debugger PIN: 579-280-314
+ * Detected change in '/root/.openclaw/workspace/content-pipeline/pipeline.py', reloading
+🚀 启动文章管理库 Web 服务
+📚 管理地址: http://0.0.0.0:8080/library
+🔍 查询地址: http://0.0.0.0:8080/query
+⚙️  配置地址: http://0.0.0.0:8080/query/config
+ * Restarting with stat
+ * Debugger is active!
+ * Debugger PIN: 579-280-314
+ * Detected change in '/root/.openclaw/workspace/content-pipeline/content_discovery/discovery_store.py', reloading
+🚀 启动文章管理库 Web 服务
+📚 管理地址: http://0.0.0.0:8080/library
+🔍 查询地址: http://0.0.0.0:8080/query
+⚙️  配置地址: http://0.0.0.0:8080/query/config
+ * Restarting with stat
+ * Debugger is active!
+ * Debugger PIN: 579-280-314
+ * Detected change in '/root/.openclaw/workspace/content-pipeline/article_library/web_server.py', reloading
+🚀 启动文章管理库 Web 服务
+📚 管理地址: http://0.0.0.0:8080/library
+🔍 查询地址: http://0.0.0.0:8080/query
+⚙️  配置地址: http://0.0.0.0:8080/query/config
+ * Restarting with stat
+ * Debugger is active!
+ * Debugger PIN: 579-280-314
+ * Detected change in '/root/.openclaw/workspace/content-pipeline/article_library/web_server.py', reloading
+🚀 启动文章管理库 Web 服务
+📚 管理地址: http://0.0.0.0:8080/library
+🔍 查询地址: http://0.0.0.0:8080/query
+⚙️  配置地址: http://0.0.0.0:8080/query/config
+ * Restarting with stat
+ * Debugger is active!
+ * Debugger PIN: 579-280-314
+ * Detected change in '/root/.openclaw/workspace/content-pipeline/article_library/web_server.py', reloading
+🚀 启动文章管理库 Web 服务
+📚 管理地址: http://0.0.0.0:8080/library
+🔍 查询地址: http://0.0.0.0:8080/query
+⚙️  配置地址: http://0.0.0.0:8080/query/config
+ * Restarting with stat
+ * Debugger is active!
+ * Debugger PIN: 579-280-314
+ * Detected change in '/root/.openclaw/workspace/content-pipeline/article_library/web_server.py', reloading
+🚀 启动文章管理库 Web 服务
+📚 管理地址: http://0.0.0.0:8080/library
+🔍 查询地址: http://0.0.0.0:8080/query
+⚙️  配置地址: http://0.0.0.0:8080/query/config
+ * Restarting with stat
+ * Debugger is active!
+ * Debugger PIN: 579-280-314
+ * Detected change in '/root/.openclaw/workspace/content-pipeline/article_library/web_server.py', reloading
+🚀 启动文章管理库 Web 服务
+📚 管理地址: http://0.0.0.0:8080/library
+🔍 查询地址: http://0.0.0.0:8080/query
+⚙️  配置地址: http://0.0.0.0:8080/query/config
+ * Restarting with stat
+ * Debugger is active!
+ * Debugger PIN: 579-280-314
+ * Detected change in '/root/.openclaw/workspace/content-pipeline/article_library/web_server.py', reloading
+🚀 启动文章管理库 Web 服务
+📚 管理地址: http://0.0.0.0:8080/library
+🔍 查询地址: http://0.0.0.0:8080/query
+⚙️  配置地址: http://0.0.0.0:8080/query/config
+ * Restarting with stat
+ * Debugger is active!
+ * Debugger PIN: 579-280-314
+ * Detected change in '/root/.openclaw/workspace/content-pipeline/article_library/web_server.py', reloading
+🚀 启动文章管理库 Web 服务
+📚 管理地址: http://0.0.0.0:8080/library
+🔍 查询地址: http://0.0.0.0:8080/query
+⚙️  配置地址: http://0.0.0.0:8080/query/config
+ * Restarting with stat
+ * Debugger is active!
+ * Debugger PIN: 579-280-314
+ * Detected change in '/root/.openclaw/workspace/content-pipeline/article_library/web_server.py', reloading
+🚀 启动文章管理库 Web 服务
+📚 管理地址: http://0.0.0.0:8080/library
+🔍 查询地址: http://0.0.0.0:8080/query
+⚙️  配置地址: http://0.0.0.0:8080/query/config
+ * Restarting with stat
+ * Debugger is active!
+ * Debugger PIN: 579-280-314
+ * Detected change in '/root/.openclaw/workspace/content-pipeline/article_library/web_server.py', reloading
+🚀 启动文章管理库 Web 服务
+📚 管理地址: http://0.0.0.0:8080/library
+🔍 查询地址: http://0.0.0.0:8080/query
+⚙️  配置地址: http://0.0.0.0:8080/query/config
+ * Restarting with stat
+ * Debugger is active!
+ * Debugger PIN: 579-280-314
+ * Detected change in '/root/.openclaw/workspace/content-pipeline/article_library/web_server.py', reloading
+🚀 启动文章管理库 Web 服务
+📚 管理地址: http://0.0.0.0:8080/library
+🔍 查询地址: http://0.0.0.0:8080/query
+⚙️  配置地址: http://0.0.0.0:8080/query/config
+ * Restarting with stat
+ * Debugger is active!
+ * Debugger PIN: 579-280-314
+ * Detected change in '/root/.openclaw/workspace/content-pipeline/article_library/web_server.py', reloading
+🚀 启动文章管理库 Web 服务
+📚 管理地址: http://0.0.0.0:8080/library
+🔍 查询地址: http://0.0.0.0:8080/query
+⚙️  配置地址: http://0.0.0.0:8080/query/config
+ * Restarting with stat
+ * Debugger is active!
+ * Debugger PIN: 579-280-314

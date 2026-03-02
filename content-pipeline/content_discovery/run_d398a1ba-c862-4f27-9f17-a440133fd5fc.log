@@ -1,0 +1,12 @@
+❌ API返回错误: {'message': 'invalid temperature: only 1 is allowed for this model', 'type': 'invalid_request_error'}
+❌ LLM调用失败: API Error: {'message': 'invalid temperature: only 1 is allowed for this model', 'type': 'invalid_request_error'}
+Traceback (most recent call last):
+  File "/root/.openclaw/workspace/content-pipeline/scripts/discover_collect.py", line 111, in <module>
+    raise SystemExit(main())
+  File "/root/.openclaw/workspace/content-pipeline/scripts/discover_collect.py", line 49, in main
+    queries = plan_queries(persona, search_prompt, max_queries=6)
+  File "/root/.openclaw/workspace/content-pipeline/content_discovery/query_planner.py", line 55, in plan_queries
+    raw = (gen._call_llm(prompt, temperature=0.2) or '').strip()
+  File "/root/.openclaw/workspace/content-pipeline/src/generator/content_generator.py", line 103, in _call_llm
+    raise Exception(f"API Error: {result['error']}")
+Exception: API Error: {'message': 'invalid temperature: only 1 is allowed for this model', 'type': 'invalid_request_error'}

@@ -1,0 +1,20 @@
+PLANNED_QUERIES
+- # Search Prompt: tech_enthusiast
+
+你是内容采集与选题研究员。请为 persona=tech_enthusiast 搜索“他们会
+
+RUN_START persona=tech_enthusiast queries=1 max_results=6
+QUERY_START 1/1 # Search Prompt: tech_enthusiast
+
+你是内容采集与选题研究员。请为 persona=tech_enthusiast 搜索“他们会
+QUERY_RESULTS 1/1 returned=6
+ITEM 1/1 1/6 UPSERT tech_enthusiast 85 80 36 别信用户的嘴：如何写一个 Prompt，把“大白话”变成“搜索关键词”？ - 53AI-AI知识库|企业AI知识库|大模
+ITEM 1/1 2/6 UPSERT tech_enthusiast 85 80 28 ChatGPT 中文提示词(Prompt)可扮演角色持续整理 - 知乎
+ITEM 1/1 3/6 UPSERT tech_enthusiast 70 65 24 Prompt合集-CSDN博客
+ITEM 1/1 4/6 UPSERT tech_enthusiast 85 80 19 你有什么在网上搜索东西的神搜索技巧？ - Thoughts Memo 的回答
+ITEM 1/1 5/6 UPSERT tech_enthusiast 85 70 15 你在用ChatGPT时有什么独特的prompt心得？ - 知乎
+ITEM 1/1 6/6 UPSERT tech_enthusiast 0 0 10 【GPT专题】Prompt Engineering高级用法-如何让GPT使用搜索引擎 - 知乎
+QUERY_DONE 1/1 # Search Prompt: tech_enthusiast
+
+你是内容采集与选题研究员。请为 persona=tech_enthusiast 搜索“他们会
+RUN_DONE total=6 db=/root/.openclaw/workspace/content-pipeline/content_discovery/discovery.db

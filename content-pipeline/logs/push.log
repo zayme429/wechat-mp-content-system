@@ -152,3 +152,21 @@ Exception: 推送失败: title size out of limit hint: [PQxIta087721-3] rid: 69a
 2026-02-28 20:42:52,718 - INFO - 103.149.244.196 - - [28/Feb/2026 20:42:52] "[32mPOST /admin/review/20260228_保险客户经营_961708 HTTP/1.1[0m" 302 -
 2026-02-28 20:42:53,629 - INFO - 103.149.244.196 - - [28/Feb/2026 20:42:53] "GET /library HTTP/1.1" 200 -
 2026-02-28 20:45:13,976 - INFO -  * Detected change in '/root/.openclaw/workspace/content-pipeline/article_library/web_server.py', reloading
+2026-03-02 08:31:55,481 - INFO - [PUSH_START] article_id=20260228_保险客户经营_961708, title=缘故客户长期信任，靠的是这七个小动作
+2026-03-02 08:31:55,485 - INFO - [PUSH_STEP] 1_GET_TOKEN: 开始获取access_token
+2026-03-02 08:31:55,926 - INFO - [PUSH_STEP] 1_GET_TOKEN: 获取token成功
+2026-03-02 08:31:55,926 - INFO -   Data: {'token_prefix': '101_leBUFlJ5ZVPb7w6A'}
+2026-03-02 08:31:55,926 - INFO - [PUSH_STEP] 2_UPLOAD_COVER: 开始上传封面为永久素材
+2026-03-02 08:31:57,399 - INFO - [PUSH_STEP] 2_UPLOAD_COVER: 封面上传结果
+2026-03-02 08:31:57,400 - INFO -   Data: {'media_id': 'qgcPUbwEc2J16mibATvCB9KPW8L_bZS5OcI-wJs1nzdn5hU8k3_OU8s7NvxxOcGx', 'url': 'http://mmbiz.qpic.cn/mmbiz_jpg/j4oA91WU4nS7pU5TDqR6CSRlVKsznAkECzJJZmAGAhusGq1Ivu9PAHXDd1ics4VLAg2Xzey2kMbnL844sKVF5jH3rnUmfVdVW8TSzJmvKKicQ/0?wx_fmt=jpeg', 'item': []}
+2026-03-02 08:31:57,400 - INFO - [PUSH_STEP] 2_UPLOAD_COVER: 封面上传成功
+2026-03-02 08:31:57,400 - INFO -   Data: {'thumb_media_id': 'qgcPUbwEc2J16mibATvCB9KPW8L_bZ'}
+2026-03-02 08:31:57,400 - INFO - [PUSH_STEP] 3_PREPARE_CONTENT: 准备文章内容
+2026-03-02 08:31:57,400 - INFO - [PUSH_STEP] 3_PREPARE_CONTENT: 清理后的标题
+2026-03-02 08:31:57,400 - INFO -   Data: {'title': '缘故客户长期信任，靠的是这七个小动作', 'char_count': 18, 'byte_count': 54}
+2026-03-02 08:31:57,400 - INFO - [PUSH_STEP] 4_PUSH_DRAFT: 开始推送到草稿箱
+2026-03-02 08:31:57,400 - INFO - [PUSH_STEP] 4_PUSH_DRAFT: 请求参数
+2026-03-02 08:31:57,401 - INFO -   Data: {'title': '缘故客户长期信任，靠的是这七个小动作', 'content_length': 2405}
+2026-03-02 08:31:59,840 - INFO - [PUSH_STEP] 4_PUSH_DRAFT: API响应
+2026-03-02 08:31:59,840 - INFO -   Data: {'media_id': 'qgcPUbwEc2J16mibATvCByIn4gSRPYyoopCwi4caJ2yK2cMvbfl6Hv4BBG83LAnO', 'item': []}
+2026-03-02 08:31:59,840 - INFO - [PUSH_SUCCESS] media_id=qgcPUbwEc2J16mibATvCByIn4gSRPYyoopCwi4caJ2yK2cMvbfl6Hv4BBG83LAnO

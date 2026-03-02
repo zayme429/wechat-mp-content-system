@@ -11,13 +11,14 @@ import json
 import sqlite3
 import os
 
-sys.path.insert(0, '/root/.openclaw/workspace/content-pipeline')
+BASE_DIR = Path(__file__).resolve().parents[1]
+sys.path.insert(0, str(BASE_DIR))
 
 # Best-effort: load Tavily key from content-pipeline secrets into env for discovery/search tooling.
 # Avoid printing secrets; only set env if missing.
 try:
     if not os.environ.get('TAVILY_API_KEY'):
-        secrets_path = '/root/.openclaw/workspace/content-pipeline/config/secrets.json'
+        secrets_path = str(BASE_DIR / 'config' / 'secrets.json')
         if os.path.exists(secrets_path):
             with open(secrets_path, 'r', encoding='utf-8') as f:
                 _secrets = json.load(f)
@@ -1906,7 +1907,7 @@ def personas_view():
     current_user = user_manager.get_user_profile(current_user_id)
     all_users = user_manager.list_users()
 
-    base = '/root/.openclaw/workspace/content-pipeline/user_memory'
+    base = str(BASE_DIR / 'user_memory')
     paths = {
         'general_title': f'{base}/general_non_insurance_title_style.md',
         'general_article': f'{base}/general_non_insurance_article_style.md',
@@ -1934,7 +1935,7 @@ def personas_save():
     kind = (request.form.get('kind') or '').strip()
     content = request.form.get('content') or ''
 
-    base = '/root/.openclaw/workspace/content-pipeline/user_memory'
+    base = str(BASE_DIR / 'user_memory')
     mapping = {
         'general_title': f'{base}/general_non_insurance_title_style.md',
         'general_article': f'{base}/general_non_insurance_article_style.md',
@@ -2018,9 +2019,9 @@ def discover_api_run():
     import subprocess
 
     task_id = str(uuid.uuid4())
-    log_path = f"/root/.openclaw/workspace/content-pipeline/content_discovery/run_{task_id}.log"
+    log_path = str(BASE_DIR / 'content_discovery' / f"run_{task_id}.log")
 
-    prompt_path = f"/root/.openclaw/workspace/content-pipeline/user_memory/{persona}_search_prompt.md"
+    prompt_path = str(BASE_DIR / 'user_memory' / f"{persona}_search_prompt.md")
 
     # Plan queries once for UX (show what will be searched)
     planned_queries = []
@@ -2038,7 +2039,7 @@ def discover_api_run():
     cmd = [
         'python3',
         '-u',
-        '/root/.openclaw/workspace/content-pipeline/scripts/discover_collect.py',
+        str(BASE_DIR / 'scripts' / 'discover_collect.py'),
         '--persona',
         persona,
         '--prompt-file',
@@ -2060,7 +2061,7 @@ def discover_api_run():
             for q in planned_queries:
                 f.write(f"- {q}\n")
             f.write('\n')
-        proc = subprocess.Popen(cmd, stdout=f, stderr=f, env=env, cwd='/root/.openclaw/workspace/content-pipeline')
+        proc = subprocess.Popen(cmd, stdout=f, stderr=f, env=env, cwd=str(BASE_DIR))
 
     try:
         from content_discovery.runs import start_run
@@ -2109,7 +2110,7 @@ def discover_api_get_prompt():
     persona = (request.args.get('persona') or '').strip()
     if not persona:
         return jsonify({'ok': False, 'error': 'missing persona'}), 400
-    path = f"/root/.openclaw/workspace/content-pipeline/user_memory/{persona}_search_prompt.md"
+    path = str(BASE_DIR / 'user_memory' / f"{persona}_search_prompt.md")
     try:
         with open(path, 'r', encoding='utf-8') as f:
             txt = f.read()
@@ -2126,7 +2127,7 @@ def discover_api_post_prompt():
     if not persona:
         return jsonify({'ok': False, 'error': 'missing persona'}), 400
 
-    path = f"/root/.openclaw/workspace/content-pipeline/user_memory/{persona}_search_prompt.md"
+    path = str(BASE_DIR / 'user_memory' / f"{persona}_search_prompt.md")
     try:
         _write_text(path, prompt_text)
     except Exception as e:
@@ -2288,7 +2289,7 @@ def discover_api_run_status():
         return jsonify({'ok': False, 'error': 'missing task_id'}), 400
 
     run = discovery_get_run(task_id, db_path=DISCOVERY_DB_PATH) or {}
-    log_path = run.get('log_path') or f"/root/.openclaw/workspace/content-pipeline/content_discovery/run_{task_id}.log"
+    log_path = run.get('log_path') or str(BASE_DIR / 'content_discovery' / f"run_{task_id}.log")
 
     # compute inserted count by run_id
     inserted = 0
@@ -2846,7 +2847,7 @@ def admin_review_page(article_id):
 def admin_sync_drafts():
     """同步草稿箱状态"""
     import os
-    sys.path.insert(0, '/root/.openclaw/workspace/content-pipeline/article_library')
+    sys.path.insert(0, str(BASE_DIR / 'article_library'))
     from wechat_draft_sync import sync_draft_status
     
     try:
@@ -4034,7 +4035,7 @@ QUERY_PAGE_TEMPLATE = '''
 def query_page():
     """智能查询页面"""
     import sys
-    sys.path.insert(0, '/root/.openclaw/workspace/content-pipeline')
+    sys.path.insert(0, str(BASE_DIR))
     from query_engine import QueryEngine
     from query_engine.config_manager import get_config
     
@@ -4107,7 +4108,7 @@ def query_page():
 def api_query():
     """查询API接口"""
     import sys
-    sys.path.insert(0, '/root/.openclaw/workspace/content-pipeline')
+    sys.path.insert(0, str(BASE_DIR))
     from query_engine import QueryEngine
     
     data = request.get_json()
@@ -4129,7 +4130,7 @@ def api_query():
 def query_prompts_page():
     """Prompt配置页面"""
     import sys
-    sys.path.insert(0, '/root/.openclaw/workspace/content-pipeline')
+    sys.path.insert(0, str(BASE_DIR))
     from query_engine.prompt_manager import get_prompt_manager
     
     pm = get_prompt_manager()
@@ -4318,7 +4319,7 @@ PROMPT_TEMPLATE = '''
 def query_config_page():
     """查询引擎配置页面"""
     import sys
-    sys.path.insert(0, '/root/.openclaw/workspace/content-pipeline')
+    sys.path.insert(0, str(BASE_DIR))
     from query_engine.config_manager import get_config
     
     config_manager = get_config()

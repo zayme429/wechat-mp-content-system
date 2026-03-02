@@ -1,0 +1,64 @@
+PLANNED_QUERIES
+- J-POP 新歌 安利 歌单
+- 日摇 现场感 乐评 副歌
+- 编曲 吉他 鼓点 情绪 推进
+- 入坑 指南 推荐 歌手 专辑
+- 燃向 摇滚 现场 Live 体验
+- 二次元 歌单 热血 高燃
+
+RUN_START persona=jp_music_fan queries=6 max_results=6
+QUERY_START 1/6 J-POP 新歌 安利 歌单
+QUERY_RESULTS 1/6 returned=6
+ITEM 1/6 1/6 UPSERT jp_music_fan 90 70 97 安利收录曲-哔哩哔哩_Bilibili
+ITEM 1/6 2/6 UPSERT jp_music_fan 90 70 93 ‎J-Pop 新歌 - 歌单 - Apple Music
+ITEM 1/6 3/6 UPSERT jp_music_fan 90 70 89 jーpop-哔哩哔哩_Bilibili
+ITEM 1/6 4/6 UPSERT jp_music_fan 85 70 85 来自椰汁男孩的安利- 歌单 - 网易云音乐
+ITEM 1/6 5/6 UPSERT jp_music_fan 90 80 81 国立Jpop新歌每周审判（1/13） - 小组讨论- 豆瓣
+ITEM 1/6 6/6 UPSERT jp_music_fan 90 70 75 J-Pop Now - 歌單 - Apple Music
+QUERY_DONE 1/6 J-POP 新歌 安利 歌单
+QUERY_START 2/6 日摇 现场感 乐评 副歌
+QUERY_RESULTS 2/6 returned=6
+ITEM 2/6 1/6 UPSERT jp_music_fan 30 70 38 谈后摇
+ITEM 2/6 2/6 UPSERT jp_music_fan 75 80 34 乐夏2乐评（五六期） - 日记- 豆瓣
+ITEM 2/6 3/6 UPSERT jp_music_fan 30 70 25 你觉得喜欢后摇或者氛围音乐能说明你的性格吗？ : r/postrock - Reddit
+ITEM 2/6 4/6 UPSERT jp_music_fan 40 70 16 哪位摇滚音乐人，给你的生活带去了「不可忽视」的影响？ - 知乎
+ITEM 2/6 5/6 UPSERT jp_music_fan 70 90 12 2024，依旧是音乐的一场无约之旅 - 少数派
+ITEM 2/6 6/6 UPSERT jp_music_fan 30 50 8 咱们聊聊：后摇: r/LetsTalkMusic - Reddit
+QUERY_DONE 2/6 日摇 现场感 乐评 副歌
+QUERY_START 3/6 编曲 吉他 鼓点 情绪 推进
+QUERY_RESULTS 3/6 returned=6
+ITEM 3/6 1/6 UPSERT jp_music_fan 0 0 82 鼓点全面加强，推动歌曲情绪进入高潮。 • 电吉他进行和弦扫弦
+ITEM 3/6 2/6 UPSERT jp_music_fan 60 70 70 90%编曲新手干过的迷惑操作，看看你踩坑没有
+ITEM 3/6 3/6 UPSERT jp_music_fan 70 80 59 初学者如何进行编曲？一首歌的编曲思路是怎样的？全文解析带你 ...
+ITEM 3/6 4/6 UPSERT jp_music_fan 75 80 54 打鼓   打铁   架子鼓编曲入门02_哔哩哔哩_bilibili
+ITEM 3/6 5/6 UPSERT jp_music_fan 0 0 46 8个编曲配器必懂的知识点！ - 搜狐
+ITEM 3/6 6/6 UPSERT jp_music_fan 60 85 30 巨详细的高阶和声编配指南，让你的编曲更上档次！ - 音律屋
+QUERY_DONE 3/6 编曲 吉他 鼓点 情绪 推进
+QUERY_START 4/6 入坑 指南 推荐 歌手 专辑
+QUERY_RESULTS 4/6 returned=6
+ITEM 4/6 1/6 UPSERT jp_music_fan 40 80 67 把CD铺搬进卧室，开聊爵士乐迷的入坑指南_原创 - 新浪众测
+ITEM 4/6 2/6 UPSERT jp_music_fan 0 0 57 想听爵士乐，我应该先听哪些歌手的哪些专辑？ - 浅色月的回答- 知乎
+ITEM 4/6 3/6 UPSERT jp_music_fan 30 70 48 中国、欧美摇滚音乐入门推荐、入坑指南（含西方摇滚简史）
+ITEM 4/6 4/6 UPSERT jp_music_fan 30 70 43 【纯音乐】十首顶级纯音乐推荐，建议收藏！！ - Bilibili
+ITEM 4/6 5/6 UPSERT jp_music_fan 85 75 39 不用誰逼你入坑，聽過City Pop 任一經典串燒都會深陷無法自拔 - 迷誠品
+ITEM 4/6 6/6 UPSERT jp_music_fan 20 70 33 新手专辑聆听指南？ : r/Jazz - Reddit
+QUERY_DONE 4/6 入坑 指南 推荐 歌手 专辑
+QUERY_START 5/6 燃向 摇滚 现场 Live 体验
+QUERY_RESULTS 5/6 returned=6
+ITEM 5/6 1/6 UPSERT jp_music_fan 85 70 67 孤独摇滚燃场面 - 抖音
+ITEM 5/6 2/6 UPSERT jp_music_fan 70 65 61 “Live in Palisade”共燃新裤子摇滚“Live the Moment”|乐迷|乐队 - 网易
+ITEM 5/6 3/6 UPSERT jp_music_fan 85 70 57 孤独摇滚通过测试live-抖音
+ITEM 5/6 4/6 UPSERT jp_music_fan 30 40 50 新加坡，2月22日见！CLANG克浪! 华语摇滚最强阵容，开场即燃！音 ...
+ITEM 5/6 5/6 UPSERT jp_music_fan 70 65 45 从雪场到Live现场，一场室内摇滚狂欢燃爆寒冬 - 搜狐
+ITEM 5/6 6/6 UPSERT jp_music_fan 0 0 37 TME live X谢霆锋「锋狂摇滚」携四乐队共同燃炸超现场 - 凤凰网
+QUERY_DONE 5/6 燃向 摇滚 现场 Live 体验
+QUERY_START 6/6 二次元 歌单 热血 高燃
+QUERY_RESULTS 6/6 returned=6
+ITEM 6/6 1/6 UPSERT jp_music_fan 90 70 97 动漫热血燃曲- 歌单 - 网易云音乐
+ITEM 6/6 2/6 UPSERT jp_music_fan 90 70 93 高燃作-哔哩哔哩_Bilibili
+ITEM 6/6 3/6 UPSERT jp_music_fan 90 70 89 点燃二次元|百首燃值爆表的ACG神曲 - Spotify
+ITEM 6/6 4/6 UPSERT jp_music_fan 90 70 85 动漫中那些燃到炸裂的BGM - QQ音乐
+ITEM 6/6 5/6 UPSERT jp_music_fan 85 70 81 有哪些让人头脑充血、热血上涌、灵魂燃烧的歌？ - 知乎
+ITEM 6/6 6/6 UPSERT jp_music_fan 85 70 77 【GT星音樂#1】日本動漫OP超燃熱血90分鐘音樂不間斷(無廣告)
+QUERY_DONE 6/6 二次元 歌单 热血 高燃
+RUN_DONE total=36 db=/root/.openclaw/workspace/content-pipeline/content_discovery/discovery.db

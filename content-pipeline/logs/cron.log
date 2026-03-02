@@ -99,3 +99,107 @@
 [2026-02-28_08:00:01] ✅ Pipeline 执行成功，审核邮件已发送
 [2026-02-28_08:00:01] ====== Pipeline 执行结束 ======
 
+[2026-03-01_08:00:01] ====== Content Pipeline v2.0 启动 ======
+2026-03-01 08:00:01,744 - __main__ - INFO - 🚀 启动多候选内容生成工作流
+2026-03-01 08:00:01,745 - __main__ - INFO - === 步骤1: 采集热点资讯 ===
+2026-03-01 08:00:01,745 - fetcher.rss_collector - INFO - === RSS采集开始 ===
+2026-03-01 08:00:01,745 - fetcher.rss_collector - INFO - 
+[ai_tech] 类别:
+2026-03-01 08:00:01,745 - fetcher.rss_collector - INFO - Fetching: 机器之心 (https://www.jiqizhixin.com/rss)
+2026-03-01 08:00:05,007 - fetcher.rss_collector - INFO -   ✓ Got 0 items from 机器之心
+2026-03-01 08:00:05,008 - fetcher.rss_collector - INFO - Fetching: InfoQ AI (https://www.infoq.cn/feed/ai)
+2026-03-01 08:00:05,745 - fetcher.rss_collector - INFO -   ✓ Got 10 items from InfoQ AI
+2026-03-01 08:00:05,745 - fetcher.rss_collector - INFO - Fetching: MIT科技评论 (https://www.mittrchina.com/rss)
+2026-03-01 08:00:06,411 - fetcher.rss_collector - INFO -   ✓ Got 0 items from MIT科技评论
+2026-03-01 08:00:06,411 - fetcher.rss_collector - INFO - 
+[thinking] 类别:
+2026-03-01 08:00:06,411 - fetcher.rss_collector - INFO - Fetching: 36氪 (https://36kr.com/feed)
+2026-03-01 08:00:07,157 - fetcher.rss_collector - INFO -   ✓ Got 10 items from 36氪
+2026-03-01 08:00:07,157 - fetcher.rss_collector - INFO - Fetching: 虎嗅 (https://www.huxiu.com/rss)
+2026-03-01 08:00:07,553 - fetcher.rss_collector - INFO -   ✓ Got 0 items from 虎嗅
+2026-03-01 08:00:07,553 - fetcher.rss_collector - INFO - Fetching: 极客公园 (https://www.geekpark.net/rss)
+2026-03-01 08:00:15,321 - fetcher.rss_collector - ERROR -   ✗ Failed to fetch 极客公园: ('Connection aborted.', RemoteDisconnected('Remote end closed connection without response'))
+2026-03-01 08:00:15,321 - fetcher.rss_collector - INFO - 
+[personal_growth] 类别:
+2026-03-01 08:00:15,321 - fetcher.rss_collector - INFO - Fetching: L先生说 (https://mp.weixin.qq.com/mp/profile?action=home&__biz=MzA5NjEyMDUyMA==)
+2026-03-01 08:00:15,410 - fetcher.rss_collector - INFO -   ✓ Got 0 items from L先生说
+2026-03-01 08:00:15,410 - fetcher.rss_collector - INFO - Fetching: 万维钢 (https://mp.weixin.qq.com/mp/profile?action=home&__biz=MjM5NTgzMjg0MQ==)
+2026-03-01 08:00:15,496 - fetcher.rss_collector - INFO -   ✓ Got 0 items from 万维钢
+2026-03-01 08:00:15,496 - fetcher.rss_collector - INFO - 
+✅ RSS采集完成，共 20 条
+2026-03-01 08:00:15,496 - fetcher.rss_collector - INFO - === 热点评分 ===
+2026-03-01 08:00:15,497 - fetcher.rss_collector - INFO - ✅ 评分完成，最高分: 4
+2026-03-01 08:00:15,503 - __main__ - INFO - === 步骤2: 生成 3 个候选 ===
+2026-03-01 08:00:15,504 - generator.content_generator - INFO - 🤖 调用LLM生成内容...
+2026-03-01 08:01:08,184 - generator.content_generator - INFO - ✅ LLM生成完成
+2026-03-01 08:01:08,185 - generator.content_generator - INFO - 🤖 调用LLM生成内容...
+2026-03-01 08:02:03,287 - generator.content_generator - INFO - ✅ LLM生成完成
+2026-03-01 08:02:03,288 - generator.content_generator - INFO - 🤖 调用LLM生成内容...
+2026-03-01 08:03:11,206 - generator.content_generator - INFO - ✅ LLM生成完成
+2026-03-01 08:03:11,207 - __main__ - INFO - === 步骤3: 保存候选到数据库 ===
+2026-03-01 08:03:11,213 - __main__ - INFO - ✅ 文章已保存，ID: 21
+2026-03-01 08:03:11,213 - __main__ - INFO - === 步骤4: 发送审核邮件 ===
+2026-03-01 08:03:11,214 - __main__ - INFO - ✅ 候选已保存到: /root/.openclaw/workspace/content-pipeline/output/20260301
+2026-03-01 08:03:11,214 - __main__ - INFO - === 步骤4: 发送审核邮件（HTML完整版） ===
+2026-03-01 08:03:14,752 - notification.review_mail_sender - INFO - ✅ HTML审核邮件已发送到: ZaymeShaw199742@outlook.com
+2026-03-01 08:03:14,753 - __main__ - INFO - ✅ HTML审核邮件已发送（完整文章+优化排版）
+2026-03-01 08:03:14,753 - __main__ - INFO - === 步骤5: 推送主推候选到草稿箱 ===
+2026-03-01 08:03:14,759 - __main__ - ERROR - 发布异常: [Errno 2] No such file or directory: 'wenyan'
+2026-03-01 08:03:14,759 - __main__ - WARNING - ⚠️ 草稿箱推送失败，可手动执行：python3 pipeline_v2.py --select {today} --candidate {best_idx}
+2026-03-01 08:03:14,759 - __main__ - INFO - ✅ 多候选工作流完成，等待审核
+🎯 生成 3 个候选版本...
+[2026-03-01_08:00:01] ✅ Pipeline 执行成功，审核邮件已发送
+[2026-03-01_08:00:01] ====== Pipeline 执行结束 ======
+
+[2026-03-02_08:00:01] ====== Content Pipeline v2.0 启动 ======
+2026-03-02 08:00:01,950 - __main__ - INFO - 🚀 启动多候选内容生成工作流
+2026-03-02 08:00:01,951 - __main__ - INFO - === 步骤1: 采集热点资讯 ===
+2026-03-02 08:00:01,951 - fetcher.rss_collector - INFO - === RSS采集开始 ===
+2026-03-02 08:00:01,951 - fetcher.rss_collector - INFO - 
+[ai_tech] 类别:
+2026-03-02 08:00:01,951 - fetcher.rss_collector - INFO - Fetching: 机器之心 (https://www.jiqizhixin.com/rss)
+2026-03-02 08:00:04,999 - fetcher.rss_collector - INFO -   ✓ Got 0 items from 机器之心
+2026-03-02 08:00:04,999 - fetcher.rss_collector - INFO - Fetching: InfoQ AI (https://www.infoq.cn/feed/ai)
+2026-03-02 08:00:05,730 - fetcher.rss_collector - INFO -   ✓ Got 10 items from InfoQ AI
+2026-03-02 08:00:05,731 - fetcher.rss_collector - INFO - Fetching: MIT科技评论 (https://www.mittrchina.com/rss)
+2026-03-02 08:00:06,566 - fetcher.rss_collector - INFO -   ✓ Got 0 items from MIT科技评论
+2026-03-02 08:00:06,566 - fetcher.rss_collector - INFO - 
+[thinking] 类别:
+2026-03-02 08:00:06,566 - fetcher.rss_collector - INFO - Fetching: 36氪 (https://36kr.com/feed)
+2026-03-02 08:00:07,398 - fetcher.rss_collector - INFO -   ✓ Got 10 items from 36氪
+2026-03-02 08:00:07,398 - fetcher.rss_collector - INFO - Fetching: 虎嗅 (https://www.huxiu.com/rss)
+2026-03-02 08:00:07,783 - fetcher.rss_collector - INFO -   ✓ Got 0 items from 虎嗅
+2026-03-02 08:00:07,783 - fetcher.rss_collector - INFO - Fetching: 极客公园 (https://www.geekpark.net/rss)
+2026-03-02 08:00:23,211 - fetcher.rss_collector - ERROR -   ✗ Failed to fetch 极客公园: HTTPSConnectionPool(host='www.geekpark.net', port=443): Max retries exceeded with url: /rss (Caused by ConnectTimeoutError(<urllib3.connection.HTTPSConnection object at 0x7f57f158d310>, 'Connection to www.geekpark.net timed out. (connect timeout=15)'))
+2026-03-02 08:00:23,212 - fetcher.rss_collector - INFO - 
+[personal_growth] 类别:
+2026-03-02 08:00:23,212 - fetcher.rss_collector - INFO - Fetching: L先生说 (https://mp.weixin.qq.com/mp/profile?action=home&__biz=MzA5NjEyMDUyMA==)
+2026-03-02 08:00:23,304 - fetcher.rss_collector - INFO -   ✓ Got 0 items from L先生说
+2026-03-02 08:00:23,305 - fetcher.rss_collector - INFO - Fetching: 万维钢 (https://mp.weixin.qq.com/mp/profile?action=home&__biz=MjM5NTgzMjg0MQ==)
+2026-03-02 08:00:23,394 - fetcher.rss_collector - INFO -   ✓ Got 0 items from 万维钢
+2026-03-02 08:00:23,395 - fetcher.rss_collector - INFO - 
+✅ RSS采集完成，共 20 条
+2026-03-02 08:00:23,395 - fetcher.rss_collector - INFO - === 热点评分 ===
+2026-03-02 08:00:23,395 - fetcher.rss_collector - INFO - ✅ 评分完成，最高分: 4
+2026-03-02 08:00:23,397 - __main__ - INFO - === 步骤2: 生成 3 个候选 ===
+2026-03-02 08:00:23,397 - generator.content_generator - INFO - 🤖 调用LLM生成内容...
+2026-03-02 08:01:57,978 - generator.content_generator - INFO - ✅ LLM生成完成
+2026-03-02 08:01:57,980 - generator.content_generator - INFO - 🤖 调用LLM生成内容...
+2026-03-02 08:03:05,926 - generator.content_generator - INFO - ✅ LLM生成完成
+2026-03-02 08:03:05,927 - generator.content_generator - INFO - 🤖 调用LLM生成内容...
+2026-03-02 08:04:12,347 - generator.content_generator - INFO - ✅ LLM生成完成
+2026-03-02 08:04:12,347 - __main__ - INFO - === 步骤3: 保存候选到数据库 ===
+2026-03-02 08:04:12,353 - __main__ - INFO - ✅ 文章已保存，ID: 22
+2026-03-02 08:04:12,353 - __main__ - INFO - === 步骤4: 发送审核邮件 ===
+2026-03-02 08:04:12,354 - __main__ - INFO - ✅ 候选已保存到: /root/.openclaw/workspace/content-pipeline/output/20260302
+2026-03-02 08:04:12,354 - __main__ - INFO - === 步骤4: 发送审核邮件（HTML完整版） ===
+2026-03-02 08:04:15,919 - notification.review_mail_sender - INFO - ✅ HTML审核邮件已发送到: ZaymeShaw199742@outlook.com
+2026-03-02 08:04:15,920 - __main__ - INFO - ✅ HTML审核邮件已发送（完整文章+优化排版）
+2026-03-02 08:04:15,920 - __main__ - INFO - === 步骤5: 推送主推候选到草稿箱 ===
+2026-03-02 08:04:15,924 - __main__ - ERROR - 发布异常: [Errno 2] No such file or directory: 'wenyan'
+2026-03-02 08:04:15,924 - __main__ - WARNING - ⚠️ 草稿箱推送失败，可手动执行：python3 pipeline_v2.py --select {today} --candidate {best_idx}
+2026-03-02 08:04:15,924 - __main__ - INFO - ✅ 多候选工作流完成，等待审核
+🎯 生成 3 个候选版本...
+[2026-03-02_08:00:01] ✅ Pipeline 执行成功，审核邮件已发送
+[2026-03-02_08:00:01] ====== Pipeline 执行结束 ======
+

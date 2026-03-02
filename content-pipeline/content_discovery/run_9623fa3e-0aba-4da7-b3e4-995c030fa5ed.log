@@ -1,0 +1,36 @@
+PLANNED_QUERIES
+- 目标 采集“AI 工程化/落地实践”为主的高质量中文文章（少鸡汤、少泛趋势），用
+- 受众画像（tech_enthusiast）
+- 专业能力强，技术迷；反感虚有其表
+- 偏好 有实在内容 + 边界条件/取舍代价 + 可执行细节 + 数据或对比
+- 重点领域 大模型(LLM) / Agent / RAG / 工作流自动化 / v
+- 优先采集的内容类型（尽量覆盖多个角度）
+
+RUN_START persona=tech_enthusiast queries=6 max_results=6
+QUERY_START 1/6 目标 采集“AI 工程化/落地实践”为主的高质量中文文章（少鸡汤、少泛趋势），用
+QUERY_RESULTS 1/6 returned=1
+ITEM 1/6 1/1 UPSERT tech_enthusiast 85 75 38 每日AI简报- 野湃AI
+QUERY_DONE 1/6 目标 采集“AI 工程化/落地实践”为主的高质量中文文章（少鸡汤、少泛趋势），用
+QUERY_START 2/6 受众画像（tech_enthusiast）
+QUERY_RESULTS 2/6 returned=6
+ITEM 2/6 1/6 UPSERT tech_enthusiast 30 40 67 Tech enthusiast Images - Free Download on Freepik
+ITEM 2/6 2/6 UPSERT tech_enthusiast 30 40 63 Tech Enthusiast royalty-free images - Shutterstock
+ITEM 2/6 3/6 UPSERT tech_enthusiast 30 40 56 Technology Enthusiast royalty-free images - Shutterstock
+ITEM 2/6 4/6 UPSERT tech_enthusiast 30 40 50 1,060 Tech Enthusiast Stock Vectors and Vector Art | Shutter
+ITEM 2/6 5/6 UPSERT tech_enthusiast 70 60 37 IM智己汽车：智能時代，定義「我」之於世界的價值 - 数英网
+ITEM 2/6 6/6 UPSERT tech_enthusiast 75 70 11 #新創思維#商業策略#產品管理#定位策略#mvp | 吳志光 - 领英
+QUERY_DONE 2/6 受众画像（tech_enthusiast）
+QUERY_START 3/6 专业能力强，技术迷；反感虚有其表
+QUERY_RESULTS 3/6 returned=6
+❌ API返回错误: {'message': 'Invalid request: Your request exceeded model token limit: 8192 (requested: 18099)', 'type': 'invalid_request_error'}
+❌ LLM调用失败: API Error: {'message': 'Invalid request: Your request exceeded model token limit: 8192 (requested: 18099)', 'type': 'invalid_request_error'}
+Traceback (most recent call last):
+  File "/root/.openclaw/workspace/content-pipeline/scripts/discover_collect.py", line 111, in <module>
+    raise SystemExit(main())
+  File "/root/.openclaw/workspace/content-pipeline/scripts/discover_collect.py", line 76, in main
+    fit = analyze_fit(persona, title=title, snippet=snippet, url=url)
+  File "/root/.openclaw/workspace/content-pipeline/content_discovery/analyzer.py", line 48, in analyze_fit
+    raw = (gen._call_llm(prompt, temperature=0.2) or '').strip()
+  File "/root/.openclaw/workspace/content-pipeline/src/generator/content_generator.py", line 101, in _call_llm
+    raise Exception(f"API Error: {result['error']}")
+Exception: API Error: {'message': 'Invalid request: Your request exceeded model token limit: 8192 (requested: 18099)', 'type': 'invalid_request_error'}

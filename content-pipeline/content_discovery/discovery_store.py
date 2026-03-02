@@ -10,9 +10,11 @@ from dataclasses import dataclass
 from typing import Any, Dict, List, Optional, Tuple
 
 
+from pathlib import Path
+
 DEFAULT_DB_PATH = os.environ.get(
     'DISCOVERY_DB_PATH',
-    '/root/.openclaw/workspace/content-pipeline/content_discovery/discovery.db',
+    str(Path(__file__).resolve().parent / 'discovery.db'),
 )
 
 

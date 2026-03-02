@@ -1,0 +1,64 @@
+PLANNED_QUERIES
+- 私域运营转介绍实战 SOP 保险代理人
+- 需求挖掘话术 异议处理 实战案例
+- 家庭保障配置方案 多产品组合 案例拆解
+- 保险宣传合规 踩雷点 风险提示 边界
+- 理赔案例拆解 保障逻辑 客户沟通
+- 老客唤醒回访 预约面谈 话术清单
+
+RUN_START persona=insurance_agent queries=6 max_results=6
+QUERY_START 1/6 保险代理人 私域运营 SOP 实战 清单
+QUERY_RESULTS 1/6 returned=6
+ITEM 1/6 1/6 UPSERT insurance_agent 30 40 97 2025年贝尚智库私域运营sop话术资料 - Scribd
+ITEM 1/6 2/6 UPSERT insurance_agent 0 0 93 保险代理人自媒体账号全攻略：从公域引流到私域转化，4周快速起号
+ITEM 1/6 3/6 UPSERT insurance_agent 0 0 89 AI Agent的“祛魅与归真”：当超级智能体开始懂行｜甲子光年 - 知乎专栏
+ITEM 1/6 4/6 UPSERT insurance_agent 42 65 29 保险行业数字化建设思路| 人人都是产品经理
+ITEM 1/6 5/6 UPSERT insurance_agent 0 0 13 用好这五步，签单很轻松（超级务实）
+ITEM 1/6 6/6 UPSERT insurance_agent 20 5 8 [XLS] 江门市中小企业数字化转型城市试点数字化产品清单（2024年第二批 ...
+QUERY_DONE 1/6 保险代理人 私域运营 SOP 实战 清单
+QUERY_START 2/6 保险销售 异议处理 话术 案例 复盘
+QUERY_RESULTS 2/6 returned=6
+ITEM 2/6 1/6 UPSERT insurance_agent 0 0 80 保险销售十大异议处理话术？ - 百度经验
+ITEM 2/6 2/6 UPSERT insurance_agent 88 82 71 与销售高手对话｜保险代理人不一样的谈单秘籍
+ITEM 2/6 3/6 UPSERT insurance_agent 0 0 67 银保一对一销售指引事前事中事后异议处理28页.pptx - 银行保险
+ITEM 2/6 4/6 UPSERT insurance_agent 0 0 63 异议处理（18页）.PPT - 保险销售 - 圈中人寿险资源网
+ITEM 2/6 5/6 UPSERT insurance_agent 0 0 53 话术| 第6页| i人事一体化HR系统| HR必知必会 - 利唐i人事
+ITEM 2/6 6/6 UPSERT insurance_agent 92 76 47 保险销售口才训练秘籍！宋豫书这本“话术圣经”真能破局？-广告营销 ...
+QUERY_DONE 2/6 保险销售 异议处理 话术 案例 复盘
+QUERY_START 3/6 家庭保障配置 方案 预算分层 案例拆解
+QUERY_RESULTS 3/6 returned=6
+ITEM 3/6 1/6 UPSERT insurance_agent 0 0 75 保单设计背后的“底层逻辑”？我做了这份思维表
+ITEM 3/6 2/6 UPSERT insurance_agent 78 82 68 2026家庭保险配置比例：三层需求拆解+避坑指南（附案例） - 谱蓝保
+ITEM 3/6 3/6 UPSERT insurance_agent 76 80 57 人身保险案例解析低收入家庭保险配置方案分享 - 慧择保险网
+ITEM 3/6 4/6 UPSERT insurance_agent 65 78 45 【不同年收入家庭保险指南】4套保险配置方案
+ITEM 3/6 5/6 UPSERT insurance_agent 0 0 32 骆驼教你保深度解析成人重疾险配置：四种科学方案深度评估
+ITEM 3/6 6/6 UPSERT insurance_agent 40 58 21 保险/金融咨询大模型智能办理：基于工具调用与策略编排的完整方案 ...
+QUERY_DONE 3/6 家庭保障配置 方案 预算分层 案例拆解
+QUERY_START 4/6 保险宣传 合规边界 踩坑 风险提示
+QUERY_RESULTS 4/6 returned=6
+ITEM 4/6 1/6 UPSERT insurance_agent 85 82 97 保险营销宣传合规审核要点总结 - 知乎专栏
+ITEM 4/6 2/6 UPSERT insurance_agent 0 0 93 监管机构屡次提示风险直播卖保险边界在哪里 - 金融证券
+ITEM 4/6 3/6 UPSERT insurance_agent 45 70 89 关于防范保险诱导销售的风险提示
+ITEM 4/6 4/6 UPSERT insurance_agent 85 72 85 关于防范利用自媒体平台误导宣传的风险提示 - 人寿保险
+ITEM 4/6 5/6 UPSERT insurance_agent 0 0 81 关于防范保险销售误导的风险提示 - 友邦人寿
+ITEM 4/6 6/6 UPSERT insurance_agent 0 0 77 关于防范保险销售误导的风险提示- 众安头条
+QUERY_DONE 4/6 保险宣传 合规边界 踩坑 风险提示
+QUERY_START 5/6 保险客户 转介绍 话术 老客唤醒 步骤
+QUERY_RESULTS 5/6 returned=6
+ITEM 5/6 1/6 UPSERT insurance_agent 88 72 75 转投销售逻辑面谈流程促成阳光融和安心B款版22页.pptx - 保险资料
+ITEM 5/6 2/6 UPSERT insurance_agent 0 0 69 营销话术专题唤醒客户的四个需求27页.pptx - 保险资料
+ITEM 5/6 3/6 UPSERT insurance_agent 65 62 55 “掘金行动”——银行存量客户挖掘和休眠客户唤醒-银行培训-内训课 ...
+ITEM 5/6 4/6 UPSERT insurance_agent 0 0 48 应对客户问答的常用话术（2/3）_沃保保险网
+ITEM 5/6 5/6 UPSERT insurance_agent 0 0 37 激活沉睡客户比拉新更容易！这7个激活沉睡客户的步骤不可不知！
+ITEM 5/6 6/6 UPSERT insurance_agent 0 0 30 保险开门红VIP客户答谢会活动流程邀约话术20页.pptx - 产说会操作 ...
+QUERY_DONE 5/6 保险客户 转介绍 话术 老客唤醒 步骤
+QUERY_START 6/6 保险理赔 案例 误区 需求挖掘 对话
+QUERY_RESULTS 6/6 returned=6
+ITEM 6/6 1/6 UPSERT insurance_agent 88 72 63 销售面谈目的需求挖掘规划健康场景关键句重疾演练21页 ... - 保险资料
+ITEM 6/6 2/6 UPSERT insurance_agent 0 0 59 AI智能体开发中的三大致命需求误区，90%的项目都踩坑，大模型 ...
+ITEM 6/6 3/6 UPSERT insurance_agent 38 75 53 数据钻取分析有哪些误区？深度业务洞察实操建议- FineReport报表 ...
+ITEM 6/6 4/6 UPSERT insurance_agent 88 72 36 保险经纪人高效提质！客服智能培训考核办法，适配保单咨询场景 ...
+ITEM 6/6 5/6 UPSERT insurance_agent 0 0 29 一文说清楚大数据挖掘| 帆软数字化转型知识库
+ITEM 6/6 6/6 UPSERT insurance_agent 0 0 21 人工智能：AI大模型构建保险Agent全景应用 - 53AI
+QUERY_DONE 6/6 保险理赔 案例 误区 需求挖掘 对话
+RUN_DONE total=36 db=/root/.openclaw/workspace/content-pipeline/content_discovery/discovery.db

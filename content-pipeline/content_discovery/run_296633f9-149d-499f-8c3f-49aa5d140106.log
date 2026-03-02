@@ -1,0 +1,64 @@
+PLANNED_QUERIES
+- 工程 实践 复盘 踩坑 总结
+- 性能 优化 实战 对比 数据
+- 成本 优化 云 账单 复盘
+- 架构 演进 取舍 代价 边界条件
+- 技术 方案 评估 指标 对比
+- 生产 故障 复盘 根因 解决
+
+RUN_START persona=tech_enthusiast queries=6 max_results=6
+QUERY_START 1/6 工程 实践 复盘 踩坑 总结
+QUERY_RESULTS 1/6 returned=6
+ITEM 1/6 1/6 UPSERT tech_enthusiast 85 75 77 带10 + 项目踩过的坑：这套5 步复盘法，让问题不再重复发生原创
+ITEM 1/6 2/6 UPSERT tech_enthusiast 0 0 73 产品复盘的5点总结，纪念那些踩过的坑
+ITEM 1/6 3/6 UPSERT tech_enthusiast 85 90 66 项目复盘分析与总结模板
+ITEM 1/6 4/6 UPSERT tech_enthusiast 85 80 57 项目做完了就完事？复盘收尾这一步，不搞明白你就亏大了 - 知乎专栏
+ITEM 1/6 5/6 UPSERT tech_enthusiast 85 75 51 【开发】日常开发与迭代提效（复盘与经验沉淀：踩坑经历不二过
+ITEM 1/6 6/6 UPSERT tech_enthusiast 85 90 46 项目结束后，如何用甘特图做复盘？3步总结经验避免重复踩坑 - 博客园
+QUERY_DONE 1/6 工程 实践 复盘 踩坑 总结
+QUERY_START 2/6 性能 优化 实战 对比 数据
+QUERY_RESULTS 2/6 returned=6
+ITEM 2/6 1/6 UPSERT tech_enthusiast 85 80 97 几十亿数据查询秒返回性能优化实战 - 知识铺的博客
+ITEM 2/6 2/6 UPSERT tech_enthusiast 0 0 93 亿级会员体系的前端性能优化实战- 知乎
+ITEM 2/6 3/6 UPSERT tech_enthusiast 0 0 89 数据查询系统如何应对大数据？性能优化实战经验 - 帆软报表
+ITEM 2/6 4/6 UPSERT tech_enthusiast 85 90 85 DataX性能瓶颈怎么突破？大数据同步与优化实战经验分享 - 帆软
+ITEM 2/6 5/6 UPSERT tech_enthusiast 85 75 81 商智C店H5性能优化实战-京东云开发者社区
+ITEM 2/6 6/6 UPSERT tech_enthusiast 90 85 77 Kafka数据压缩算法与性能优化实战- 袋鼠社区-袋鼠云丨数栈丨数据中 ...
+QUERY_DONE 2/6 性能 优化 实战 对比 数据
+QUERY_START 3/6 成本 优化 云 账单 复盘
+QUERY_RESULTS 3/6 returned=6
+ITEM 3/6 1/6 UPSERT tech_enthusiast 0 0 97 成本优化篇— 云上财务官手记：国际阿里云如何从月均8万降至4.3万？
+ITEM 3/6 2/6 UPSERT tech_enthusiast 85 75 93 云费用如何有效降低？如何持续优化成本？ - 联蔚盘云
+ITEM 3/6 3/6 UPSERT tech_enthusiast 0 0 89 AWS账单又超了？三招让云成本直降40%，CTO和架构师必看原创
+ITEM 3/6 4/6 UPSERT tech_enthusiast 85 75 85 DigitalOcean 推出免费自定义账期视图，云成本异常一键现形
+ITEM 3/6 5/6 UPSERT tech_enthusiast 90 85 81 基于AWS Cloud Intelligence Dashboards 的定制实践分享
+ITEM 3/6 6/6 UPSERT tech_enthusiast 70 60 77 COST03-02 可视化成本分摊结果_COST03 对成本进行分配_ ... - 华为云
+QUERY_DONE 3/6 成本 优化 云 账单 复盘
+QUERY_START 4/6 架构 演进 取舍 代价 边界条件
+QUERY_RESULTS 4/6 returned=6
+ITEM 4/6 1/6 UPSERT tech_enthusiast 0 0 71 架构设计的本质：取舍 - 知乎专栏
+ITEM 4/6 2/6 UPSERT tech_enthusiast 0 0 61 前端架构指南| korey的前端笔记 - 前端工程师简历
+ITEM 4/6 3/6 UPSERT tech_enthusiast 85 90 49 架构大杂烩| 李乾坤的博客
+ITEM 4/6 4/6 UPSERT tech_enthusiast 0 0 32 汽车之家10年系统架构演进与平台化架构实践 - 博客园
+ITEM 4/6 5/6 UPSERT tech_enthusiast 85 90 26 年终总结：2025年AI 产品及架构演进深度研究报告 - Zylan Blog
+ITEM 4/6 6/6 UPSERT tech_enthusiast 85 80 20 系統設計思考框架— 架構師的決策脈絡 - Medium
+QUERY_DONE 4/6 架构 演进 取舍 代价 边界条件
+QUERY_START 5/6 技术 方案 评估 指标 对比
+QUERY_RESULTS 5/6 returned=6
+ITEM 5/6 1/6 UPSERT tech_enthusiast 85 75 97 如何对项目进行技术选型
+ITEM 5/6 2/6 UPSERT tech_enthusiast 80 70 93 方案比较法
+ITEM 5/6 3/6 UPSERT tech_enthusiast 0 0 89 评估一个技术方案的优劣 - 腾讯云- Tencent
+ITEM 5/6 4/6 UPSERT tech_enthusiast 90 85 85 【架构优化过程思考】技术方案评估的三个维度转载
+ITEM 5/6 5/6 UPSERT tech_enthusiast 0 0 81 推荐系统常用评估指标对比
+ITEM 5/6 6/6 UPSERT tech_enthusiast 70 65 77 4种解决方案的4个性能指标对比 - 计算机研究与发展
+QUERY_DONE 5/6 技术 方案 评估 指标 对比
+QUERY_START 6/6 生产 故障 复盘 根因 解决
+QUERY_RESULTS 6/6 returned=6
+ITEM 6/6 1/6 UPSERT tech_enthusiast 85 80 74 研发规范系列（一）：故障复盘 - 知乎专栏
+ITEM 6/6 2/6 UPSERT tech_enthusiast 0 0 65 08 故障复盘：黄金三问与判定三原则
+ITEM 6/6 3/6 UPSERT tech_enthusiast 0 0 61 故障治理：如何进行故障复盘_故障恢复流程如何设计 - CSDN博客
+ITEM 6/6 4/6 UPSERT tech_enthusiast 0 0 55 从研发效能的视角解析软件系统“故障复盘” | 思码逸博客
+ITEM 6/6 5/6 UPSERT tech_enthusiast 90 85 49 运维干货|如何通过故障复盘提升业务稳定性和连续性？ - 腾讯云
+ITEM 6/6 6/6 UPSERT tech_enthusiast 0 0 41 什么是根因分析| 故障根因推理引擎 - Kindling-OriginX
+QUERY_DONE 6/6 生产 故障 复盘 根因 解决
+RUN_DONE total=36 db=/root/.openclaw/workspace/content-pipeline/content_discovery/discovery.db

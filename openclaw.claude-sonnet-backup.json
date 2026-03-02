@@ -12,6 +12,22 @@
   },
   "models": {
     "providers": {
+      "anthropic": {
+        "baseUrl": "https://yunyi.rdzhvip.com/v1",
+        "apiKey": "8NUDHHFF-SN90-10H3-44XJ-4FZ4FJ8VYBW7",
+        "auth": "api-key",
+        "api": "openai-completions",
+        "models": [
+          {
+            "id": "claude-sonnet-4-6",
+            "name": "Claude Sonnet 4.6",
+            "api": "openai-completions",
+            "input": ["text", "image"],
+            "contextWindow": 200000,
+            "maxTokens": 8192
+          }
+        ]
+      },
       "moonshot": {
         "baseUrl": "https://api.moonshot.cn/v1",
         "apiKey": "sk-XalLIoOAOUiHpWbKVFeN6ortpGTYH3GQkBxAmkjcpyqigscK",

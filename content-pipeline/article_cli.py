@@ -8,8 +8,12 @@ import sys
 import argparse
 from pathlib import Path
 
-sys.path.insert(0, '/root/.openclaw/workspace/content-pipeline')
-sys.path.insert(0, '/root/.openclaw/workspace/content-pipeline/article_library')
+import os
+from pathlib import Path
+
+BASE_DIR = Path(__file__).resolve().parent
+sys.path.insert(0, str(BASE_DIR))
+sys.path.insert(0, str(BASE_DIR / 'article_library'))
 
 from article_library.smart_service import SmartArticleService, get_article, generate_and_save
 

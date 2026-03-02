@@ -24,7 +24,7 @@ logging.basicConfig(
     level=logging.INFO,
     format='%(asctime)s - %(levelname)s - %(message)s',
     handlers=[
-        logging.FileHandler('/root/.openclaw/workspace/content-pipeline/logs/pipeline.log'),
+        logging.FileHandler(str(Path(__file__).resolve().parent / 'logs' / 'pipeline.log')),
         logging.StreamHandler()
     ]
 )
@@ -32,7 +32,7 @@ logger = logging.getLogger(__name__)
 
 class ContentPipeline:
     def __init__(self):
-        self.base_dir = Path('/root/.openclaw/workspace/content-pipeline')
+        self.base_dir = Path(__file__).resolve().parent
         self.config = self._load_config()
         self.memory = self._load_memory()
         self.collector = RSSCollector()
