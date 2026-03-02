@@ -7,6 +7,7 @@ import sqlite3
 import json
 import os
 import hashlib
+from pathlib import Path
 from typing import List, Dict, Optional
 
 class EmbeddingManager:
@@ -18,11 +19,34 @@ class EmbeddingManager:
             db_path = os.path.join(base_dir, 'article_library', 'library.db')
         self.db_path = db_path
         
-        # OpenAI 配置
+        # Embedding 配置（OpenAI-compatible /embeddings）
+        # Priority: env > local secrets (content-pipeline/config/secrets.local.json) > defaults
         self.api_key = os.getenv('OPENAI_API_KEY', '')
         self.base_url = os.getenv('OPENAI_BASE_URL', 'https://api.openai.com/v1')
         self.model = os.getenv('EMBEDDING_MODEL', 'text-embedding-3-small')
         self.dimensions = int(os.getenv('EMBEDDING_DIM', '1536'))
+
+        if not self.api_key:
+            try:
+                base_dir = Path(__file__).resolve().parents[1]
+                for name in ('secrets.local.json', 'secrets.json'):
+                    p = base_dir / 'config' / name
+                    if not p.exists():
+                        continue
+                    data = json.loads(p.read_text(encoding='utf-8'))
+                    emb = data.get('embedding') or {}
+                    k = (emb.get('api_key') or '').strip()
+                    if k and not k.upper().startswith('YOUR_'):
+                        self.api_key = k
+                        self.base_url = (emb.get('base_url') or self.base_url).strip()
+                        self.model = (emb.get('model') or self.model).strip()
+                        try:
+                            self.dimensions = int(emb.get('dim') or self.dimensions)
+                        except Exception:
+                            pass
+                        break
+            except Exception:
+                pass
     
     def _generate_openai_embedding(self, text: str) -> Optional[List[float]]:
         """

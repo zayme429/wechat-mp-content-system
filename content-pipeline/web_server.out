@@ -447,3 +447,248 @@
  * Restarting with stat
  * Debugger is active!
  * Debugger PIN: 579-280-314
+ * Detected change in '/root/.openclaw/workspace/content-pipeline/check_replies_sendclaw.py', reloading
+🚀 启动文章管理库 Web 服务
+📚 管理地址: http://0.0.0.0:8080/library
+🔍 查询地址: http://0.0.0.0:8080/query
+⚙️  配置地址: http://0.0.0.0:8080/query/config
+ * Restarting with stat
+ * Debugger is active!
+ * Debugger PIN: 579-280-314
+ * Detected change in '/root/.openclaw/workspace/content-pipeline/check_replies_sendclaw.py', reloading
+🚀 启动文章管理库 Web 服务
+📚 管理地址: http://0.0.0.0:8080/library
+🔍 查询地址: http://0.0.0.0:8080/query
+⚙️  配置地址: http://0.0.0.0:8080/query/config
+ * Restarting with stat
+ * Debugger is active!
+ * Debugger PIN: 579-280-314
+ * Detected change in '/root/.openclaw/workspace/content-pipeline/check_replies_sendclaw.py', reloading
+🚀 启动文章管理库 Web 服务
+📚 管理地址: http://0.0.0.0:8080/library
+🔍 查询地址: http://0.0.0.0:8080/query
+⚙️  配置地址: http://0.0.0.0:8080/query/config
+ * Restarting with stat
+ * Debugger is active!
+ * Debugger PIN: 579-280-314
+64.225.44.164 - - [02/Mar/2026 09:16:24] "[31m[1mCONNECT / HTTP/1.1[0m" 405 -
+204.76.203.18 - - [02/Mar/2026 09:21:46] "GET / HTTP/1.1" 200 -
+ * Detected change in '/root/.openclaw/workspace/content-pipeline/quick_init.py', reloading
+🚀 启动文章管理库 Web 服务
+📚 管理地址: http://0.0.0.0:8080/library
+🔍 查询地址: http://0.0.0.0:8080/query
+⚙️  配置地址: http://0.0.0.0:8080/query/config
+ * Restarting with stat
+ * Debugger is active!
+ * Debugger PIN: 579-280-314
+204.76.203.18 - - [02/Mar/2026 09:25:44] "[33mGET /bins/ HTTP/1.1[0m" 404 -
+ * Detected change in '/root/.openclaw/workspace/content-pipeline/pipeline_v31.py', reloading
+🚀 启动文章管理库 Web 服务
+📚 管理地址: http://0.0.0.0:8080/library
+🔍 查询地址: http://0.0.0.0:8080/query
+⚙️  配置地址: http://0.0.0.0:8080/query/config
+ * Restarting with stat
+ * Debugger is active!
+ * Debugger PIN: 579-280-314
+ * Detected change in '/root/.openclaw/workspace/content-pipeline/content_discovery/collector.py', reloading
+🚀 启动文章管理库 Web 服务
+📚 管理地址: http://0.0.0.0:8080/library
+🔍 查询地址: http://0.0.0.0:8080/query
+⚙️  配置地址: http://0.0.0.0:8080/query/config
+ * Restarting with stat
+ * Debugger is active!
+ * Debugger PIN: 579-280-314
+ * Detected change in '/root/.openclaw/workspace/content-pipeline/content_discovery/collector.py', reloading
+🚀 启动文章管理库 Web 服务
+📚 管理地址: http://0.0.0.0:8080/library
+🔍 查询地址: http://0.0.0.0:8080/query
+⚙️  配置地址: http://0.0.0.0:8080/query/config
+ * Restarting with stat
+ * Debugger is active!
+ * Debugger PIN: 579-280-314
+155.117.84.153 - - [02/Mar/2026 09:32:28] "POST /query HTTP/1.1" 200 -
+155.117.84.153 - - [02/Mar/2026 09:32:33] "GET / HTTP/1.1" 200 -
+155.117.84.153 - - [02/Mar/2026 09:32:36] "GET /library HTTP/1.1" 200 -
+155.117.84.153 - - [02/Mar/2026 09:32:52] "[32mGET /admin/sync-drafts HTTP/1.1[0m" 302 -
+155.117.84.153 - - [02/Mar/2026 09:32:52] "GET /library HTTP/1.1" 200 -
+204.76.203.18 - - [02/Mar/2026 09:34:06] "[33mGET /bin/ HTTP/1.1[0m" 404 -
+204.76.203.18 - - [02/Mar/2026 09:47:00] "[33mGET /backup/ HTTP/1.1[0m" 404 -
+89.42.231.241 - - [02/Mar/2026 09:52:46] "[33mGET /SDK/webLanguage HTTP/1.1[0m" 404 -
+ * Detected change in '/root/.openclaw/workspace/content-pipeline/query_engine/embedding_manager.py', reloading
+🚀 启动文章管理库 Web 服务
+📚 管理地址: http://0.0.0.0:8080/library
+🔍 查询地址: http://0.0.0.0:8080/query
+⚙️  配置地址: http://0.0.0.0:8080/query/config
+🔄 开始同步草稿箱状态...
+📋 发现 17 篇草稿箱状态的文章需要检查
+
+  检查: 从不信任到成交，转介绍客户经营的情感账户...
+    Media ID: qgcPUbwEc2J16mibATvC...
+    状态: ✗ 草稿已删除，回退到文章库
+
+  检查: 缘故客户长期信任，靠的是这七个小动作...
+    Media ID: qgcPUbwEc2J16mibATvC...
+    状态: ✗ 草稿已删除，回退到文章库
+
+  检查: 缘故客户说'你靠谱'，我这样跟进...
+    Media ID: qgcPUbwEc2J16mibATvC...
+    状态: ✗ 草稿已删除，回退到文章库
+
+  检查: 高端客户说'太贵了'，我这样跟进...
+    Media ID: qgcPUbwEc2J16mibATvC...
+    状态: ✗ 草稿已删除，回退到文章库
+
+  检查: 从犹豫到成交，沉默客户经营的长期主义...
+    Media ID: qgcPUbwEc2J16mibATvC...
+    状态: ✗ 草稿已删除，回退到文章库
+
+  检查: 三年回访沉默客户，我总结了这十点...
+    Media ID: qgcPUbwEc2J16mibATvC...
+    状态: ✗ 草稿已删除，回退到文章库
+
+  检查: 硬推销不如情感连接，缘故客户经营的真相...
+    Media ID: qgcPUbwEc2J16mibATvC...
+    状态: ✗ 草稿已删除，回退到文章库
+
+  检查: 客户不回复，保险代理人这样服务最有效...
+    Media ID: qgcPUbwEc2J16mibATvC...
+    状态: ✗ 草稿已删除，回退到文章库
+
+  检查: 客户生日时，我这样跟进沉默客户...
+    Media ID: qgcPUbwEc2J16mibATvC...
+    状态: ✗ 草稿已删除，回退到文章库
+
+  检查: 客户不回复，保险代理人这样跟进最有效...
+    Media ID: qgcPUbwEc2J16mibATvC...
+    状态: ✗ 草稿已删除，回退到文章库
+
+  检查: 从陌生到成交，转介绍客户经营的细节经营...
+    Media ID: qgcPUbwEc2J16mibATvC...
+    状态: ✗ 草稿已删除，回退到文章库
+
+  检查: 老客户高度认可，靠的是这三个沟通方式...
+    Media ID: qgcPUbwEc2J16mibATvC...
+    状态: ✗ 草稿已删除，回退到文章库
+
+  检查: 老客户持续转介绍，靠的是这三个服务细节...
+    Media ID: qgcPUbwEc2J16mibATvC...
+    状态: ✗ 草稿已删除，回退到文章库
+
+  检查: 五年深耕高端客户，我收获了高度认可...
+    Media ID: qgcPUbwEc2J16mibATvC...
+    状态: ✗ 草稿已删除，回退到文章库
+
+  检查: 十个沉默客户让我明白：服务先于销售...
+    Media ID: qgcPUbwEc2J16mibATvC...
+    状态: ✗ 草稿已删除，回退到文章库
+
+  检查: 从犹豫到信任，高端客户经营的细节经营...
+    Media ID: qgcPUbwEc2J16mibATvC...
+    状态: ✗ 草稿已删除，回退到文章库
+
+  检查: 节日问候时，七步服务缘故客户...
+    Media ID: qgcPUbwEc2J16mibATvC...
+    状态: ✗ 草稿已删除，回退到文章库
+
+✅ 同步完成:
+  检查: 17 篇
+  存在: 0 篇
+  回退: 17 篇 (草稿被删除)
+  失败: 0 篇
+ * Restarting with stat
+ * Debugger is active!
+ * Debugger PIN: 579-280-314
+205.210.31.82 - - [02/Mar/2026 10:04:31] "GET / HTTP/1.1" 200 -
+ * Detected change in '/root/.openclaw/workspace/content-pipeline/query_engine/embedding_manager.py', reloading
+🚀 启动文章管理库 Web 服务
+📚 管理地址: http://0.0.0.0:8080/library
+🔍 查询地址: http://0.0.0.0:8080/query
+⚙️  配置地址: http://0.0.0.0:8080/query/config
+ * Restarting with stat
+ * Debugger is active!
+ * Debugger PIN: 579-280-314
+ * Detected change in '/root/.openclaw/workspace/content-pipeline/article_library/email_notifier.py', reloading
+🚀 启动文章管理库 Web 服务
+📚 管理地址: http://0.0.0.0:8080/library
+🔍 查询地址: http://0.0.0.0:8080/query
+⚙️  配置地址: http://0.0.0.0:8080/query/config
+ * Restarting with stat
+ * Debugger is active!
+ * Debugger PIN: 579-280-314
+ * Detected change in '/root/.openclaw/workspace/content-pipeline/article_library/email_notifier.py', reloading
+🚀 启动文章管理库 Web 服务
+📚 管理地址: http://0.0.0.0:8080/library
+🔍 查询地址: http://0.0.0.0:8080/query
+⚙️  配置地址: http://0.0.0.0:8080/query/config
+ * Restarting with stat
+ * Debugger is active!
+ * Debugger PIN: 579-280-314
+ * Detected change in '/root/.openclaw/workspace/content-pipeline/article_library/email_notifier.py', reloading
+🚀 启动文章管理库 Web 服务
+📚 管理地址: http://0.0.0.0:8080/library
+🔍 查询地址: http://0.0.0.0:8080/query
+⚙️  配置地址: http://0.0.0.0:8080/query/config
+ * Restarting with stat
+ * Debugger is active!
+ * Debugger PIN: 579-280-314
+ * Detected change in '/root/.openclaw/workspace/content-pipeline/article_library/email_notifier.py', reloading
+🚀 启动文章管理库 Web 服务
+📚 管理地址: http://0.0.0.0:8080/library
+🔍 查询地址: http://0.0.0.0:8080/query
+⚙️  配置地址: http://0.0.0.0:8080/query/config
+ * Restarting with stat
+ * Debugger is active!
+ * Debugger PIN: 579-280-314
+ * Detected change in '/root/.openclaw/workspace/content-pipeline/article_library/email_notifier.py', reloading
+🚀 启动文章管理库 Web 服务
+📚 管理地址: http://0.0.0.0:8080/library
+🔍 查询地址: http://0.0.0.0:8080/query
+⚙️  配置地址: http://0.0.0.0:8080/query/config
+ * Restarting with stat
+ * Debugger is active!
+ * Debugger PIN: 579-280-314
+ * Detected change in '/root/.openclaw/workspace/content-pipeline/article_library/email_notifier.py', reloading
+🚀 启动文章管理库 Web 服务
+📚 管理地址: http://0.0.0.0:8080/library
+🔍 查询地址: http://0.0.0.0:8080/query
+⚙️  配置地址: http://0.0.0.0:8080/query/config
+ * Restarting with stat
+ * Debugger is active!
+ * Debugger PIN: 579-280-314
+ * Detected change in '/root/.openclaw/workspace/content-pipeline/article_library/email_notifier.py', reloading
+🚀 启动文章管理库 Web 服务
+📚 管理地址: http://0.0.0.0:8080/library
+🔍 查询地址: http://0.0.0.0:8080/query
+⚙️  配置地址: http://0.0.0.0:8080/query/config
+ * Restarting with stat
+ * Debugger is active!
+ * Debugger PIN: 579-280-314
+ * Detected change in '/root/.openclaw/workspace/content-pipeline/article_library/email_notifier.py', reloading
+🚀 启动文章管理库 Web 服务
+📚 管理地址: http://0.0.0.0:8080/library
+🔍 查询地址: http://0.0.0.0:8080/query
+⚙️  配置地址: http://0.0.0.0:8080/query/config
+ * Restarting with stat
+ * Debugger is active!
+ * Debugger PIN: 579-280-314
+ * Detected change in '/root/.openclaw/workspace/content-pipeline/src/notification/review_mail_sender.py', reloading
+🚀 启动文章管理库 Web 服务
+📚 管理地址: http://0.0.0.0:8080/library
+🔍 查询地址: http://0.0.0.0:8080/query
+⚙️  配置地址: http://0.0.0.0:8080/query/config
+ * Restarting with stat
+ * Debugger is active!
+ * Debugger PIN: 579-280-314
+ * Detected change in '/root/.openclaw/workspace/content-pipeline/src/notification/review_mail_sender.py', reloading
+🚀 启动文章管理库 Web 服务
+📚 管理地址: http://0.0.0.0:8080/library
+🔍 查询地址: http://0.0.0.0:8080/query
+⚙️  配置地址: http://0.0.0.0:8080/query/config
+ * Restarting with stat
+ * Debugger is active!
+ * Debugger PIN: 579-280-314
+34.158.168.101 - - [02/Mar/2026 10:22:33] "[33mGET /.env HTTP/1.1[0m" 404 -
+34.158.168.101 - - [02/Mar/2026 10:22:34] code 400, message Bad request version ('À\x13À')
+34.158.168.101 - - [02/Mar/2026 10:22:34] "[35m[1m\x16\x03\x01\x05¨\x01\x00\x05¤\x03\x03GïdôdG\x85\x85å¹Rh\x0d\x96\x1aYG°\x09\x9cT:\x05,\x82hé\x88×ãg\x05 ÄC¥\x05é\\=ø\x84|Î\x1b\x9fÕ\x0el¬:\x1fr©ðÏ(\x17s¶Vx¿Jì\x00\x1aÀ+À/À,À0Ì©Ì¨À\x09À\x13À[0m" HTTPStatus.BAD_REQUEST -
+34.158.168.101 - - [02/Mar/2026 10:22:35] code 400, message Bad request version ('À\x13À')
+34.158.168.101 - - [02/Mar/2026 10:22:35] "[35m[1m\x16\x03\x01\x05¨\x01\x00\x05¤\x03\x031ý\x87i\x0cÑçW/CM¥\x18)á\x1fH\x04\x13R`ø[´\x1c\x9dZ\x13\x9f/l\x84 ê<\x83QX\x993Ü\x1c"^³!¹\x18\x9eCäÉ4p·\x84Ô;\x1cÄ©\x96+¢\x14\x00\x1aÀ+À/À,À0Ì©Ì¨À\x09À\x13À[0m" HTTPStatus.BAD_REQUEST -

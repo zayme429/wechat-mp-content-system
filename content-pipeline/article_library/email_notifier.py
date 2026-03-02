@@ -5,27 +5,57 @@
 """
 
 import sys
+import os
+import json
 from pathlib import Path
 from datetime import datetime
 
-sys.path.insert(0, '/root/.openclaw/workspace/content-pipeline')
-sys.path.insert(0, '/root/.openclaw/workspace/skills/imap-smtp-email')
+BASE_DIR = Path(__file__).resolve().parents[1]
+sys.path.insert(0, str(BASE_DIR))
+sys.path.insert(0, str(BASE_DIR / 'src'))
 
 from article_library.library import ArticleLibrary
 
 try:
-    from imap_smtp_email import send_email
-except ImportError:
-    print("⚠️ 邮件模块未找到，请确保 imap-smtp-email skill 已安装")
-    send_email = None
+    from notification.review_mail_sender import ReviewMailSender
+except Exception:
+    ReviewMailSender = None
 
 
 class LibraryEmailNotifier:
     """文章库邮件通知器"""
-    
-    def __init__(self, library: ArticleLibrary = None, base_url: str = None):
+
+    def __init__(self, library: ArticleLibrary = None, base_url: str = None, smtp_config=None):
         self.library = library or ArticleLibrary()
         self.base_url = base_url or 'http://154.9.252.35:8080'
+        self.smtp_config = smtp_config or self._load_smtp_config()
+
+    def _load_smtp_config(self) -> dict:
+        # Priority: env > local secrets files
+        env_user = (os.environ.get('SMTP_USER') or '').strip() if 'os' in globals() else ''
+        env_pass = (os.environ.get('SMTP_PASS') or '').strip() if 'os' in globals() else ''
+        if env_user and env_pass:
+            return {
+                'host': os.environ.get('SMTP_HOST') or 'smtp.example.com',
+                'port': int(os.environ.get('SMTP_PORT') or 465),
+                'secure': (os.environ.get('SMTP_SECURE') or 'true').lower() in ('1', 'true', 'yes'),
+                'user': env_user,
+                'pass': env_pass,
+                'from': os.environ.get('SMTP_FROM') or env_user,
+            }
+
+        for name in ('secrets.local.json', 'secrets.json'):
+            p = BASE_DIR / 'config' / name
+            if not p.exists():
+                continue
+            try:
+                data = json.loads(p.read_text(encoding='utf-8'))
+                smtp = data.get('smtp') or {}
+                if smtp.get('user') and smtp.get('pass') and not str(smtp.get('pass')).upper().startswith('YOUR_'):
+                    return smtp
+            except Exception:
+                continue
+        return {}
     
     def send_library_access_link(self, to_email: str, include_stats: bool = True):
         """
@@ -35,10 +65,10 @@ class LibraryEmailNotifier:
             to_email: 收件人邮箱
             include_stats: 是否包含统计信息
         """
-        if not send_email:
-            print("❌ 邮件功能不可用")
+        if not ReviewMailSender or not self.smtp_config:
+            print("❌ 邮件功能不可用（缺少 SMTP 配置或 ReviewMailSender）")
             return False
-        
+
         library_link = self.library.get_library_link(self.base_url)
         
         # 获取统计信息
@@ -110,12 +140,8 @@ class LibraryEmailNotifier:
 """
         
         try:
-            send_email(
-                to=to_email,
-                subject="📚 微信公众号文章库访问链接",
-                body=html_content,
-                html=True
-            )
+            sender = ReviewMailSender(self.smtp_config)
+            sender.send_html(to_email, "📚 微信公众号文章库访问链接", html_content)
             print(f"✅ 文章库访问链接已发送至 {to_email}")
             return True
         except Exception as e:
@@ -133,10 +159,10 @@ class LibraryEmailNotifier:
             article_ids: 文章ID列表
             candidate_count: 候选数量
         """
-        if not send_email:
-            print("❌ 邮件功能不可用")
+        if not ReviewMailSender or not self.smtp_config:
+            print("❌ 邮件功能不可用（缺少 SMTP 配置或 ReviewMailSender）")
             return False
-        
+
         # 获取文章详情和链接
         articles = []
         for aid in article_ids:
@@ -224,12 +250,8 @@ class LibraryEmailNotifier:
 """
         
         try:
-            send_email(
-                to=to_email,
-                subject=f"📝 新候选文章 - {topic}（共{candidate_count}篇）",
-                body=html_content,
-                html=True
-            )
+            sender = ReviewMailSender(self.smtp_config)
+            sender.send_html(to_email, f"📝 新候选文章 - {topic}（共{candidate_count}篇）", html_content)
             print(f"✅ 候选文章通知已发送至 {to_email}")
             return True
         except Exception as e:
@@ -247,10 +269,10 @@ class LibraryEmailNotifier:
             result: 审核结果
             notes: 审核备注
         """
-        if not send_email:
-            print("❌ 邮件功能不可用")
+        if not ReviewMailSender or not self.smtp_config:
+            print("❌ 邮件功能不可用（缺少 SMTP 配置或 ReviewMailSender）")
             return False
-        
+
         article = self.library.get_article(article_id)
         if not article:
             print(f"❌ 文章 {article_id} 不存在")
@@ -319,12 +341,8 @@ class LibraryEmailNotifier:
 """
         
         try:
-            send_email(
-                to=to_email,
-                subject=f"{result_text} - {article.get('title', '')[:30]}...",
-                body=html_content,
-                html=True
-            )
+            sender = ReviewMailSender(self.smtp_config)
+            sender.send_html(to_email, f"{result_text} - {article.get('title', '')[:30]}...", html_content)
             print(f"✅ 审核确认已发送至 {to_email}")
             return True
         except Exception as e:

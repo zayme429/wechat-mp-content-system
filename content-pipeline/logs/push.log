@@ -170,3 +170,21 @@ Exception: 推送失败: title size out of limit hint: [PQxIta087721-3] rid: 69a
 2026-03-02 08:31:59,840 - INFO - [PUSH_STEP] 4_PUSH_DRAFT: API响应
 2026-03-02 08:31:59,840 - INFO -   Data: {'media_id': 'qgcPUbwEc2J16mibATvCByIn4gSRPYyoopCwi4caJ2yK2cMvbfl6Hv4BBG83LAnO', 'item': []}
 2026-03-02 08:31:59,840 - INFO - [PUSH_SUCCESS] media_id=qgcPUbwEc2J16mibATvCByIn4gSRPYyoopCwi4caJ2yK2cMvbfl6Hv4BBG83LAnO
+2026-03-02 09:33:56,480 - INFO - [PUSH_START] article_id=20260228_保险客户经营_f42099, title=从不信任到成交，转介绍客户经营的情感账户
+2026-03-02 09:33:56,484 - INFO - [PUSH_STEP] 1_GET_TOKEN: 开始获取access_token
+2026-03-02 09:33:57,006 - INFO - [PUSH_STEP] 1_GET_TOKEN: 获取token成功
+2026-03-02 09:33:57,006 - INFO -   Data: {'token_prefix': '101_DkfnKuCqt6wov5vP'}
+2026-03-02 09:33:57,006 - INFO - [PUSH_STEP] 2_UPLOAD_COVER: 开始上传封面为永久素材
+2026-03-02 09:33:58,474 - INFO - [PUSH_STEP] 2_UPLOAD_COVER: 封面上传结果
+2026-03-02 09:33:58,475 - INFO -   Data: {'media_id': 'qgcPUbwEc2J16mibATvCB9YL-_wwdoCNOuQa8uJDStqil10Q6qUxSr66PrjGBz82', 'url': 'http://mmbiz.qpic.cn/sz_mmbiz_jpg/j4oA91WU4nRJDXMtibCxicdVOyiaoxJRfaAnibtWDJEBE5RAYGribcaBORicoVplPcFc0kbrNU3dg32iclbfe96hLLd8tYRYqW89fkJicXIKFvgedC0/0?wx_fmt=jpeg', 'item': []}
+2026-03-02 09:33:58,475 - INFO - [PUSH_STEP] 2_UPLOAD_COVER: 封面上传成功
+2026-03-02 09:33:58,475 - INFO -   Data: {'thumb_media_id': 'qgcPUbwEc2J16mibATvCB9YL-_wwdo'}
+2026-03-02 09:33:58,475 - INFO - [PUSH_STEP] 3_PREPARE_CONTENT: 准备文章内容
+2026-03-02 09:33:58,475 - INFO - [PUSH_STEP] 3_PREPARE_CONTENT: 清理后的标题
+2026-03-02 09:33:58,475 - INFO -   Data: {'title': '从不信任到成交，转介绍客户经营的情感账户', 'char_count': 20, 'byte_count': 60}
+2026-03-02 09:33:58,475 - INFO - [PUSH_STEP] 4_PUSH_DRAFT: 开始推送到草稿箱
+2026-03-02 09:33:58,475 - INFO - [PUSH_STEP] 4_PUSH_DRAFT: 请求参数
+2026-03-02 09:33:58,475 - INFO -   Data: {'title': '从不信任到成交，转介绍客户经营的情感账户', 'content_length': 1851}
+2026-03-02 09:34:00,789 - INFO - [PUSH_STEP] 4_PUSH_DRAFT: API响应
+2026-03-02 09:34:00,790 - INFO -   Data: {'media_id': 'qgcPUbwEc2J16mibATvCB2lOs2m5KfTx1MH1MSgTKxg7Fi9YNzn2N6G3t-PAiRhZ', 'item': []}
+2026-03-02 09:34:00,790 - INFO - [PUSH_SUCCESS] media_id=qgcPUbwEc2J16mibATvCB2lOs2m5KfTx1MH1MSgTKxg7Fi9YNzn2N6G3t-PAiRhZ

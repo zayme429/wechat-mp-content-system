@@ -14,10 +14,34 @@ logger = logging.getLogger(__name__)
 
 class ReviewMailSender:
     """审核邮件发送器 - 优化版"""
-    
+
     def __init__(self, smtp_config: dict):
         self.smtp = smtp_config
-        
+
+    def send_html(self, to: str, subject: str, html: str, reply_to=None) -> bool:
+        """Send a generic HTML email.
+
+        This is used by the article library notifier and other non-review flows.
+        """
+        try:
+            msg = MIMEMultipart('alternative')
+            msg['Subject'] = subject
+            msg['From'] = f"Content Bot <{self.smtp['from']}>"
+            msg['To'] = to
+            if reply_to:
+                msg['Reply-To'] = reply_to
+
+            msg.attach(MIMEText(html, 'html', 'utf-8'))
+
+            server = smtplib.SMTP_SSL(self.smtp['host'], self.smtp['port'])
+            server.login(self.smtp['user'], self.smtp['pass'])
+            server.sendmail(self.smtp['from'], to, msg.as_string())
+            server.quit()
+            return True
+        except Exception as e:
+            logger.error(f"❌ 发送邮件失败: {e}")
+            return False
+
     def send_html_review_email(self, to: str, candidates: list, article_date: str,
                                topic_info: dict = None, literature: list = None) -> bool:
         """
