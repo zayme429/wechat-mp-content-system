@@ -423,3 +423,27 @@
  * Debugger PIN: 579-280-314
 64.62.197.227 - - [02/Mar/2026 08:43:34] code 400, message Bad request version ('À\x14À')
 64.62.197.227 - - [02/Mar/2026 08:43:34] "[35m[1m\x16\x03\x01\x00{\x01\x00\x00w\x03\x03\x16\x1d\x7f ãô\x91\x0f\x92mÛÆ~öÓÇq+\x19ù\x0c]R·\x82\x91G)w\x04â\x8f\x00\x00\x1aÀ/À+À\x11À\x07À\x13À\x09À\x14À[0m" HTTPStatus.BAD_REQUEST -
+ * Detected change in '/root/.openclaw/workspace/content-pipeline/article_library/wechat_draft_sync.py', reloading
+🚀 启动文章管理库 Web 服务
+📚 管理地址: http://0.0.0.0:8080/library
+🔍 查询地址: http://0.0.0.0:8080/query
+⚙️  配置地址: http://0.0.0.0:8080/query/config
+ * Restarting with stat
+ * Debugger is active!
+ * Debugger PIN: 579-280-314
+ * Detected change in '/root/.openclaw/workspace/content-pipeline/article_library/wechat_draft_sync.py', reloading
+🚀 启动文章管理库 Web 服务
+📚 管理地址: http://0.0.0.0:8080/library
+🔍 查询地址: http://0.0.0.0:8080/query
+⚙️  配置地址: http://0.0.0.0:8080/query/config
+ * Restarting with stat
+ * Debugger is active!
+ * Debugger PIN: 579-280-314
+ * Detected change in '/root/.openclaw/workspace/content-pipeline/pipeline.py', reloading
+🚀 启动文章管理库 Web 服务
+📚 管理地址: http://0.0.0.0:8080/library
+🔍 查询地址: http://0.0.0.0:8080/query
+⚙️  配置地址: http://0.0.0.0:8080/query/config
+ * Restarting with stat
+ * Debugger is active!
+ * Debugger PIN: 579-280-314
