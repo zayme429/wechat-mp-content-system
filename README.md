@@ -248,9 +248,12 @@ articles = generate_insurance_articles("保险客户经营", count=5)
 |-------|------|-------------|
 | `ANTHROPIC_API_KEY` | Claude（LLM 生成/分析） | `.env` / 环境变量 |
 | `OPENAI_API_KEY` | Embedding（向量召回） | `.env` / 环境变量 |
-| `TAVILY_API_KEY` | Tavily（内容发现/检索） | `.env` / `content-pipeline/config/secrets.json` |
-| `SENDCLAW_API_KEY` | SendClaw（审核邮件） | `.env` / `content-pipeline/config/secrets.json` |
-| `SMTP_USER` / `SMTP_PASS` | SMTP 发信（审核通知等） | `.env` / `content-pipeline/config/secrets.json` |
+| `KIMI_API_KEY` | Kimi/Moonshot（内容生成，OpenAI兼容） | `.env` / 环境变量 / `content-pipeline/config/secrets.local.json` |
+| `KIMI_BASE_URL` | 生成服务的 base_url（可填你的 GPT Gateway） | `.env` / 环境变量 |
+| `KIMI_MODEL` | 生成模型名（默认 `kimi-k2.5`） | `.env` / 环境变量 |
+| `TAVILY_API_KEY` | Tavily（内容发现/检索） | `.env` / `content-pipeline/config/secrets.local.json` |
+| `SENDCLAW_API_KEY` | SendClaw（审核邮件） | `.env` / `content-pipeline/config/secrets.local.json` |
+| `SMTP_USER` / `SMTP_PASS` | SMTP 发信（审核通知等） | `content-pipeline/config/secrets.local.json` |
 | `FLASK_PORT` | 服务端口 | `.env` / 环境变量 |
 | `FLASK_HOST` | 监听地址 | `.env` / 环境变量 |
 

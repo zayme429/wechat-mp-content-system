@@ -5,10 +5,14 @@
 
 import sys
 import os
-sys.path.insert(0, '/root/.openclaw/workspace/content-pipeline')
+from pathlib import Path
 
-# 设置API Key
-os.environ['MOONSHOT_API_KEY'] = 'sk-XalLIoOAOUiHpWbKVFeN6ortpGTYH3GQkBxAmkjcpyqigscK'
+BASE_DIR = Path(__file__).resolve().parent
+sys.path.insert(0, str(BASE_DIR))
+
+# API key should be provided via env vars or local secrets files (not committed).
+# Example:
+#   export KIMI_API_KEY=...   (or MOONSHOT_API_KEY)
 
 from article_library.library import ArticleLibrary
 

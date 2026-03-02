@@ -23,24 +23,31 @@ logging.basicConfig(
     level=logging.INFO,
     format='%(asctime)s - %(levelname)s - %(message)s',
     handlers=[
-        logging.FileHandler('/root/.openclaw/workspace/content-pipeline/logs/pipeline.log'),
+        logging.FileHandler(str(Path(__file__).resolve().parent / 'logs' / 'pipeline.log')),
         logging.StreamHandler()
     ]
 )
 logger = logging.getLogger(__name__)
 
-BASE_DIR = Path('/root/.openclaw/workspace/content-pipeline')
-WECHAT_SEARCH = Path.home() / '.openclaw/workspace/skills/wechat-search/wechat_search.py'
+BASE_DIR = Path(__file__).resolve().parent
+WECHAT_SEARCH = Path.home() / '.openclaw' / 'workspace' / 'skills' / 'wechat-search' / 'wechat_search.py'
 
 
 
 def _load_secrets():
     """加载敏感配置"""
-    secrets_path = Path('/root/.openclaw/workspace/content-pipeline/config/secrets.json')
+    secrets_path = BASE_DIR / 'config' / 'secrets.local.json'
+    if not secrets_path.exists():
+        secrets_path = BASE_DIR / 'config' / 'secrets.json'
     if secrets_path.exists():
-        with open(secrets_path) as f:
+        with open(secrets_path, 'r', encoding='utf-8') as f:
             return json.load(f)
-    raise FileNotFoundError(f"secrets.json not found: {secrets_path}\nCopy config/secrets.example.json to config/secrets.json and fill in your values.")
+    raise FileNotFoundError(
+        f"secrets file not found. Expected one of:\n"
+        f"- {BASE_DIR / 'config' / 'secrets.local.json'}\n"
+        f"- {BASE_DIR / 'config' / 'secrets.json'}\n"
+        f"Copy config/secrets.example.json to config/secrets.local.json (recommended) and fill in your values."
+    )
 
 class ContentPipelineV3:
 

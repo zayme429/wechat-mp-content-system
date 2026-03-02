@@ -30,7 +30,7 @@ logging.basicConfig(
     level=logging.INFO,
     format='%(asctime)s - %(levelname)s - %(message)s',
     handlers=[
-        logging.FileHandler('/root/.openclaw/workspace/content-pipeline/logs/pipeline.log'),
+        logging.FileHandler(str(Path(__file__).resolve().parent / 'logs' / 'pipeline.log')),
         logging.StreamHandler()
     ]
 )
@@ -39,17 +39,24 @@ logger = logging.getLogger(__name__)
 
 def _load_secrets():
     """加载敏感配置"""
-    secrets_path = Path('/root/.openclaw/workspace/content-pipeline/config/secrets.json')
+    secrets_path = Path(__file__).resolve().parent / 'config' / 'secrets.local.json'
+    if not secrets_path.exists():
+        secrets_path = Path(__file__).resolve().parent / 'config' / 'secrets.json'
     if secrets_path.exists():
-        with open(secrets_path) as f:
+        with open(secrets_path, 'r', encoding='utf-8') as f:
             return json.load(f)
-    raise FileNotFoundError(f"secrets.json not found: {secrets_path}\nCopy config/secrets.example.json to config/secrets.json and fill in your values.")
+    raise FileNotFoundError(
+        f"secrets file not found. Expected one of:\n"
+        f"- {Path(__file__).resolve().parent / 'config' / 'secrets.local.json'}\n"
+        f"- {Path(__file__).resolve().parent / 'config' / 'secrets.json'}\n"
+        f"Copy config/secrets.example.json to config/secrets.local.json (recommended) and fill in your values."
+    )
 
 class AdvancedContentPipeline:
     """高级内容管理Pipeline"""
     
     def __init__(self):
-        self.base_dir = Path('/root/.openclaw/workspace/content-pipeline')
+        self.base_dir = Path(__file__).resolve().parent
         
         # 加载配置
         self.config = self._load_json('config/pipeline.json')

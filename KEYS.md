@@ -18,9 +18,12 @@ Minimum required (push to WeChat draft box):
 - `WECHAT_APP_SECRET`
 
 Common optional keys:
-- `ANTHROPIC_API_KEY` (LLM generation / candidate analysis)
+- `KIMI_API_KEY` (LLM generation via OpenAI-compatible `/chat/completions`)
+- `KIMI_BASE_URL` (your GPT gateway base URL, or Moonshot default)
+- `KIMI_MODEL` (default: `kimi-k2.5`)
 - `OPENAI_API_KEY` (embeddings / vector recall)
 - `TAVILY_API_KEY` (content discovery/search)
+- `SENDCLAW_API_KEY` (review inbox polling)
 
 ## Option B: `content-pipeline/config/secrets.json` (Optional)
 
