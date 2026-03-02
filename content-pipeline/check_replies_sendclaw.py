@@ -4,6 +4,7 @@
 替代原来的 Zapier + IMAP 方案
 """
 import json
+import os
 import urllib.request
 import urllib.error
 import re
@@ -12,11 +13,14 @@ from pathlib import Path
 
 BASE_DIR = Path(__file__).parent
 SECRETS_PATH = BASE_DIR / 'config/secrets.json'
+SECRETS_LOCAL_PATH = BASE_DIR / 'config/secrets.local.json'
 DB_PATH = BASE_DIR / 'database/pipeline.db'
 
 
-def load_secrets():
-    return json.load(open(SECRETS_PATH))
+def load_secrets() -> dict:
+    if SECRETS_LOCAL_PATH.exists():
+        return json.loads(SECRETS_LOCAL_PATH.read_text(encoding='utf-8'))
+    return json.loads(SECRETS_PATH.read_text(encoding='utf-8'))
 
 
 def sendclaw_request(path: str, api_key: str) -> dict:
@@ -53,7 +57,12 @@ def parse_reply(body: str) -> dict:
 
 def process_replies():
     secrets = load_secrets()
-    api_key = secrets['sendclaw']['api_key']
+    api_key = (secrets.get('sendclaw') or {}).get('api_key')
+    if not api_key:
+        api_key = (os.environ.get('SENDCLAW_API_KEY') or '').strip()
+
+    if not api_key:
+        raise SystemExit('Missing SendClaw API key: set SENDCLAW_API_KEY or fill config/secrets.local.json')
 
     # 检查未读数
     check = sendclaw_request('/mail/check', api_key)

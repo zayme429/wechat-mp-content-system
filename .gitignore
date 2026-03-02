@@ -1,5 +1,6 @@
 # Secrets
 .env
+content-pipeline/config/secrets.local.json
 
 # OS / editor
 .DS_Store
