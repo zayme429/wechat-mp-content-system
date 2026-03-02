@@ -247,7 +247,10 @@ articles = generate_insurance_articles("保险客户经营", count=5)
 | 配置项 | 说明 | 建议配置方式 |
 |-------|------|-------------|
 | `ANTHROPIC_API_KEY` | Claude（LLM 生成/分析） | `.env` / 环境变量 |
-| `OPENAI_API_KEY` | Embedding（向量召回） | `.env` / 环境变量 |
+| `OPENAI_API_KEY` | Embedding（向量召回，OpenAI兼容；可对接硅基流动） | `.env` / 环境变量 / `content-pipeline/config/secrets.local.json` |
+| `OPENAI_BASE_URL` | Embedding base_url（例：`https://api.siliconflow.cn/v1`） | `.env` / 环境变量 / `content-pipeline/config/secrets.local.json` |
+| `EMBEDDING_MODEL` | Embedding 模型名（硅基示例：`Qwen/Qwen3-Embedding-8B`） | `.env` / 环境变量 / `content-pipeline/config/secrets.local.json` |
+| `EMBEDDING_DIM` | 仅 `text-embedding-3-*` 需要（其它模型可忽略） | `.env` / 环境变量 / `content-pipeline/config/secrets.local.json` |
 | `KIMI_API_KEY` | Kimi/Moonshot（内容生成，OpenAI兼容） | `.env` / 环境变量 / `content-pipeline/config/secrets.local.json` |
 | `KIMI_BASE_URL` | 生成服务的 base_url（可填你的 GPT Gateway） | `.env` / 环境变量 |
 | `KIMI_MODEL` | 生成模型名（默认 `kimi-k2.5`） | `.env` / 环境变量 |

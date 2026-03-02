@@ -21,7 +21,10 @@ Common optional keys:
 - `KIMI_API_KEY` (LLM generation via OpenAI-compatible `/chat/completions`)
 - `KIMI_BASE_URL` (your GPT gateway base URL, or Moonshot default)
 - `KIMI_MODEL` (default: `kimi-k2.5`)
-- `OPENAI_API_KEY` (embeddings / vector recall)
+- `OPENAI_API_KEY` (embeddings / vector recall; OpenAI-compatible)
+- `OPENAI_BASE_URL` (embeddings base_url; e.g. `https://api.siliconflow.cn/v1`)
+- `EMBEDDING_MODEL` (e.g. `Qwen/Qwen3-Embedding-8B`)
+- `EMBEDDING_DIM` (only for `text-embedding-3-*`)
 - `TAVILY_API_KEY` (content discovery/search)
 - `SENDCLAW_API_KEY` (review inbox polling)
 
