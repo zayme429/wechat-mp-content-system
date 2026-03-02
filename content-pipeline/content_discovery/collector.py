@@ -6,7 +6,30 @@ import json
 import os
 import time
 import urllib.request
+from pathlib import Path
 from typing import Any, Dict, List, Optional
+
+
+def _load_local_tavily_key() -> str:
+    """Load Tavily key from local secrets files when env is not set.
+
+    Priority:
+    - content-pipeline/config/secrets.local.json
+    - content-pipeline/config/secrets.json
+    """
+    try:
+        base_dir = Path(__file__).resolve().parents[1]
+        for name in ('secrets.local.json', 'secrets.json'):
+            p = base_dir / 'config' / name
+            if not p.exists():
+                continue
+            data = json.loads(p.read_text(encoding='utf-8'))
+            key = ((data.get('tavily') or {}).get('api_key') or '').strip()
+            if key and not key.upper().startswith('YOUR_'):
+                return key
+    except Exception:
+        return ''
+    return ''
 
 
 def tavily_search(query: str, max_results: int = 8, api_key: Optional[str] = None) -> List[Dict[str, Any]]:
@@ -20,6 +43,8 @@ def tavily_search(query: str, max_results: int = 8, api_key: Optional[str] = Non
     """
 
     key = (api_key or os.environ.get('TAVILY_API_KEY') or '').strip()
+    if not key:
+        key = _load_local_tavily_key()
     if not key:
         raise RuntimeError('Missing TAVILY_API_KEY')
 
