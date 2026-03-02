@@ -32,9 +32,9 @@ class PromptManager:
 
 只输出JSON，不要其他内容。""",
             "variables": ["query"],
-            "model": "kimi-k2.5"
+            "model": "claude-sonnet-4-6"
         },
-        
+
         "candidate_analysis": {
             "name": "候选文章分析",
             "description": "分析候选文章，给出推荐哪个的结论",
@@ -80,7 +80,7 @@ class PromptManager:
 
 只输出JSON。""",
             "variables": ["query", "intent", "candidate_count", "candidates_info"],
-            "model": "kimi-k2.5"
+            "model": "claude-sonnet-4-6"
         }
     }
     
@@ -127,7 +127,7 @@ class PromptManager:
                 "description": description or self.DEFAULT_PROMPTS.get(prompt_key, {}).get("description", ""),
                 "template": template,
                 "variables": self._extract_variables(template),
-                "model": model or "kimi-k2.5"
+                "model": model or "claude-sonnet-4-6"
             }
             self._save_custom_prompts()
             return True

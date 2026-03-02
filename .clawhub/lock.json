@@ -36,6 +36,118 @@
     "sendclaw": {
       "version": "1.7.5",
       "installedAt": 1772164707080
+    },
+    "embeddings": {
+      "version": "1.0.0",
+      "installedAt": 1772328403038
+    },
+    "openclaw-semantic-memory": {
+      "version": "1.0.0",
+      "installedAt": 1772346695054
+    },
+    "openclaw-memory-qdrant": {
+      "version": "1.0.15",
+      "installedAt": 1772328707399
+    },
+    "ai-sdk-core": {
+      "version": "0.1.0",
+      "installedAt": 1772328724627
+    },
+    "openclaw-aisa-affordable-llm-model-tokens": {
+      "version": "1.0.1",
+      "installedAt": 1772329092797
+    },
+    "aiml-embeddings": {
+      "version": "1.0.0",
+      "installedAt": 1772329154470
+    },
+    "rag": {
+      "version": "1.0.0",
+      "installedAt": 1772329347499
+    },
+    "ck-rag-skill": {
+      "version": "1.0.0",
+      "installedAt": 1772329369997
+    },
+    "volcengine-ai-search-rag": {
+      "version": "1.0.0",
+      "installedAt": 1772329372246
+    },
+    "zh-knowledge-manager": {
+      "version": "1.0.1",
+      "installedAt": 1772329523284
+    },
+    "langchain": {
+      "version": "1.0.0",
+      "installedAt": 1772329549373
+    },
+    "shared-pinecone-rag": {
+      "version": "1.0.0",
+      "installedAt": 1772329578447
+    },
+    "weaviate": {
+      "version": "1.0.0",
+      "installedAt": 1772329580971
+    },
+    "feishu-doc-long-content": {
+      "version": "1.0.0",
+      "installedAt": 1772329811099
+    },
+    "chromadb-memory": {
+      "version": "1.2.1",
+      "installedAt": 1772335190679
+    },
+    "ai-rag-pipeline": {
+      "version": "0.1.5",
+      "installedAt": 1772335278133
+    },
+    "raglite": {
+      "version": "1.0.8",
+      "installedAt": 1772335328100
+    },
+    "local-rag-search": {
+      "version": "0.1.0",
+      "installedAt": 1772335330990
+    },
+    "rag-search": {
+      "version": "0.1.1",
+      "installedAt": 1772335335674
+    },
+    "triple-memory-baidu-embedding": {
+      "version": "1.0.0",
+      "installedAt": 1772335425584
+    },
+    "memory-baidu-embedding-db": {
+      "version": "2.0.1",
+      "installedAt": 1772335465586
+    },
+    "enhanced-memory": {
+      "version": "1.0.0",
+      "installedAt": 1772335687688
+    },
+    "engram": {
+      "version": "0.2.1",
+      "installedAt": 1772335695530
+    },
+    "neverforget": {
+      "version": "1.0.4",
+      "installedAt": 1772346705470
+    },
+    "vector-memory": {
+      "version": "1.0.0",
+      "installedAt": 1772346720411
+    },
+    "elite-longterm-memory": {
+      "version": "1.2.3",
+      "installedAt": 1772346934860
+    },
+    "neural-memory": {
+      "version": "1.0.0",
+      "installedAt": 1772346942559
+    },
+    "agentmem": {
+      "version": "2.4.0",
+      "installedAt": 1772346956107
     }
   }
 }
